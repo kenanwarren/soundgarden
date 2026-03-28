@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Play, Square } from 'lucide-react'
+import { Guitar, Play, Square } from 'lucide-react'
 import { PageHeader } from '../layout/PageHeader'
 import { ChordDiagram } from '../common/ChordDiagram'
 import { StaffRenderer } from '../common/StaffRenderer'
@@ -274,6 +274,10 @@ export function SongViewerPanel(): JSX.Element {
                   <h2 className="text-xl font-semibold text-white">{selectedSong.title}</h2>
                   {selectedArrangement && (
                     <>
+                      <span className="inline-flex items-center gap-1 rounded-lg bg-zinc-800 px-2 py-0.5 text-xs text-zinc-400">
+                        <Guitar size={12} />
+                        Guitar
+                      </span>
                       <Tag label={selectedArrangement.key} tone="accent" />
                       <Tag label={formatDifficulty(selectedArrangement.difficulty)} />
                       {!selectedArrangement.isDefault && <Tag label={selectedArrangement.label} />}

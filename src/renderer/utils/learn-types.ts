@@ -20,6 +20,8 @@ export type LearnSkillId =
   | 'technique'
   | 'fingerstyle'
 
+export type Instrument = 'lead-guitar' | 'rhythm-guitar' | 'bass'
+
 export type CompletionState = 'not-started' | 'in-progress' | 'completed'
 
 export type DifficultyTier = 'Beginner' | 'Intermediate' | 'Advanced'
@@ -147,6 +149,7 @@ export interface SongNotation {
 
 export interface SongArrangement {
   id: string
+  instrument?: Instrument
   label: string
   isDefault: boolean
   difficulty: PracticeDifficulty

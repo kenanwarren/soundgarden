@@ -22,6 +22,7 @@ export function formatDifficulty(difficulty: PracticeDifficulty): string {
 function toSongArrangement(song: SongDefinition, isDefault = true): SongArrangement {
   return {
     id: song.id,
+    instrument: 'lead-guitar',
     label: isDefault ? (song.variantLabel ?? 'Standard') : (song.variantLabel ?? song.title),
     isDefault,
     difficulty: song.difficulty,

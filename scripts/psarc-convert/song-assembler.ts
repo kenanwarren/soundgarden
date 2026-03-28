@@ -1,5 +1,6 @@
 import type {
   GenreId,
+  Instrument,
   NotationMeasure,
   NotationNote,
   NoteTechnique,
@@ -30,6 +31,12 @@ const MASK_PALM_MUTE = 0x0040
 const MASK_SLIDE = 0x0080
 const MASK_ACCENT = 0x2000
 const MASK_SLIDE_UNPITCH = 0x2000_0000
+
+const ARRANGEMENT_TO_INSTRUMENT: Record<ArrangementType, Instrument> = {
+  lead: 'lead-guitar',
+  rhythm: 'rhythm-guitar',
+  bass: 'bass'
+}
 
 export interface ConvertOptions {
   key?: string
@@ -154,6 +161,7 @@ export function assembleSong(
           levels.length > 1
             ? `${songId}-${typeSuffix}-${level.rsLevel}`
             : `${songId}-${typeSuffix}`,
+        instrument: ARRANGEMENT_TO_INSTRUMENT[arr.type],
         label,
         isDefault: songArrangements.length === 0,
         difficulty: level.difficulty,
