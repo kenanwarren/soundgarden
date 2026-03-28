@@ -1,14 +1,5 @@
 import { Routes, Route, NavLink } from 'react-router-dom'
-import {
-  Cable,
-  Guitar,
-  GraduationCap,
-  Home,
-  Music,
-  Settings,
-  Sliders,
-  Timer
-} from 'lucide-react'
+import { Cable, Guitar, GraduationCap, Home, Music, Settings, Sliders, Timer } from 'lucide-react'
 import { useAudioEngineInit } from './hooks/useAudioEngine'
 import { StatusStrip } from './components/layout/StatusStrip'
 import { NoticeStack } from './components/layout/NoticeStack'

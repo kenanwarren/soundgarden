@@ -46,11 +46,7 @@ export function createWorkletEffect(ctx: AudioContext, config: EffectConfig): Ma
   }
 }
 
-export function updateWorkletParams(
-  managed: ManagedEffect,
-  config: EffectConfig,
-  t: number
-): void {
+export function updateWorkletParams(managed: ManagedEffect, config: EffectConfig, t: number): void {
   if (config.type === 'nam') {
     const node = managed.internals.node as AudioWorkletNode
     for (const [name, value] of Object.entries(config.params)) {

@@ -70,11 +70,7 @@ export function createReverbEffect(ctx: AudioContext, config: EffectConfig): Man
   }
 }
 
-export function updateReverbParams(
-  managed: ManagedEffect,
-  config: EffectConfig,
-  t: number
-): void {
+export function updateReverbParams(managed: ManagedEffect, config: EffectConfig, t: number): void {
   const dry = managed.internals.dry as GainNode
   const wet = managed.internals.wet as GainNode
   const mix = config.params.mix ?? 0.3
@@ -125,11 +121,7 @@ export function createCabinetEffect(ctx: AudioContext, config: EffectConfig): Ma
   }
 }
 
-export function updateCabinetParams(
-  managed: ManagedEffect,
-  config: EffectConfig,
-  t: number
-): void {
+export function updateCabinetParams(managed: ManagedEffect, config: EffectConfig, t: number): void {
   const dry = managed.internals.dry as GainNode
   const wet = managed.internals.wet as GainNode
   const mix = config.params.mix ?? 0.8

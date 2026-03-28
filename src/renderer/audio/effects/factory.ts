@@ -36,10 +36,7 @@ const WORKLET_TYPES = new Set([
   'looper'
 ])
 
-export function createManagedEffect(
-  ctx: AudioContext,
-  config: EffectConfig
-): ManagedEffect | null {
+export function createManagedEffect(ctx: AudioContext, config: EffectConfig): ManagedEffect | null {
   if (WORKLET_TYPES.has(config.type)) return createWorkletEffect(ctx, config)
   switch (config.type) {
     case 'eq':
