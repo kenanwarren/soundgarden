@@ -4,8 +4,9 @@
   "description": "Guitar learning application",
   "main": "./out/main/index.js",
   "scripts": {
-    "dev": "electron-vite dev",
-    "build": "electron-vite build",
+    "build:wasm": "bash src/renderer/audio/wasm/build.sh",
+    "dev": "npm run build:wasm && electron-vite dev",
+    "build": "npm run build:wasm && electron-vite build",
     "preview": "electron-vite preview",
     "start": "electron-vite preview",
     "postinstall": "electron-builder install-app-deps",

@@ -9,7 +9,8 @@ import {
   chorusProcessorUrl,
   compressorProcessorUrl,
   noisegateProcessorUrl,
-  namProcessorUrl
+  namProcessorUrl,
+  namWasmUrl
 } from '../audio/worklet-urls'
 
 interface ManagedEffect {
@@ -179,6 +180,20 @@ const WORKLET_NAMES: Record<string, string> = {
   nam: 'nam-processor'
 }
 
+let namWasmBytesCache: ArrayBuffer | null = null
+
+async function fetchNamWasmBytes(): Promise<ArrayBuffer | null> {
+  if (namWasmBytesCache) return namWasmBytesCache
+  try {
+    const resp = await fetch(namWasmUrl)
+    namWasmBytesCache = await resp.arrayBuffer()
+    return namWasmBytesCache
+  } catch (err) {
+    console.warn('Failed to fetch NAM WASM module:', err)
+    return null
+  }
+}
+
 function createWorkletEffect(ctx: AudioContext, config: EffectConfig): ManagedEffect {
   const node = new AudioWorkletNode(ctx, WORKLET_NAMES[config.type])
   if (config.type === 'nam') {
@@ -188,6 +203,9 @@ function createWorkletEffect(ctx: AudioContext, config: EffectConfig): ManagedEf
       }
     })
     node.port.start()
+    fetchNamWasmBytes().then((bytes) => {
+      if (bytes) node.port.postMessage({ type: 'initWasm', wasmBytes: bytes })
+    })
   }
 
   return {

@@ -1,3 +1,22 @@
+function fastTanh(x) {
+  if (x > 4.97) return 1.0
+  if (x < -4.97) return -1.0
+  var x2 = x * x
+  return x * (27.0 + x2) / (27.0 + 9.0 * x2)
+}
+
+function fastSigmoid(x) {
+  var hx = x * 0.5
+  if (hx > 4.97) return 1.0
+  if (hx < -4.97) return 0.0
+  var x2 = hx * hx
+  return 0.5 + 0.5 * hx * (27.0 + x2) / (27.0 + 9.0 * x2)
+}
+
+function nextPow2(v) {
+  v--; v |= v >> 1; v |= v >> 2; v |= v >> 4; v |= v >> 8; v |= v >> 16; return v + 1
+}
+
 class NAMProcessor extends AudioWorkletProcessor {
   constructor() {
     super()
@@ -5,6 +24,8 @@ class NAMProcessor extends AudioWorkletProcessor {
     this.inputGain = 1.0
     this.outputGain = 1.0
     this.reportedSilentOutput = false
+    this.wasm = null
+    this.wasmReady = false
     var self = this
     this.port.onmessage = function(e) {
       if (e.data.type === 'loadModel') {
@@ -16,11 +37,31 @@ class NAMProcessor extends AudioWorkletProcessor {
           self.model = null
         }
       } else if (e.data.type === 'unloadModel') {
+        if (self.model && self.model.wasmModelPtr && self.wasm) {
+          self.wasm.exports.free_model(self.model.wasmModelPtr)
+        }
         self.model = null
       } else if (e.data.type === 'setParam') {
         if (e.data.name === 'inputGain') self.inputGain = e.data.value
         if (e.data.name === 'outputGain') self.outputGain = e.data.value
+      } else if (e.data.type === 'initWasm') {
+        self._initWasm(e.data.wasmBytes)
       }
+    }
+  }
+
+  async _initWasm(wasmBytes) {
+    try {
+      var result = await WebAssembly.instantiate(wasmBytes, {
+        env: { emscripten_notify_memory_growth: function() {} }
+      })
+      this.wasm = result.instance
+      if (this.wasm.exports._initialize) this.wasm.exports._initialize()
+      this.wasmReady = true
+      this.port.postMessage({ type: 'wasmReady', success: true })
+    } catch (err) {
+      this.wasmReady = false
+      this.port.postMessage({ type: 'wasmReady', success: false, error: String(err) })
     }
   }
 
@@ -107,6 +148,10 @@ class NAMProcessor extends AudioWorkletProcessor {
       var layers = []
       for (var l = 0; l < dilations.length; l++) {
         var d = dilations[l], bs = d * (ks - 1) + 1
+
+        var bsPow2 = nextPow2(bs)
+        var bMask = bsPow2 - 1
+
         var cW = take(ch * co * ks), cB = take(co)
         var condW = condSize > 0 ? take(condSize * co) : null
         var mW = take(ch * ch), mB = take(ch)
@@ -136,22 +181,24 @@ class NAMProcessor extends AudioWorkletProcessor {
           }
         }
 
-        var tapOffsets = new Int32Array(ks)
-        for (var k = 0; k < ks; k++) tapOffsets[k] = ((bs - d * (ks - 1 - k)) % bs) * ch
+        var tapDilations = new Int32Array(ks)
+        for (var k = 0; k < ks; k++) tapDilations[k] = d * (ks - 1 - k)
 
         layers.push({
           bias: condBias || cB,
           mW: mW,
           mB: mB,
-          buf: new Float32Array(bs * ch),
+          buf: new Float32Array(bsPow2 * ch),
           bi: 0,
-          bs: bs,
+          bs: bsPow2,
+          bMask: bMask,
+          origBs: bs,
           ks: ks,
           ch: ch,
           co: co,
           flatKernel: flatKernel,
-          tapOffsets: tapOffsets,
-          tapDelta: ch
+          tapDilations: tapDilations,
+          dilation: d
         })
       }
       var hW = take(ch * headSize), hB = headBias ? take(headSize) : null
@@ -160,6 +207,10 @@ class NAMProcessor extends AudioWorkletProcessor {
     var headScale = w.length > pos ? w[pos] : (config.head_scale || 1.0)
 
     var numBlocks = blocks.length
+
+    if (this.wasmReady && this.wasm) {
+      return this._buildWaveNetWasm(data, blocks, headScale)
+    }
 
     return { forwardBuffer: function(inBuf, outBuf, numFrames, inGain, outGain) {
       for (var i = 0; i < numFrames; i++) {
@@ -181,27 +232,45 @@ class NAMProcessor extends AudioWorkletProcessor {
           for (var l = 0; l < numLayers; l++) {
             var ly = bl.layers[l], bi = ly.bi, buf = ly.buf, frameBase = bi * ch
             var bias = ly.bias, mW = ly.mW, mB = ly.mB
-            var lks = ly.ks, lco = ly.co, fk = ly.flatKernel, tO = ly.tapOffsets
+            var lks = ly.ks, lco = ly.co, fk = ly.flatKernel
+            var bMask = ly.bMask
 
             for (var c = 0; c < ch; c++) buf[frameBase + c] = x[c]
 
             for (var o = 0; o < lco; o++) cv[o] = bias[o]
 
-            for (var k = 0; k < lks; k++) {
-              var bO = tO[k]
-              var fkBase = k * lco * ch
+            if (lks === 3) {
+              var t0 = ((bi - ly.tapDilations[0]) & bMask) * ch
+              var t1 = ((bi - ly.tapDilations[1]) & bMask) * ch
+              var t2 = ((bi - ly.tapDilations[2]) & bMask) * ch
+              var fk0 = 0, fk1 = lco * ch, fk2 = 2 * lco * ch
               for (var o = 0; o < lco; o++) {
-                var kwOff = fkBase + o * ch
                 var sum = 0
-                for (var c = 0; c < ch; c++) sum += fk[kwOff + c] * buf[bO + c]
+                var off0 = fk0 + o * ch, off1 = fk1 + o * ch, off2 = fk2 + o * ch
+                for (var c = 0; c < ch; c++) {
+                  sum += fk[off0 + c] * buf[t0 + c]
+                      + fk[off1 + c] * buf[t1 + c]
+                      + fk[off2 + c] * buf[t2 + c]
+                }
                 cv[o] += sum
+              }
+            } else {
+              for (var k = 0; k < lks; k++) {
+                var bO = ((bi - ly.tapDilations[k]) & bMask) * ch
+                var fkBase = k * lco * ch
+                for (var o = 0; o < lco; o++) {
+                  var kwOff = fkBase + o * ch
+                  var sum = 0
+                  for (var c = 0; c < ch; c++) sum += fk[kwOff + c] * buf[bO + c]
+                  cv[o] += sum
+                }
               }
             }
 
             if (bl.gated) {
-              for (var c = 0; c < ch; c++) cv[c] = Math.tanh(cv[c]) * (1 / (1 + Math.exp(-cv[c + ch])))
+              for (var c = 0; c < ch; c++) cv[c] = fastTanh(cv[c]) * fastSigmoid(cv[c + ch])
             } else {
-              for (var c = 0; c < lco; c++) cv[c] = Math.tanh(cv[c])
+              for (var c = 0; c < lco; c++) cv[c] = fastTanh(cv[c])
             }
 
             for (var o = 0; o < ch; o++) {
@@ -210,12 +279,7 @@ class NAMProcessor extends AudioWorkletProcessor {
               x[o] = v + buf[frameBase + o]
             }
 
-            ly.bi = bi + 1
-            if (ly.bi === ly.bs) ly.bi = 0
-            for (var k = 0; k < lks; k++) {
-              tO[k] += ch
-              if (tO[k] >= ly.bs * ch) tO[k] = 0
-            }
+            ly.bi = (bi + 1) & bMask
           }
           ph = x
           if (bl.hs === 1) { var v = bl.hB ? bl.hB[0] : 0; for (var c = 0; c < ch; c++) v += bl.hW[c] * x[c]; sample = v }
@@ -224,6 +288,73 @@ class NAMProcessor extends AudioWorkletProcessor {
         outBuf[i] = s !== s ? 0 : s
       }
     }, inputScale: this._getInputScale(data) }
+  }
+
+  _buildWaveNetWasm(data, blocks, headScale) {
+    var wasm = this.wasm
+    var exports = wasm.exports
+    var memory = exports.memory
+
+    var config = data.config
+    var w = data.weights
+    var blockConfigs = config.layers || []
+
+    var numBlocks = blockConfigs.length
+    var blockInfoPtr = exports.malloc(numBlocks * 7 * 4)
+    var blockInfoView = new Int32Array(memory.buffer, blockInfoPtr, numBlocks * 7)
+
+    for (var b = 0; b < numBlocks; b++) {
+      var bc = blockConfigs[b]
+      blockInfoView[b * 7 + 0] = bc.input_size || 1
+      blockInfoView[b * 7 + 1] = bc.channels || 16
+      blockInfoView[b * 7 + 2] = bc.kernel_size || 3
+      blockInfoView[b * 7 + 3] = (bc.dilations || []).length
+      blockInfoView[b * 7 + 4] = bc.head_size || 1
+      blockInfoView[b * 7 + 5] = (bc.gated || false) ? 1 : 0
+      blockInfoView[b * 7 + 6] = bc.head_bias ? 1 : 0
+    }
+
+    var dilationsTotal = 0
+    for (var b = 0; b < numBlocks; b++) dilationsTotal += (blockConfigs[b].dilations || []).length
+    var dilationsPtr = exports.malloc(dilationsTotal * 4)
+    var dilationsView = new Int32Array(memory.buffer, dilationsPtr, dilationsTotal)
+    var di = 0
+    for (var b = 0; b < numBlocks; b++) {
+      var dils = blockConfigs[b].dilations || []
+      for (var l = 0; l < dils.length; l++) dilationsView[di++] = dils[l]
+    }
+
+    var condSizesPtr = exports.malloc(numBlocks * 4)
+    var condSizesView = new Int32Array(memory.buffer, condSizesPtr, numBlocks)
+    for (var b = 0; b < numBlocks; b++) condSizesView[b] = blockConfigs[b].condition_size || 0
+
+    var weightsPtr = exports.malloc(w.length * 4)
+    new Float32Array(memory.buffer, weightsPtr, w.length).set(w)
+
+    var conditionValue = this._getConditionValue(data)
+
+    var modelPtr = exports.init_wavenet(
+      blockInfoPtr, numBlocks, dilationsPtr, condSizesPtr,
+      weightsPtr, w.length, conditionValue, headScale
+    )
+
+    exports.free(blockInfoPtr)
+    exports.free(dilationsPtr)
+    exports.free(condSizesPtr)
+    exports.free(weightsPtr)
+
+    var inPtr = exports.malloc(512 * 4)
+    var outPtr = exports.malloc(512 * 4)
+
+    return {
+      forwardBuffer: function(inBuf, outBuf, numFrames, inGain, outGain) {
+        new Float32Array(memory.buffer, inPtr, numFrames).set(inBuf.subarray(0, numFrames))
+        exports.wavenet_forward(modelPtr, inPtr, outPtr, numFrames, inGain, outGain)
+        outBuf.set(new Float32Array(memory.buffer, outPtr, numFrames))
+      },
+      wasmModelPtr: modelPtr,
+      inputScale: this._getInputScale(data)
+    }
   }
 
   _buildLSTM(data) {
@@ -242,6 +373,10 @@ class NAMProcessor extends AudioWorkletProcessor {
     var hW = take(hs), hB = take(1)
     var gates = new Float32Array(hs4)
     var tmpInp = new Float32Array(hs)
+
+    if (this.wasmReady && this.wasm) {
+      return this._buildLSTMWasm(data, layers, hW, hB, hs, nl)
+    }
 
     return { forwardBuffer: function(inBuf, outBuf, numFrames, inGain, outGain) {
       for (var i = 0; i < numFrames; i++) {
@@ -265,12 +400,12 @@ class NAMProcessor extends AudioWorkletProcessor {
           }
 
           for (var j = 0; j < hs; j++) {
-            var ig = 1 / (1 + Math.exp(-gates[j]))
-            var fg = 1 / (1 + Math.exp(-gates[hs + j]))
-            var gg = Math.tanh(gates[2 * hs + j])
-            var og = 1 / (1 + Math.exp(-gates[3 * hs + j]))
+            var ig = fastSigmoid(gates[j])
+            var fg = fastSigmoid(gates[hs + j])
+            var gg = fastTanh(gates[2 * hs + j])
+            var og = fastSigmoid(gates[3 * hs + j])
             lyC[j] = fg * lyC[j] + ig * gg
-            lyH[j] = og * Math.tanh(lyC[j])
+            lyH[j] = og * fastTanh(lyC[j])
           }
 
           inp = lyH
@@ -283,6 +418,37 @@ class NAMProcessor extends AudioWorkletProcessor {
         outBuf[i] = s !== s ? 0 : s
       }
     }, inputScale: this._getInputScale(data) }
+  }
+
+  _buildLSTMWasm(data, layers, hW, hB, hs, nl) {
+    var wasm = this.wasm
+    var exports = wasm.exports
+    var memory = exports.memory
+
+    var cfg = data.config || {}
+    var w = data.weights
+
+    var weightsPtr = exports.malloc(w.length * 4)
+    new Float32Array(memory.buffer, weightsPtr, w.length).set(w)
+
+    var modelPtr = exports.init_lstm(
+      cfg.input_size || 1, hs, nl, weightsPtr, w.length
+    )
+
+    exports.free(weightsPtr)
+
+    var inPtr = exports.malloc(512 * 4)
+    var outPtr = exports.malloc(512 * 4)
+
+    return {
+      forwardBuffer: function(inBuf, outBuf, numFrames, inGain, outGain) {
+        new Float32Array(memory.buffer, inPtr, numFrames).set(inBuf.subarray(0, numFrames))
+        exports.lstm_forward(modelPtr, inPtr, outPtr, numFrames, inGain, outGain)
+        outBuf.set(new Float32Array(memory.buffer, outPtr, numFrames))
+      },
+      wasmModelPtr: modelPtr,
+      inputScale: this._getInputScale(data)
+    }
   }
 
   _getInputScale(data) {
