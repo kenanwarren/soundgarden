@@ -67,35 +67,31 @@ export function detectChord(chromagram: Float32Array): ChordResult | null {
 }
 
 function matchTemplate(chromagram: Float32Array, root: number, template: number[]): number {
-  let templateHit = 0
-  let templateMiss = 0
+  const templateSet = new Set(template.map((i) => (root + i) % 12))
+
+  let templateEnergy = 0
+  let minTemplateEnergy = Infinity
   for (const interval of template) {
     const idx = (root + interval) % 12
-    if (chromagram[idx] > 0.2) {
-      templateHit++
-    } else {
-      templateMiss++
-    }
+    const e = chromagram[idx]
+    templateEnergy += e
+    if (e < minTemplateEnergy) minTemplateEnergy = e
   }
 
-  if (templateMiss > 0) return -1
+  if (minTemplateEnergy < 0.3) return -1
 
-  let inEnergy = 0
   let outEnergy = 0
-  const templateSet = new Set(template.map((i) => (root + i) % 12))
   for (let i = 0; i < 12; i++) {
-    if (templateSet.has(i)) {
-      inEnergy += chromagram[i]
-    } else {
+    if (!templateSet.has(i)) {
       outEnergy += chromagram[i]
     }
   }
 
-  const total = inEnergy + outEnergy
+  const total = templateEnergy + outEnergy
   if (total < 0.01) return -1
 
-  const coverage = inEnergy / total
-  const parsimony = 1 - (template.length - 2) * 0.03
+  const coverage = templateEnergy / total
+  const parsimony = 1 - (template.length - 2) * 0.05
 
   return coverage * parsimony
 }

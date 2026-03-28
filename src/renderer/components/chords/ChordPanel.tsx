@@ -6,9 +6,6 @@ export function ChordPanel(): JSX.Element {
   const { isActive, start, stop } = useChordDetection()
   const currentChord = useChordStore((s) => s.currentChord)
   const chromagram = useChordStore((s) => s.chromagram)
-  const tickCount = useChordStore((s) => s.tickCount)
-  const peakDb = useChordStore((s) => s.peakDb)
-
   return (
     <div className="flex flex-col items-center gap-8">
       <button
@@ -21,12 +18,6 @@ export function ChordPanel(): JSX.Element {
       >
         {isActive ? 'Stop' : 'Start Detection'}
       </button>
-
-      {isActive && (
-        <div className="text-xs text-zinc-600 font-mono">
-          ticks: {tickCount} | peak: {peakDb === -Infinity ? '—' : `${peakDb.toFixed(1)}dB`}
-        </div>
-      )}
 
       <div className="flex flex-col items-center gap-2">
         <span

@@ -10,6 +10,8 @@ export function useChordDetection() {
 
   const analyserRef = useRef<AnalyserNode | null>(null)
   const intervalRef = useRef<number | null>(null)
+  const pendingChordRef = useRef<string | null>(null)
+  const pendingCountRef = useRef(0)
 
   const start = useCallback(() => {
     const engine = getEngine()
@@ -60,10 +62,29 @@ export function useChordDetection() {
         chromagram[((pitchClass % 12) + 12) % 12] += energy
       }
 
+      const candidate = detectChord(chromagram)
+      const candidateName = candidate?.name ?? null
+      const currentName = useChordStore.getState().currentChord?.name ?? null
+
+      if (candidateName === currentName) {
+        pendingChordRef.current = null
+        pendingCountRef.current = 0
+      } else if (candidateName === pendingChordRef.current) {
+        pendingCountRef.current++
+      } else {
+        pendingChordRef.current = candidateName
+        pendingCountRef.current = 1
+      }
+
+      const SWITCH_THRESHOLD = 3
       const store = useChordStore.getState()
       store.tick(peakDb)
       store.setChromagram(new Float32Array(chromagram))
-      store.setChord(detectChord(chromagram))
+      if (pendingCountRef.current >= SWITCH_THRESHOLD) {
+        store.setChord(candidate)
+        pendingChordRef.current = null
+        pendingCountRef.current = 0
+      }
     }, 80)
 
     useChordStore.getState().setActive(true)
