@@ -30,6 +30,8 @@ import { ScalePanel } from './components/learn/ScalePanel'
 import { ChordLibraryPanel } from './components/learn/ChordLibraryPanel'
 import { RhythmPanel } from './components/learn/RhythmPanel'
 import { EarTrainingPanel } from './components/learn/EarTrainingPanel'
+import { ChordChangesPanel } from './components/learn/ChordChangesPanel'
+import { ScaleSequencePanel } from './components/learn/ScaleSequencePanel'
 import { PageHeader } from './components/layout/PageHeader'
 import { StatusStrip } from './components/layout/StatusStrip'
 import { NoticeStack } from './components/layout/NoticeStack'
@@ -423,6 +425,8 @@ export default function App(): JSX.Element {
             <Route path="/learn/chords" element={<ChordLibraryPanel />} />
             <Route path="/learn/rhythm" element={<RhythmPanel />} />
             <Route path="/learn/ear-training" element={<EarTrainingPanel />} />
+            <Route path="/learn/chord-changes" element={<ChordChangesPanel />} />
+            <Route path="/learn/scale-sequences" element={<ScaleSequencePanel />} />
             <Route path="/settings" element={<SettingsPage />} />
           </Routes>
         </main>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { RotateCcw } from 'lucide-react'
 import { RHYTHM_PATTERNS } from '../../utils/rhythm-patterns'
 import {
@@ -13,12 +13,38 @@ import { useMetronome } from '../../hooks/useMetronome'
 import { PageHeader } from '../layout/PageHeader'
 import { BpmControl } from '../common/BpmControl'
 import { AudioRequiredState } from '../common/AudioRequiredState'
+import { useLessonStep } from '../../hooks/useLessonStep'
+import { getPatternIndexByName } from '../../utils/learn-data'
+import { useLearnProgressStore } from '../../stores/learn-progress-store'
+import { LearnSessionSummary } from './LearnSessionSummary'
 
 const GRADE_CONFIG: Record<HitGrade, { label: string; color: string }> = {
   perfect: { label: 'Perfect!', color: 'text-emerald-400' },
   great: { label: 'Great!', color: 'text-green-400' },
   good: { label: 'Good', color: 'text-yellow-400' },
   miss: { label: 'Miss', color: 'text-red-400' }
+}
+
+function getTimingInsights(results: TimingResult[]): { consistency: number | null; tendency: number | null } {
+  const hits = results.filter(
+    (result): result is Extract<TimingResult, { type: 'hit' }> => result.type === 'hit'
+  )
+
+  if (hits.length < 2) return { consistency: null, tendency: null }
+
+  const deltas = hits.map((result) => result.deltaMs)
+  const mean = deltas.reduce((sum, delta) => sum + delta, 0) / deltas.length
+  const variance = deltas.reduce((sum, delta) => sum + (delta - mean) ** 2, 0) / deltas.length
+
+  return {
+    consistency: Math.round(Math.sqrt(variance)),
+    tendency: Math.round(mean)
+  }
+}
+
+function tendencyLabel(tendency: number | null): string {
+  if (tendency === null || Math.abs(tendency) < 5) return 'On time'
+  return tendency < 0 ? `Rushing ${Math.abs(tendency)}ms` : `Dragging ${tendency}ms`
 }
 
 function HitFeedback({ grade, time }: { grade: HitGrade | null; time: number }) {
@@ -162,22 +188,7 @@ function StatsRow({
   streak: number
   bestStreak: number
 }) {
-  const { consistency, tendency } = useMemo(() => {
-    const hits = results.filter(
-      (result): result is Extract<TimingResult, { type: 'hit' }> => result.type === 'hit'
-    )
-
-    if (hits.length < 2) return { consistency: null, tendency: null }
-
-    const deltas = hits.map((result) => result.deltaMs)
-    const mean = deltas.reduce((sum, delta) => sum + delta, 0) / deltas.length
-    const variance = deltas.reduce((sum, delta) => sum + (delta - mean) ** 2, 0) / deltas.length
-
-    return {
-      consistency: Math.round(Math.sqrt(variance)),
-      tendency: Math.round(mean)
-    }
-  }, [results])
+  const { consistency, tendency } = useMemo(() => getTimingInsights(results), [results])
 
   return (
     <div className="flex flex-wrap gap-3">
@@ -208,13 +219,7 @@ function StatsRow({
       {tendency !== null && (
         <StatCard
           label="Tendency"
-          value={
-            Math.abs(tendency) < 5
-              ? 'On time'
-              : tendency < 0
-                ? `Rushing ${Math.abs(tendency)}ms`
-                : `Dragging ${tendency}ms`
-          }
+          value={tendencyLabel(tendency)}
           color={
             Math.abs(tendency) < 5
               ? 'text-emerald-400'
@@ -296,13 +301,73 @@ export function RhythmPanel(): JSX.Element {
   const { bpm, setBpm } = useMetronomeStore()
   const { tap } = useMetronome()
   const { start, stop, isConnected } = useRhythmTrainer()
+  const lessonStep = useLessonStep('rhythm-trainer')
+  const recordSession = useLearnProgressStore((state) => state.recordSession)
+  const savedSummary = useLearnProgressStore((state) => state.progress['rhythm-trainer']?.lastSession)
+  const sessionStartedAt = useRef<number | null>(null)
 
   const pattern = RHYTHM_PATTERNS[selectedPatternIndex]
+  const timing = useMemo(() => getTimingInsights(results), [results])
+
+  useEffect(() => {
+    if (!lessonStep || lessonStep.prefill.module !== 'rhythm-trainer') return
+    setPatternIndex(getPatternIndexByName(lessonStep.prefill.patternName))
+    if (lessonStep.prefill.bpm) setBpm(lessonStep.prefill.bpm)
+    if (lessonStep.prefill.sensitivity) setSensitivity(lessonStep.prefill.sensitivity)
+  }, [lessonStep, setBpm, setPatternIndex, setSensitivity])
+
+  const buildSummary = useCallback(() => {
+    const weakSpots: string[] = []
+    if (missCount > 0) weakSpots.push(`${missCount} misses`)
+    if (timing.tendency !== null && Math.abs(timing.tendency) >= 5) {
+      weakSpots.push(tendencyLabel(timing.tendency))
+    }
+
+    return {
+      module: 'rhythm-trainer' as const,
+      title: `${pattern.name} rhythm session`,
+      description: `Logged ${hitCount} hits and ${missCount} misses while tracking timing drift.`,
+      route: '/learn/rhythm',
+      score: accuracy,
+      bestStreak,
+      completionState:
+        accuracy !== null && accuracy >= 75 ? 'completed' : results.length > 0 ? 'in-progress' : 'not-started',
+      weakSpots,
+      patternName: pattern.name,
+      accuracy,
+      hitCount,
+      missCount,
+      tendencyLabel: tendencyLabel(timing.tendency)
+    }
+  }, [accuracy, bestStreak, hitCount, missCount, pattern.name, results.length, timing.tendency])
+
+  const finalizeSession = useCallback(() => {
+    if (sessionStartedAt.current === null && results.length === 0) return
+    recordSession(buildSummary(), lessonStep?.id)
+    sessionStartedAt.current = null
+  }, [buildSummary, lessonStep?.id, recordSession, results.length])
 
   const handlePatternChange = (index: number) => {
-    if (isRunning) stop()
+    if (isRunning) {
+      finalizeSession()
+      stop()
+      sessionStartedAt.current = null
+    }
     setPatternIndex(index)
   }
+
+  useEffect(() => {
+    return () => {
+      finalizeSession()
+    }
+  }, [finalizeSession])
+
+  const displayedSummary =
+    results.length > 0
+      ? buildSummary()
+      : savedSummary?.module === 'rhythm-trainer'
+        ? savedSummary
+        : null
 
   if (!isConnected) {
     return <AudioRequiredState featureName="Rhythm training" />
@@ -316,7 +381,12 @@ export function RhythmPanel(): JSX.Element {
         backTo="/learn"
         actions={
           <button
-            onClick={reset}
+            onClick={() => {
+              finalizeSession()
+              if (isRunning) stop()
+              reset()
+              sessionStartedAt.current = null
+            }}
             className="inline-flex items-center gap-2 rounded-xl border border-zinc-800 px-3 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
           >
             <RotateCcw size={14} />
@@ -324,6 +394,13 @@ export function RhythmPanel(): JSX.Element {
           </button>
         }
       />
+
+      {lessonStep && (
+        <div className="rounded-3xl border border-emerald-500/20 bg-emerald-500/10 px-5 py-4 text-sm text-emerald-100">
+          Guided step: <span className="font-medium text-white">{lessonStep.title}</span>.{' '}
+          {lessonStep.description}
+        </div>
+      )}
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <SummaryCard label="Pattern" value={pattern.name} />
@@ -378,7 +455,18 @@ export function RhythmPanel(): JSX.Element {
         <BeatGrid pattern={pattern} isRunning={isRunning} currentSubdivision={currentSubdivision} />
         <div className="flex flex-wrap items-center gap-3">
           <button
-            onClick={isRunning ? stop : () => void start()}
+            onClick={
+              isRunning
+                ? () => {
+                    finalizeSession()
+                    stop()
+                    sessionStartedAt.current = null
+                  }
+                : () => {
+                    sessionStartedAt.current = Date.now()
+                    void start()
+                  }
+            }
             className={`rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
               isRunning
                 ? 'bg-rose-600 text-white hover:bg-rose-500'
@@ -467,6 +555,33 @@ export function RhythmPanel(): JSX.Element {
             })}
           </div>
         </div>
+      )}
+
+      {displayedSummary?.module === 'rhythm-trainer' && (
+        <LearnSessionSummary
+          title={displayedSummary.title}
+          description={displayedSummary.description}
+          metrics={[
+            {
+              label: 'Accuracy',
+              value: displayedSummary.accuracy === null ? 'Waiting' : `${Math.round(displayedSummary.accuracy)}%`,
+              tone:
+                (displayedSummary.accuracy ?? 0) >= 75
+                  ? 'good'
+                  : (displayedSummary.accuracy ?? 0) >= 55
+                    ? 'warning'
+                    : 'default'
+            },
+            { label: 'Hits / misses', value: `${displayedSummary.hitCount} / ${displayedSummary.missCount}` },
+            {
+              label: 'Tendency',
+              value: displayedSummary.tendencyLabel,
+              tone: displayedSummary.tendencyLabel === 'On time' ? 'good' : 'warning'
+            },
+            { label: 'Best streak', value: String(displayedSummary.bestStreak ?? '—') }
+          ]}
+          weakSpots={displayedSummary.weakSpots}
+        />
       )}
     </div>
   )

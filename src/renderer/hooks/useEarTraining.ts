@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useEarTrainingStore } from '../stores/ear-training-store'
 import { usePitchDetection } from './usePitchDetection'
 import { noteToFrequency } from '../utils/note-utils'
@@ -65,10 +65,10 @@ export function useEarTraining() {
 
       if (mode === 'note') {
         const correct = data.note === currentChallenge.referenceNote
-        recordResult(correct)
+        recordResult(correct, correct ? undefined : currentChallenge.referenceNote)
       } else {
         const correct = data.note === currentChallenge.targetNote
-        recordResult(correct)
+        recordResult(correct, correct ? undefined : currentChallenge.intervalName)
       }
     },
     [currentChallenge, isListening, mode, recordResult]
@@ -94,6 +94,12 @@ export function useEarTraining() {
     stopDetection()
     setListening(false)
   }, [stopDetection, setListening])
+
+  useEffect(() => {
+    if (!isListening) {
+      stopDetection()
+    }
+  }, [isListening, stopDetection])
 
   return {
     newRound,

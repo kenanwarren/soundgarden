@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { Check, RotateCcw, X } from 'lucide-react'
 import { NOTE_NAMES } from '../../utils/constants'
 import { CHORD_VOICINGS, type ChordVoicing } from '../../utils/chord-voicings'
@@ -6,6 +7,10 @@ import { useChordPractice } from '../../hooks/useChordPractice'
 import { ChordDiagram } from '../common/ChordDiagram'
 import { useAudioStore } from '../../stores/audio-store'
 import { PageHeader } from '../layout/PageHeader'
+import { useLessonStep } from '../../hooks/useLessonStep'
+import { getChordIndexByName } from '../../utils/learn-data'
+import { useLearnProgressStore } from '../../stores/learn-progress-store'
+import { LearnSessionSummary } from './LearnSessionSummary'
 
 const CATEGORIES = [
   { value: 'all' as const, label: 'All' },
@@ -23,12 +28,64 @@ function SummaryCard({ label, value }: { label: string; value: string }): JSX.El
   )
 }
 
-function ChordPracticeIndicator({ voicing }: { voicing: ChordVoicing }) {
+function ChordPracticeIndicator({ voicing, lessonStepId }: { voicing: ChordVoicing; lessonStepId?: string }) {
   const isConnected = useAudioStore((s) => s.isConnected)
-  const { start, stop, isActive, currentChord, isMatch } = useChordPractice(
-    voicing.root,
-    voicing.quality
-  )
+  const recordSession = useLearnProgressStore((state) => state.recordSession)
+  const savedSummary = useLearnProgressStore((state) => state.progress['chord-library']?.lastSession)
+  const {
+    start,
+    stop,
+    isActive,
+    currentChord,
+    isMatch,
+    cleanMatchCount,
+    mismatchCount,
+    mismatches
+  } = useChordPractice(voicing.root, voicing.quality)
+  const sessionStartedAt = useRef<number | null>(null)
+
+  const buildSummary = useCallback(() => {
+    const totalDetections = cleanMatchCount + mismatchCount
+    const score = totalDetections > 0 ? (cleanMatchCount / totalDetections) * 100 : 0
+
+    return {
+      module: 'chord-library' as const,
+      title: `${voicing.name} chord session`,
+      description: `Tracked ${cleanMatchCount} clean matches against ${mismatchCount} mismatches.`,
+      route: '/learn/chords',
+      score,
+      bestStreak: cleanMatchCount,
+      completionState:
+        cleanMatchCount >= 3 ? 'completed' : totalDetections > 0 ? 'in-progress' : 'not-started',
+      weakSpots: mismatches.slice(0, 4),
+      targetChord: voicing.name,
+      cleanMatchCount,
+      mismatches
+    }
+  }, [cleanMatchCount, mismatchCount, mismatches, voicing.name])
+
+  const finalizeSession = useCallback(() => {
+    if (sessionStartedAt.current === null && cleanMatchCount === 0 && mismatchCount === 0) return
+    recordSession(buildSummary(), lessonStepId)
+    sessionStartedAt.current = null
+  }, [buildSummary, cleanMatchCount, lessonStepId, mismatchCount, recordSession])
+
+  useEffect(() => {
+    return () => {
+      finalizeSession()
+    }
+  }, [finalizeSession])
+
+  const liveSummary = useMemo(() => {
+    if (sessionStartedAt.current === null && cleanMatchCount === 0 && mismatchCount === 0) return null
+    return buildSummary()
+  }, [buildSummary, cleanMatchCount, mismatchCount])
+
+  const displayedSummary =
+    liveSummary ??
+    (savedSummary?.module === 'chord-library' && savedSummary.targetChord === voicing.name
+      ? savedSummary
+      : null)
 
   if (!isConnected) {
     return (
@@ -39,31 +96,70 @@ function ChordPracticeIndicator({ voicing }: { voicing: ChordVoicing }) {
   }
 
   return (
-    <div className="mt-3 flex items-center gap-3">
-      <button
-        onClick={isActive ? stop : start}
-        className={`rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
-          isActive
-            ? 'bg-rose-600 text-white hover:bg-rose-500'
-            : 'bg-emerald-600 text-white hover:bg-emerald-500'
-        }`}
-      >
-        {isActive ? 'Stop Practice' : 'Practice This Chord'}
-      </button>
-      {isActive && (
-        <div className="flex items-center gap-2 text-sm">
-          {isMatch ? (
-            <span className="flex items-center gap-1 text-emerald-400">
-              <Check size={16} /> Correct
-            </span>
-          ) : currentChord ? (
-            <span className="flex items-center gap-1 text-yellow-400">
-              <X size={16} /> Detected: {currentChord.name}
-            </span>
-          ) : (
-            <span className="text-zinc-500">Play the chord cleanly and let it settle.</span>
-          )}
-        </div>
+    <div className="mt-3 space-y-4">
+      <div className="flex items-center gap-3">
+        <button
+          onClick={isActive ? () => {
+            finalizeSession()
+            stop()
+          } : () => {
+            sessionStartedAt.current = Date.now()
+            start()
+          }}
+          className={`rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
+            isActive
+              ? 'bg-rose-600 text-white hover:bg-rose-500'
+              : 'bg-emerald-600 text-white hover:bg-emerald-500'
+          }`}
+        >
+          {isActive ? 'Stop Practice' : 'Practice This Chord'}
+        </button>
+        {isActive && (
+          <div className="flex items-center gap-2 text-sm">
+            {isMatch ? (
+              <span className="flex items-center gap-1 text-emerald-400">
+                <Check size={16} /> Correct
+              </span>
+            ) : currentChord ? (
+              <span className="flex items-center gap-1 text-yellow-400">
+                <X size={16} /> Detected: {currentChord.name}
+              </span>
+            ) : (
+              <span className="text-zinc-500">Play the chord cleanly and let it settle.</span>
+            )}
+          </div>
+        )}
+      </div>
+
+      {displayedSummary?.module === 'chord-library' && (
+        <LearnSessionSummary
+          title={displayedSummary.title}
+          description={displayedSummary.description}
+          metrics={[
+            {
+              label: 'Clean matches',
+              value: String(displayedSummary.cleanMatchCount),
+              tone: displayedSummary.cleanMatchCount >= 3 ? 'good' : 'default'
+            },
+            {
+              label: 'Mismatches',
+              value: displayedSummary.mismatches.length ? displayedSummary.mismatches.join(', ') : 'None',
+              tone: displayedSummary.mismatches.length ? 'warning' : 'good'
+            },
+            { label: 'Target', value: displayedSummary.targetChord },
+            {
+              label: 'Score',
+              value: `${Math.round(displayedSummary.score ?? 0)}%`,
+              tone:
+                (displayedSummary.score ?? 0) >= 80
+                  ? 'good'
+                  : (displayedSummary.score ?? 0) >= 50
+                    ? 'warning'
+                    : 'default'
+            }
+          ]}
+          weakSpots={displayedSummary.weakSpots}
+        />
       )}
     </div>
   )
@@ -79,6 +175,7 @@ export function ChordLibraryPanel(): JSX.Element {
     setFilterCategory
   } = useChordLibraryStore()
   const isConnected = useAudioStore((s) => s.isConnected)
+  const lessonStep = useLessonStep('chord-library')
 
   const filtered = CHORD_VOICINGS.filter((voicing) => {
     if (filterRoot && voicing.root !== filterRoot) return false
@@ -87,6 +184,16 @@ export function ChordLibraryPanel(): JSX.Element {
   })
 
   const selectedVoicing = selectedChordIndex !== null ? CHORD_VOICINGS[selectedChordIndex] : null
+
+  useEffect(() => {
+    if (!lessonStep || lessonStep.prefill.module !== 'chord-library') return
+    setFilterCategory(lessonStep.prefill.filterCategory)
+    setFilterRoot(lessonStep.prefill.filterRoot ?? null)
+    const chordIndex = lessonStep.prefill.chordName
+      ? getChordIndexByName(lessonStep.prefill.chordName)
+      : null
+    setSelectedChord(chordIndex)
+  }, [lessonStep, setFilterCategory, setFilterRoot, setSelectedChord])
 
   const clearFilters = () => {
     setFilterRoot(null)
@@ -110,6 +217,13 @@ export function ChordLibraryPanel(): JSX.Element {
           </button>
         }
       />
+
+      {lessonStep && (
+        <div className="rounded-3xl border border-emerald-500/20 bg-emerald-500/10 px-5 py-4 text-sm text-emerald-100">
+          Guided step: <span className="font-medium text-white">{lessonStep.title}</span>.{' '}
+          {lessonStep.description}
+        </div>
+      )}
 
       <div className="grid gap-4 md:grid-cols-3">
         <SummaryCard label="Filtered voicings" value={String(filtered.length)} />
@@ -180,29 +294,32 @@ export function ChordLibraryPanel(): JSX.Element {
       </div>
 
       {selectedVoicing && (
-        <div className="flex items-start gap-6 rounded-3xl border border-zinc-800 bg-zinc-900/80 p-6">
-          <ChordDiagram voicing={selectedVoicing} size="lg" />
-          <div className="flex flex-col gap-2">
-            <h3 className="text-xl font-semibold text-white">{selectedVoicing.name}</h3>
-            <p className="text-sm text-zinc-400">
-              Root: {selectedVoicing.root} · Quality: {selectedVoicing.quality} ·{' '}
-              {selectedVoicing.category}
-            </p>
-            <div className="mt-1 flex gap-2">
-              {selectedVoicing.frets.map((fret, index) => (
-                <span key={index} className="w-8 text-center font-mono text-sm text-zinc-300">
-                  {fret === null ? 'x' : fret}
-                </span>
-              ))}
+        <div className="rounded-3xl border border-zinc-800 bg-zinc-900/80 p-6">
+          <div className="flex items-start gap-6">
+            <ChordDiagram voicing={selectedVoicing} size="lg" />
+            <div className="flex flex-col gap-2">
+              <h3 className="text-xl font-semibold text-white">{selectedVoicing.name}</h3>
+              <p className="text-sm text-zinc-400">
+                Root: {selectedVoicing.root} · Quality: {selectedVoicing.quality} ·{' '}
+                {selectedVoicing.category}
+              </p>
+              <div className="mt-1 flex gap-2">
+                {selectedVoicing.frets.map((fret, index) => (
+                  <span key={index} className="w-8 text-center font-mono text-sm text-zinc-300">
+                    {fret === null ? 'x' : fret}
+                  </span>
+                ))}
+              </div>
             </div>
-            <ChordPracticeIndicator voicing={selectedVoicing} />
+            <button
+              onClick={() => setSelectedChord(null)}
+              className="ml-auto rounded-full p-2 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-white"
+            >
+              <X size={16} />
+            </button>
           </div>
-          <button
-            onClick={() => setSelectedChord(null)}
-            className="ml-auto rounded-full p-2 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-white"
-          >
-            <X size={16} />
-          </button>
+
+          <ChordPracticeIndicator voicing={selectedVoicing} lessonStepId={lessonStep?.id} />
         </div>
       )}
 

@@ -9,7 +9,9 @@ describe('ear-training-store', () => {
       isListening: false,
       score: 0,
       streak: 0,
+      bestStreak: 0,
       total: 0,
+      missedTargets: [],
       lastResult: null
     })
   })
@@ -19,7 +21,9 @@ describe('ear-training-store', () => {
     expect(state.mode).toBe('note')
     expect(state.score).toBe(0)
     expect(state.streak).toBe(0)
+    expect(state.bestStreak).toBe(0)
     expect(state.total).toBe(0)
+    expect(state.missedTargets).toEqual([])
     expect(state.lastResult).toBeNull()
     expect(state.currentChallenge).toBeNull()
     expect(state.isListening).toBe(false)
@@ -30,6 +34,7 @@ describe('ear-training-store', () => {
     const state = useEarTrainingStore.getState()
     expect(state.score).toBe(1)
     expect(state.streak).toBe(1)
+    expect(state.bestStreak).toBe(1)
     expect(state.total).toBe(1)
     expect(state.lastResult).toBe('correct')
   })
@@ -37,11 +42,13 @@ describe('ear-training-store', () => {
   it('recordResult(false) resets streak but increments total', () => {
     useEarTrainingStore.getState().recordResult(true)
     useEarTrainingStore.getState().recordResult(true)
-    useEarTrainingStore.getState().recordResult(false)
+    useEarTrainingStore.getState().recordResult(false, 'Perfect fifth')
     const state = useEarTrainingStore.getState()
     expect(state.score).toBe(2)
     expect(state.streak).toBe(0)
+    expect(state.bestStreak).toBe(2)
     expect(state.total).toBe(3)
+    expect(state.missedTargets).toEqual(['Perfect fifth'])
     expect(state.lastResult).toBe('incorrect')
   })
 
@@ -61,7 +68,9 @@ describe('ear-training-store', () => {
     expect(state.mode).toBe('interval')
     expect(state.score).toBe(0)
     expect(state.streak).toBe(0)
+    expect(state.bestStreak).toBe(0)
     expect(state.total).toBe(0)
+    expect(state.missedTargets).toEqual([])
     expect(state.lastResult).toBeNull()
     expect(state.currentChallenge).toBeNull()
   })
@@ -74,7 +83,9 @@ describe('ear-training-store', () => {
     expect(state.mode).toBe('interval')
     expect(state.score).toBe(0)
     expect(state.streak).toBe(0)
+    expect(state.bestStreak).toBe(0)
     expect(state.total).toBe(0)
+    expect(state.missedTargets).toEqual([])
   })
 
   it('setChallenge clears listening and lastResult', () => {

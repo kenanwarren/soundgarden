@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { RotateCcw } from 'lucide-react'
 import { NOTE_NAMES } from '../../utils/constants'
 import { SCALES, getScaleNotes } from '../../utils/scale-data'
@@ -6,6 +7,10 @@ import { useScaleStore } from '../../stores/scale-store'
 import { useScalePractice } from '../../hooks/useScalePractice'
 import { Fretboard } from '../common/Fretboard'
 import { PageHeader } from '../layout/PageHeader'
+import { useLessonStep } from '../../hooks/useLessonStep'
+import { getScaleIndexByName } from '../../utils/learn-data'
+import { useLearnProgressStore } from '../../stores/learn-progress-store'
+import { LearnSessionSummary } from './LearnSessionSummary'
 
 function SummaryCard({ label, value }: { label: string; value: string }): JSX.Element {
   return (
@@ -28,6 +33,10 @@ export function ScalePanel(): JSX.Element {
     resetProgress
   } = useScaleStore()
   const { startPractice, stopPractice, isPracticing, isConnected } = useScalePractice()
+  const lessonStep = useLessonStep('scale-explorer')
+  const recordSession = useLearnProgressStore((state) => state.recordSession)
+  const savedSummary = useLearnProgressStore((state) => state.progress['scale-explorer']?.lastSession)
+  const sessionStartedAt = useRef<number | null>(null)
 
   const scale = SCALES[selectedScaleIndex]
   const scaleNotes = getScaleNotes(selectedRoot, scale)
@@ -37,6 +46,76 @@ export function ScalePanel(): JSX.Element {
     currentDetectedNote && currentDetectedOctave !== null
       ? { note: currentDetectedNote, octave: currentDetectedOctave }
       : null
+
+  useEffect(() => {
+    if (!lessonStep || lessonStep.prefill.module !== 'scale-explorer') return
+    setRoot(lessonStep.prefill.root)
+    setScaleIndex(getScaleIndexByName(lessonStep.prefill.scaleName))
+    resetProgress()
+  }, [lessonStep, resetProgress, setRoot, setScaleIndex])
+
+  const buildSummary = useCallback(
+    (timeSpentMs: number) => {
+      const missedNotes = scaleNotes.filter((note) => !hitNotes.includes(note))
+      const score = scaleNotes.length ? (hitNotes.length / scaleNotes.length) * 100 : 0
+
+      return {
+        module: 'scale-explorer' as const,
+        title: `${selectedRoot} ${scale.name} session`,
+        description: `Covered ${hitNotes.length} of ${scaleNotes.length} target tones with live tracking.`,
+        route: '/learn/scales',
+        score,
+        bestStreak: hitNotes.length,
+        completionState:
+          hitNotes.length === 0
+            ? 'not-started'
+            : hitNotes.length === scaleNotes.length
+              ? 'completed'
+              : 'in-progress',
+        weakSpots: missedNotes.slice(0, 4),
+        notesHit: hitNotes.length,
+        totalNotes: scaleNotes.length,
+        timeSpentMs,
+        missedNotes,
+        root: selectedRoot,
+        scaleName: scale.name
+      }
+    },
+    [hitNotes, scale.name, scaleNotes, selectedRoot]
+  )
+
+  const finalizeSession = useCallback(() => {
+    if (sessionStartedAt.current === null && hitNotes.length === 0) return
+    const startedAt = sessionStartedAt.current ?? Date.now()
+    recordSession(buildSummary(Math.max(0, Date.now() - startedAt)), lessonStep?.id)
+    sessionStartedAt.current = null
+  }, [buildSummary, hitNotes.length, lessonStep?.id, recordSession])
+
+  useEffect(() => {
+    return () => {
+      finalizeSession()
+    }
+  }, [finalizeSession])
+
+  const liveSummary = useMemo(() => {
+    if (sessionStartedAt.current === null && hitNotes.length === 0) return null
+    const startedAt = sessionStartedAt.current ?? Date.now()
+    return buildSummary(Math.max(0, Date.now() - startedAt))
+  }, [buildSummary, hitNotes.length])
+
+  const displayedSummary =
+    liveSummary ?? (savedSummary?.module === 'scale-explorer' ? savedSummary : null)
+
+  const handleTogglePractice = () => {
+    if (isPracticing) {
+      finalizeSession()
+      stopPractice()
+      return
+    }
+
+    sessionStartedAt.current = Date.now()
+    void startPractice()
+  }
 
   return (
     <div className="flex h-full flex-col gap-6 p-6">
@@ -54,6 +133,13 @@ export function ScalePanel(): JSX.Element {
           </button>
         }
       />
+
+      {lessonStep && (
+        <div className="rounded-3xl border border-emerald-500/20 bg-emerald-500/10 px-5 py-4 text-sm text-emerald-100">
+          Guided step: <span className="font-medium text-white">{lessonStep.title}</span>.{' '}
+          {lessonStep.description}
+        </div>
+      )}
 
       {!isConnected && (
         <div className="rounded-3xl border border-amber-500/20 bg-amber-500/10 px-5 py-4 text-sm text-amber-100">
@@ -147,7 +233,7 @@ export function ScalePanel(): JSX.Element {
           <div className="flex flex-wrap items-center gap-3">
             {isConnected && (
               <button
-                onClick={isPracticing ? stopPractice : () => void startPractice()}
+                onClick={handleTogglePractice}
                 className={`rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
                   isPracticing
                     ? 'bg-rose-600 text-white hover:bg-rose-500'
@@ -167,6 +253,43 @@ export function ScalePanel(): JSX.Element {
           </div>
         </div>
       </div>
+
+      {displayedSummary?.module === 'scale-explorer' && (
+        <LearnSessionSummary
+          title={displayedSummary.title}
+          description={displayedSummary.description}
+          footer={
+            displayedSummary.timeSpentMs
+              ? `${Math.max(1, Math.round(displayedSummary.timeSpentMs / 1000))}s`
+              : undefined
+          }
+          metrics={[
+            {
+              label: 'Notes hit',
+              value: `${displayedSummary.notesHit}/${displayedSummary.totalNotes}`
+            },
+            {
+              label: 'Coverage',
+              value: `${Math.round(displayedSummary.score ?? 0)}%`,
+              tone:
+                (displayedSummary.score ?? 0) >= 100
+                  ? 'good'
+                  : (displayedSummary.score ?? 0) >= 60
+                    ? 'warning'
+                    : 'default'
+            },
+            {
+              label: 'Missed tones',
+              value: displayedSummary.missedNotes.length
+                ? displayedSummary.missedNotes.join(', ')
+                : 'None',
+              tone: displayedSummary.missedNotes.length ? 'warning' : 'good'
+            },
+            { label: 'Pattern', value: `${displayedSummary.root} ${displayedSummary.scaleName}` }
+          ]}
+          weakSpots={displayedSummary.weakSpots}
+        />
+      )}
     </div>
   )
 }

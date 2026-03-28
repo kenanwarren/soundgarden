@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { zustandStorage } from '../utils/store-storage'
 
 interface ChordLibraryState {
   selectedChordIndex: number | null
@@ -22,6 +23,7 @@ export const useChordLibraryStore = create<ChordLibraryState>()(
     }),
     {
       name: 'soundgarden-chord-library',
+      storage: zustandStorage,
       partialize: (state) => ({
         filterRoot: state.filterRoot,
         filterCategory: state.filterCategory

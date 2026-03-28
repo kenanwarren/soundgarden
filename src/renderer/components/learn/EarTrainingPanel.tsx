@@ -1,8 +1,12 @@
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { Ear, Play, RotateCcw } from 'lucide-react'
 import { useEarTrainingStore } from '../../stores/ear-training-store'
 import { useEarTraining } from '../../hooks/useEarTraining'
 import { PageHeader } from '../layout/PageHeader'
 import { AudioRequiredState } from '../common/AudioRequiredState'
+import { useLessonStep } from '../../hooks/useLessonStep'
+import { useLearnProgressStore } from '../../stores/learn-progress-store'
+import { LearnSessionSummary } from './LearnSessionSummary'
 
 const MODES = [
   {
@@ -27,11 +31,69 @@ function SummaryCard({ label, value }: { label: string; value: string }): JSX.El
 }
 
 export function EarTrainingPanel(): JSX.Element {
-  const { mode, currentChallenge, isListening, score, streak, total, lastResult, setMode, reset } =
-    useEarTrainingStore()
+  const {
+    mode,
+    currentChallenge,
+    isListening,
+    score,
+    streak,
+    bestStreak,
+    total,
+    missedTargets,
+    lastResult,
+    setMode,
+    reset
+  } = useEarTrainingStore()
   const { newRound, playChallenge, listen, stopListening, isConnected } = useEarTraining()
+  const lessonStep = useLessonStep('ear-training')
+  const recordSession = useLearnProgressStore((state) => state.recordSession)
+  const savedSummary = useLearnProgressStore((state) => state.progress['ear-training']?.lastSession)
+  const sessionStartedAt = useRef<number | null>(null)
 
   const accuracy = total > 0 ? Math.round((score / total) * 100) : null
+
+  const buildSummary = useCallback(() => {
+    return {
+      module: 'ear-training' as const,
+      title: `${mode === 'note' ? 'Note' : 'Interval'} ear session`,
+      description: `Answered ${score} correctly out of ${total} prompts.`,
+      route: '/learn/ear-training',
+      score: accuracy,
+      bestStreak,
+      completionState:
+        accuracy !== null && accuracy >= 70 && total >= 4 ? 'completed' : total > 0 ? 'in-progress' : 'not-started',
+      weakSpots: missedTargets.slice(0, 4),
+      mode,
+      accuracy,
+      correct: score,
+      total,
+      missedTargets
+    }
+  }, [accuracy, bestStreak, missedTargets, mode, score, total])
+
+  const finalizeSession = useCallback(() => {
+    if (sessionStartedAt.current === null && total === 0) return
+    recordSession(buildSummary(), lessonStep?.id)
+    sessionStartedAt.current = null
+  }, [buildSummary, lessonStep?.id, recordSession, total])
+
+  useEffect(() => {
+    if (!lessonStep || lessonStep.prefill.module !== 'ear-training') return
+    if (lessonStep.prefill.mode !== mode) {
+      finalizeSession()
+      setMode(lessonStep.prefill.mode)
+      sessionStartedAt.current = null
+    }
+  }, [finalizeSession, lessonStep, mode, setMode])
+
+  useEffect(() => {
+    return () => {
+      finalizeSession()
+    }
+  }, [finalizeSession])
+
+  const displayedSummary =
+    total > 0 ? buildSummary() : savedSummary?.module === 'ear-training' ? savedSummary : null
 
   if (!isConnected) {
     return <AudioRequiredState featureName="Ear training" />
@@ -45,7 +107,10 @@ export function EarTrainingPanel(): JSX.Element {
         backTo="/learn"
         actions={
           <button
-            onClick={reset}
+            onClick={() => {
+              finalizeSession()
+              reset()
+            }}
             className="inline-flex items-center gap-2 rounded-xl border border-zinc-800 px-3 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
           >
             <RotateCcw size={14} />
@@ -53,6 +118,13 @@ export function EarTrainingPanel(): JSX.Element {
           </button>
         }
       />
+
+      {lessonStep && (
+        <div className="rounded-3xl border border-emerald-500/20 bg-emerald-500/10 px-5 py-4 text-sm text-emerald-100">
+          Guided step: <span className="font-medium text-white">{lessonStep.title}</span>.{' '}
+          {lessonStep.description}
+        </div>
+      )}
 
       <div className="grid gap-4 md:grid-cols-4">
         <SummaryCard label="Correct" value={String(score)} />
@@ -65,7 +137,12 @@ export function EarTrainingPanel(): JSX.Element {
         {MODES.map((modeOption) => (
           <button
             key={modeOption.value}
-            onClick={() => setMode(modeOption.value)}
+            onClick={() => {
+              if (mode === modeOption.value) return
+              finalizeSession()
+              setMode(modeOption.value)
+              sessionStartedAt.current = null
+            }}
             className={`flex flex-col gap-1 rounded-2xl px-5 py-3 text-left transition-colors ${
               mode === modeOption.value
                 ? 'bg-emerald-600 text-white'
@@ -87,7 +164,10 @@ export function EarTrainingPanel(): JSX.Element {
                 : 'Start a round to hear an interval, then play back the target note at the end of the prompt.'}
             </p>
             <button
-              onClick={() => void newRound()}
+              onClick={() => {
+                if (sessionStartedAt.current === null) sessionStartedAt.current = Date.now()
+                void newRound()
+              }}
               className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 font-medium text-white transition-colors hover:bg-emerald-500"
             >
               <Play size={18} />
@@ -134,7 +214,10 @@ export function EarTrainingPanel(): JSX.Element {
                 </button>
               ) : (
                 <button
-                  onClick={() => void listen()}
+                  onClick={() => {
+                    if (sessionStartedAt.current === null) sessionStartedAt.current = Date.now()
+                    void listen()
+                  }}
                   className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2 font-medium text-white transition-colors hover:bg-emerald-500"
                 >
                   <Ear size={16} />
@@ -154,6 +237,29 @@ export function EarTrainingPanel(): JSX.Element {
           </div>
         )}
       </div>
+
+      {displayedSummary?.module === 'ear-training' && (
+        <LearnSessionSummary
+          title={displayedSummary.title}
+          description={displayedSummary.description}
+          metrics={[
+            {
+              label: 'Accuracy',
+              value: displayedSummary.accuracy === null ? 'Waiting' : `${displayedSummary.accuracy}%`,
+              tone:
+                (displayedSummary.accuracy ?? 0) >= 70
+                  ? 'good'
+                  : (displayedSummary.accuracy ?? 0) >= 50
+                    ? 'warning'
+                    : 'default'
+            },
+            { label: 'Correct / total', value: `${displayedSummary.correct} / ${displayedSummary.total}` },
+            { label: 'Mode', value: displayedSummary.mode === 'note' ? 'Note recall' : 'Interval recall' },
+            { label: 'Best streak', value: String(displayedSummary.bestStreak ?? '—') }
+          ]}
+          weakSpots={displayedSummary.weakSpots}
+        />
+      )}
     </div>
   )
 }

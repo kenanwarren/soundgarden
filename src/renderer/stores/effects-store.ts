@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { AudioProcessorType } from '../audio/types'
+import { zustandStorage } from '../utils/store-storage'
 
 export interface EffectConfig {
   id: string
@@ -110,6 +111,7 @@ export const useEffectsStore = create<EffectsState>()(
     }),
     {
       name: 'soundgarden-effects',
+      storage: zustandStorage,
       partialize: (state) => ({ chain: state.chain, nextId: state.nextId })
     }
   )

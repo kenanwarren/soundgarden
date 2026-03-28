@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { DEFAULT_A4_FREQUENCY, TUNING_PRESETS } from '../utils/constants'
+import { zustandStorage } from '../utils/store-storage'
 
 export type TuningPresetName = keyof typeof TUNING_PRESETS
 
@@ -86,7 +87,8 @@ export const useAppSettingsStore = create<AppSettingsState>()(
       resetInterfaceSettings: () => set({ interface: DEFAULT_INTERFACE_SETTINGS })
     }),
     {
-      name: 'soundgarden-app-settings'
+      name: 'soundgarden-app-settings',
+      storage: zustandStorage
     }
   )
 )

@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react'
+import { useRef, useCallback, useEffect } from 'react'
 import { useChordStore } from '../stores/chord-store'
 import { useAudioStore } from '../stores/audio-store'
 import { getEngine } from './useAudioEngine'
@@ -105,6 +105,12 @@ export function useChordDetection() {
     store.setActive(false)
     store.setChord(null)
   }, [])
+
+  useEffect(() => {
+    return () => {
+      stop()
+    }
+  }, [stop])
 
   return { isActive, start, stop, isConnected }
 }

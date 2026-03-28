@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { SCALES, type ScaleDefinition } from '../utils/scale-data'
+import { zustandStorage } from '../utils/store-storage'
 
 interface ScaleState {
   selectedRoot: string
@@ -46,6 +47,7 @@ export const useScaleStore = create<ScaleState>()(
     }),
     {
       name: 'soundgarden-scales',
+      storage: zustandStorage,
       partialize: (state) => ({
         selectedRoot: state.selectedRoot,
         selectedScaleIndex: state.selectedScaleIndex

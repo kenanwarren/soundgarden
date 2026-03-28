@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { usePitchDetection } from './usePitchDetection'
 import { useScaleStore } from '../stores/scale-store'
 import { getScaleNotes } from '../utils/scale-data'
@@ -60,6 +60,14 @@ export function useScalePractice() {
     setPracticing(false)
     setDetectedNote(null, null)
   }, [stop, setPracticing, setDetectedNote])
+
+  useEffect(() => {
+    return () => {
+      stop()
+      setPracticing(false)
+      setDetectedNote(null, null)
+    }
+  }, [setDetectedNote, setPracticing, stop])
 
   return { startPractice, stopPractice, isPracticing, isConnected }
 }
