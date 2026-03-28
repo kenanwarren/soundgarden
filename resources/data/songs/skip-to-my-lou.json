@@ -1,10 +1,19 @@
 {
   "id": "skip-to-my-lou",
   "title": "Skip to My Lou (Funky)",
-  "genres": ["funk"],
-  "difficulty": "Beginner",
+  "genres": [
+    "funk"
+  ],
+  "difficulty": {
+    "tier": "Beginner",
+    "grade": 1
+  },
   "key": "G",
-  "chords": ["G7", "C7", "D7"],
+  "chords": [
+    "G7",
+    "C7",
+    "D7"
+  ],
   "attribution": "Traditional, funk arrangement",
   "lines": [
     "[section:Verse 1]",
@@ -32,7 +41,10 @@
     "[D7]Skip to my Lou my [G7]darling"
   ],
   "notation": {
-    "timeSignature": [4, 4],
+    "timeSignature": [
+      4,
+      4
+    ],
     "tempo": 115,
     "measures": [
       {

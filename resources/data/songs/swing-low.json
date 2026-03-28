@@ -1,10 +1,20 @@
 {
   "id": "swing-low",
   "title": "Swing Low, Sweet Chariot",
-  "genres": ["rock"],
-  "difficulty": "Beginner",
+  "genres": [
+    "rock"
+  ],
+  "difficulty": {
+    "tier": "Beginner",
+    "grade": 1
+  },
   "key": "G",
-  "chords": ["G", "C", "D7", "Em"],
+  "chords": [
+    "G",
+    "C",
+    "D7",
+    "Em"
+  ],
   "attribution": "Traditional",
   "lines": [
     "[section:Chorus]",
@@ -32,7 +42,10 @@
     "Coming for to [D7]carry me [G]home"
   ],
   "notation": {
-    "timeSignature": [4, 4],
+    "timeSignature": [
+      4,
+      4
+    ],
     "tempo": 85,
     "measures": [
       {

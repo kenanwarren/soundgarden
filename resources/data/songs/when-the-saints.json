@@ -1,10 +1,19 @@
 {
   "id": "when-the-saints",
   "title": "When the Saints Go Marching In",
-  "genres": ["rock"],
-  "difficulty": "Beginner",
+  "genres": [
+    "rock"
+  ],
+  "difficulty": {
+    "tier": "Beginner",
+    "grade": 1
+  },
   "key": "G",
-  "chords": ["G", "D7", "C"],
+  "chords": [
+    "G",
+    "D7",
+    "C"
+  ],
   "attribution": "Traditional",
   "lines": [
     "[section:Verse 1]",
@@ -26,7 +35,10 @@
     "When the [G]stars have [D7]disap[G]peared"
   ],
   "notation": {
-    "timeSignature": [4, 4],
+    "timeSignature": [
+      4,
+      4
+    ],
     "tempo": 110,
     "measures": [
       {

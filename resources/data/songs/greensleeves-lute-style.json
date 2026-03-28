@@ -3,10 +3,20 @@
   "variantOf": "greensleeves",
   "variantLabel": "Lute Style",
   "title": "Greensleeves (Lute Style)",
-  "genres": ["fingerpicking"],
-  "difficulty": "Intermediate",
+  "genres": [
+    "fingerpicking"
+  ],
+  "difficulty": {
+    "tier": "Advanced",
+    "grade": 1
+  },
   "key": "Am",
-  "chords": ["Am", "G", "Em", "E7"],
+  "chords": [
+    "Am",
+    "G",
+    "Em",
+    "E7"
+  ],
   "attribution": "Traditional, 16th century; lute-style guitar arrangement",
   "lines": [
     "[section:Verse 1]",
@@ -28,7 +38,10 @@
     "But my [Am]heart re[E7]mains in cap[Am]tivity"
   ],
   "notation": {
-    "timeSignature": [6, 8],
+    "timeSignature": [
+      6,
+      8
+    ],
     "tempo": 80,
     "measures": [
       {

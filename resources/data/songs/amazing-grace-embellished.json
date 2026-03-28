@@ -3,10 +3,20 @@
   "variantOf": "amazing-grace",
   "variantLabel": "Embellished",
   "title": "Amazing Grace (Embellished)",
-  "genres": ["rock"],
-  "difficulty": "Developing",
+  "genres": [
+    "rock"
+  ],
+  "difficulty": {
+    "tier": "Intermediate",
+    "grade": 1
+  },
   "key": "G",
-  "chords": ["G", "G7", "C", "D7"],
+  "chords": [
+    "G",
+    "G7",
+    "C",
+    "D7"
+  ],
   "attribution": "John Newton, 1779; embellished hymn arrangement",
   "lines": [
     "[section:Verse 1]",
@@ -28,7 +38,10 @@
     "And [G]grace will [D7]lead me [G]home"
   ],
   "notation": {
-    "timeSignature": [3, 4],
+    "timeSignature": [
+      3,
+      4
+    ],
     "tempo": 66,
     "measures": [
       {

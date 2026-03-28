@@ -1,10 +1,19 @@
 {
   "id": "mary-lamb-funk",
   "title": "Mary Had a Little Lamb (Blues-Funk)",
-  "genres": ["funk"],
-  "difficulty": "Beginner",
+  "genres": [
+    "funk"
+  ],
+  "difficulty": {
+    "tier": "Beginner",
+    "grade": 1
+  },
   "key": "E",
-  "chords": ["E7", "A7", "B7"],
+  "chords": [
+    "E7",
+    "A7",
+    "B7"
+  ],
   "attribution": "Traditional, blues-funk arrangement",
   "lines": [
     "[section:Verse 1]",
@@ -26,7 +35,10 @@
     "[B7]Was against the [E7]rules"
   ],
   "notation": {
-    "timeSignature": [4, 4],
+    "timeSignature": [
+      4,
+      4
+    ],
     "tempo": 100,
     "measures": [
       {

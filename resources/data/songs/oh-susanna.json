@@ -1,10 +1,20 @@
 {
   "id": "oh-susanna",
   "title": "Oh! Susanna",
-  "genres": ["pop"],
-  "difficulty": "Beginner",
+  "genres": [
+    "pop"
+  ],
+  "difficulty": {
+    "tier": "Beginner",
+    "grade": 1
+  },
   "key": "C",
-  "chords": ["C", "G", "G7", "F"],
+  "chords": [
+    "C",
+    "G",
+    "G7",
+    "F"
+  ],
   "attribution": "Stephen Foster, 1848",
   "lines": [
     "[section:Verse 1]",
@@ -28,7 +38,10 @@
     "I [C]come from Alabama with my [G7]banjo on my [C]knee"
   ],
   "notation": {
-    "timeSignature": [4, 4],
+    "timeSignature": [
+      4,
+      4
+    ],
     "tempo": 120,
     "measures": [
       {

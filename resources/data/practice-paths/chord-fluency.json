@@ -3,11 +3,26 @@
   "title": "Chord Fluency",
   "description": "Move from open shapes into sevenths, barres, and timed chord changes.",
   "genre": "general",
-  "difficulty": "Intermediate",
-  "focusSkills": ["chords", "technique", "timing"],
-  "recommendedTools": ["chord-library", "chord-changes"],
-  "toneSuggestions": ["Clean or edge-of-breakup tone", "Low noise floor for clearer detection"],
-  "starterPresetIds": ["chord-changes:pop-four"],
+  "difficulty": {
+    "tier": "Advanced",
+    "grade": 1
+  },
+  "focusSkills": [
+    "chords",
+    "technique",
+    "timing"
+  ],
+  "recommendedTools": [
+    "chord-library",
+    "chord-changes"
+  ],
+  "toneSuggestions": [
+    "Clean or edge-of-breakup tone",
+    "Low noise floor for clearer detection"
+  ],
+  "starterPresetIds": [
+    "chord-changes:pop-four"
+  ],
   "steps": [
     {
       "id": "chord-fluency-open-major",

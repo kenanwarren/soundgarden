@@ -3,11 +3,26 @@
   "title": "Timing Builder",
   "description": "Progress from straight time into syncopation and shuffle feel.",
   "genre": "general",
-  "difficulty": "Developing",
-  "focusSkills": ["rhythm", "timing", "groove"],
-  "recommendedTools": ["rhythm-trainer"],
-  "toneSuggestions": ["Dry practice tone", "Clear attack with low ambience"],
-  "starterPresetIds": ["rhythm:quarter-notes", "rhythm:shuffle"],
+  "difficulty": {
+    "tier": "Intermediate",
+    "grade": 1
+  },
+  "focusSkills": [
+    "rhythm",
+    "timing",
+    "groove"
+  ],
+  "recommendedTools": [
+    "rhythm-trainer"
+  ],
+  "toneSuggestions": [
+    "Dry practice tone",
+    "Clear attack with low ambience"
+  ],
+  "starterPresetIds": [
+    "rhythm:quarter-notes",
+    "rhythm:shuffle"
+  ],
   "steps": [
     {
       "id": "timing-quarter-notes",

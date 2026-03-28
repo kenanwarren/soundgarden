@@ -1,10 +1,19 @@
 {
   "id": "will-the-circle",
   "title": "Will the Circle Be Unbroken",
-  "genres": ["country"],
-  "difficulty": "Beginner",
+  "genres": [
+    "country"
+  ],
+  "difficulty": {
+    "tier": "Beginner",
+    "grade": 1
+  },
   "key": "G",
-  "chords": ["G", "C", "D7"],
+  "chords": [
+    "G",
+    "C",
+    "D7"
+  ],
   "attribution": "Ada Habershon / Charles Gabriel, 1907",
   "lines": [
     "[section:Verse 1]",
@@ -32,7 +41,10 @@
     "In the [D7]sky, Lord, in the [G]sky"
   ],
   "notation": {
-    "timeSignature": [4, 4],
+    "timeSignature": [
+      4,
+      4
+    ],
     "tempo": 100,
     "measures": [
       {

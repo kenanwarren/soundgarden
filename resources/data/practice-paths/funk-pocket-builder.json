@@ -3,9 +3,22 @@
   "title": "Funk Pocket Builder",
   "description": "Develop clipped syncopation, dominant-pocket changes, and Mixolydian color.",
   "genre": "funk",
-  "difficulty": "Intermediate",
-  "focusSkills": ["rhythm", "groove", "chords", "timing"],
-  "recommendedTools": ["rhythm-trainer", "chord-changes", "chord-library", "scale-sequences"],
+  "difficulty": {
+    "tier": "Advanced",
+    "grade": 1
+  },
+  "focusSkills": [
+    "rhythm",
+    "groove",
+    "chords",
+    "timing"
+  ],
+  "recommendedTools": [
+    "rhythm-trainer",
+    "chord-changes",
+    "chord-library",
+    "scale-sequences"
+  ],
   "toneSuggestions": [
     "Very clean compressor-forward tone",
     "Auto-wah or envelope-style filter used sparingly",

@@ -3,9 +3,22 @@
   "title": "Country Road Groove",
   "description": "Build bright open-chord rhythm, train-beat timing, and major-pentatonic movement.",
   "genre": "country",
-  "difficulty": "Developing",
-  "focusSkills": ["chords", "rhythm", "timing", "scales"],
-  "recommendedTools": ["rhythm-trainer", "chord-changes", "scale-sequences", "chord-library"],
+  "difficulty": {
+    "tier": "Intermediate",
+    "grade": 1
+  },
+  "focusSkills": [
+    "chords",
+    "rhythm",
+    "timing",
+    "scales"
+  ],
+  "recommendedTools": [
+    "rhythm-trainer",
+    "chord-changes",
+    "scale-sequences",
+    "chord-library"
+  ],
   "toneSuggestions": [
     "Bright clean tone with slapback delay",
     "Bridge pickup with restrained compression",

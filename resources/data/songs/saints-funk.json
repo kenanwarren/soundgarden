@@ -3,10 +3,19 @@
   "variantOf": "when-the-saints",
   "variantLabel": "Funk",
   "title": "When the Saints (Funk Arrangement)",
-  "genres": ["funk"],
-  "difficulty": "Developing",
+  "genres": [
+    "funk"
+  ],
+  "difficulty": {
+    "tier": "Intermediate",
+    "grade": 1
+  },
   "key": "G",
-  "chords": ["G7", "C7", "D7"],
+  "chords": [
+    "G7",
+    "C7",
+    "D7"
+  ],
   "attribution": "Traditional, funk arrangement",
   "lines": [
     "[section:Verse 1]",
@@ -28,7 +37,10 @@
     "When the [G7]stars fall [D7]from the [G7]sky"
   ],
   "notation": {
-    "timeSignature": [4, 4],
+    "timeSignature": [
+      4,
+      4
+    ],
     "tempo": 105,
     "measures": [
       {

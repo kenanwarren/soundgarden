@@ -3,9 +3,23 @@
   "title": "Rock Riff Builder",
   "description": "Build power-chord confidence, steady eighths, and pentatonic riff movement.",
   "genre": "rock",
-  "difficulty": "Developing",
-  "focusSkills": ["chords", "rhythm", "scales", "timing", "technique"],
-  "recommendedTools": ["chord-library", "chord-changes", "rhythm-trainer", "scale-sequences"],
+  "difficulty": {
+    "tier": "Intermediate",
+    "grade": 1
+  },
+  "focusSkills": [
+    "chords",
+    "rhythm",
+    "scales",
+    "timing",
+    "technique"
+  ],
+  "recommendedTools": [
+    "chord-library",
+    "chord-changes",
+    "rhythm-trainer",
+    "scale-sequences"
+  ],
   "toneSuggestions": [
     "Crunch drive into cabinet sim",
     "Tighter noise gate before gain",

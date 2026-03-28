@@ -15,9 +15,10 @@ import { CHORD_VOICINGS } from '../../utils/chord-voicings'
 import { getVisibleGenres } from '../../utils/learn-data'
 import { parseSongLine } from '../../utils/song-parser'
 import { useNotationPlayback } from '../../hooks/useNotationPlayback'
+import { formatDifficulty } from '../../utils/songs'
 import type {
+  DifficultyTier,
   GenreId,
-  PracticeDifficulty,
   SongArrangement,
   SongDefinition
 } from '../../utils/learn-types'
@@ -31,7 +32,7 @@ const VIEW_MODES: Array<{ value: SongViewMode; label: string }> = [
   { value: 'staff+tab', label: 'Staff+Tab' }
 ]
 
-const DIFFICULTIES: PracticeDifficulty[] = ['Beginner', 'Developing', 'Intermediate']
+const DIFFICULTY_TIERS: DifficultyTier[] = ['Beginner', 'Intermediate', 'Advanced']
 
 function SongCard({
   song,
@@ -138,7 +139,7 @@ function ChordReference({ chordNames }: { chordNames: string[] }): JSX.Element {
 export function SongViewerPanel(): JSX.Element {
   const genres = useMemo(() => getVisibleGenres(), [])
   const [filterGenre, setFilterGenre] = useState<GenreId | 'all'>('all')
-  const [filterDifficulty, setFilterDifficulty] = useState<PracticeDifficulty | 'all'>('all')
+  const [filterDifficulty, setFilterDifficulty] = useState<DifficultyTier | 'all'>('all')
   const [selectedSongId, setSelectedSongId] = useState<string | null>(null)
   const [selectedArrangementId, setSelectedArrangementId] = useState<string | null>(null)
   const [viewMode, setViewMode] = useState<SongViewMode>('lyrics')
@@ -227,7 +228,7 @@ export function SongViewerPanel(): JSX.Element {
               >
                 All
               </button>
-              {DIFFICULTIES.map((d) => (
+              {DIFFICULTY_TIERS.map((d) => (
                 <button
                   key={d}
                   onClick={() => setFilterDifficulty(d)}
@@ -274,7 +275,7 @@ export function SongViewerPanel(): JSX.Element {
                   {selectedArrangement && (
                     <>
                       <Tag label={selectedArrangement.key} tone="accent" />
-                      <Tag label={selectedArrangement.difficulty} />
+                      <Tag label={formatDifficulty(selectedArrangement.difficulty)} />
                       {!selectedArrangement.isDefault && <Tag label={selectedArrangement.label} />}
                     </>
                   )}
@@ -299,7 +300,7 @@ export function SongViewerPanel(): JSX.Element {
                               : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
                           }`}
                         >
-                          {arrangement.label} · {arrangement.difficulty}
+                          {arrangement.label} · {formatDifficulty(arrangement.difficulty)}
                         </button>
                       ))}
                     </div>

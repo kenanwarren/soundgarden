@@ -1,10 +1,23 @@
 {
   "id": "nobody-knows-you",
   "title": "Nobody Knows You When You're Down and Out",
-  "genres": ["blues"],
-  "difficulty": "Developing",
+  "genres": [
+    "blues"
+  ],
+  "difficulty": {
+    "tier": "Intermediate",
+    "grade": 1
+  },
   "key": "C",
-  "chords": ["C", "E7", "A7", "Dm", "F", "D7", "G7"],
+  "chords": [
+    "C",
+    "E7",
+    "A7",
+    "Dm",
+    "F",
+    "D7",
+    "G7"
+  ],
   "attribution": "Jimmie Cox, 1923",
   "lines": [
     "[section:Verse 1]",
@@ -28,7 +41,10 @@
     "It's [D7]mighty strange, with[G7]out a [C]doubt"
   ],
   "notation": {
-    "timeSignature": [4, 4],
+    "timeSignature": [
+      4,
+      4
+    ],
     "tempo": 90,
     "measures": [
       {

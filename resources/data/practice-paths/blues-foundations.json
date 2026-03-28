@@ -3,9 +3,23 @@
   "title": "Blues Foundations",
   "description": "Build shuffle feel, dominant changes, blues-box motion, and ear-led response.",
   "genre": "blues",
-  "difficulty": "Beginner",
-  "focusSkills": ["chords", "rhythm", "scales", "ear", "groove"],
-  "recommendedTools": ["rhythm-trainer", "chord-changes", "scale-sequences", "ear-training"],
+  "difficulty": {
+    "tier": "Beginner",
+    "grade": 1
+  },
+  "focusSkills": [
+    "chords",
+    "rhythm",
+    "scales",
+    "ear",
+    "groove"
+  ],
+  "recommendedTools": [
+    "rhythm-trainer",
+    "chord-changes",
+    "scale-sequences",
+    "ear-training"
+  ],
   "toneSuggestions": [
     "Edge-of-breakup amp with spring-style reverb",
     "Neck pickup with light compression",

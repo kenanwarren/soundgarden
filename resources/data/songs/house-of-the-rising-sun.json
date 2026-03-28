@@ -1,10 +1,21 @@
 {
   "id": "house-of-the-rising-sun",
   "title": "House of the Rising Sun",
-  "genres": ["fingerpicking"],
-  "difficulty": "Developing",
+  "genres": [
+    "fingerpicking"
+  ],
+  "difficulty": {
+    "tier": "Intermediate",
+    "grade": 1
+  },
   "key": "Am",
-  "chords": ["Am", "C", "D", "F", "E7"],
+  "chords": [
+    "Am",
+    "C",
+    "D",
+    "F",
+    "E7"
+  ],
   "attribution": "Traditional",
   "lines": [
     "[section:Verse 1]",
@@ -26,7 +37,10 @@
     "In the [Am]House of the [E7]Rising [Am]Sun"
   ],
   "notation": {
-    "timeSignature": [3, 4],
+    "timeSignature": [
+      3,
+      4
+    ],
     "tempo": 90,
     "measures": [
       {

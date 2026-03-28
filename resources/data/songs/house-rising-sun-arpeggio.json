@@ -3,10 +3,21 @@
   "variantOf": "house-of-the-rising-sun",
   "variantLabel": "Arpeggio",
   "title": "House of the Rising Sun (Arpeggio)",
-  "genres": ["fingerpicking"],
-  "difficulty": "Intermediate",
+  "genres": [
+    "fingerpicking"
+  ],
+  "difficulty": {
+    "tier": "Advanced",
+    "grade": 1
+  },
   "key": "Am",
-  "chords": ["Am", "C", "D", "F", "E7"],
+  "chords": [
+    "Am",
+    "C",
+    "D",
+    "F",
+    "E7"
+  ],
   "attribution": "Traditional; arpeggiated guitar arrangement",
   "lines": [
     "[section:Verse 1]",
@@ -28,7 +39,10 @@
     "In the [Am]House of the [E7]Rising [Am]Sun"
   ],
   "notation": {
-    "timeSignature": [6, 8],
+    "timeSignature": [
+      6,
+      8
+    ],
     "tempo": 80,
     "measures": [
       {

@@ -1,10 +1,20 @@
 {
   "id": "greensleeves",
   "title": "Greensleeves",
-  "genres": ["fingerpicking"],
-  "difficulty": "Developing",
+  "genres": [
+    "fingerpicking"
+  ],
+  "difficulty": {
+    "tier": "Intermediate",
+    "grade": 1
+  },
   "key": "Am",
-  "chords": ["Am", "G", "Em", "E7"],
+  "chords": [
+    "Am",
+    "G",
+    "Em",
+    "E7"
+  ],
   "attribution": "Traditional, 16th century",
   "lines": [
     "[section:Verse 1]",
@@ -26,7 +36,10 @@
     "But my [Am]heart re[E7]mains in cap[Am]tivity"
   ],
   "notation": {
-    "timeSignature": [3, 4],
+    "timeSignature": [
+      3,
+      4
+    ],
     "tempo": 100,
     "measures": [
       {

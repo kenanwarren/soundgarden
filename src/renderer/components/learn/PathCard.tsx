@@ -41,7 +41,7 @@ export function PathCard({
           {genre && (
             <Tag label={genre.title} tone={path.genre === 'general' ? 'default' : 'accent'} />
           )}
-          <Tag label={path.difficulty} />
+          <Tag label={`${path.difficulty.tier} ${path.difficulty.grade}`} />
         </div>
       </div>
 
