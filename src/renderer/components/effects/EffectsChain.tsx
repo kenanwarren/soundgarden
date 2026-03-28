@@ -1,35 +1,70 @@
 import { Plus } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { EffectPedal } from './EffectPedal'
 import { useEffectsChain } from '../../hooks/useEffectsChain'
 import type { AudioProcessorType } from '../../audio/types'
 
 const AVAILABLE_EFFECTS: { type: AudioProcessorType; label: string }[] = [
+  { type: 'noisegate', label: 'Noise Gate' },
+  { type: 'compressor', label: 'Compressor' },
   { type: 'gain', label: 'Gain / Drive' },
   { type: 'eq', label: 'EQ' },
+  { type: 'chorus', label: 'Chorus' },
   { type: 'reverb', label: 'Reverb' },
   { type: 'delay', label: 'Delay' }
 ]
 
 export function EffectsChainPanel(): JSX.Element {
-  const { chain, addEffect, removeEffect, toggleEffect, setParam } = useEffectsChain()
+  const { chain, addEffect, removeEffect, toggleEffect, setParam, reorderEffects } =
+    useEffectsChain()
   const [showMenu, setShowMenu] = useState(false)
+  const dragIdx = useRef<number | null>(null)
+  const [dragOverIdx, setDragOverIdx] = useState<number | null>(null)
+
+  const handleDragStart = (e: React.DragEvent, idx: number) => {
+    dragIdx.current = idx
+    e.dataTransfer.effectAllowed = 'move'
+  }
+
+  const handleDragOver = (e: React.DragEvent, idx: number) => {
+    e.preventDefault()
+    setDragOverIdx(idx)
+  }
+
+  const handleDrop = (idx: number) => {
+    if (dragIdx.current !== null && dragIdx.current !== idx) {
+      reorderEffects(dragIdx.current, idx)
+    }
+    dragIdx.current = null
+    setDragOverIdx(null)
+  }
+
+  const handleDragEnd = () => {
+    dragIdx.current = null
+    setDragOverIdx(null)
+  }
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Effects strip */}
       <div className="flex gap-4 items-start flex-wrap">
-        {chain.map((effect) => (
-          <EffectPedal
+        {chain.map((effect, idx) => (
+          <div
             key={effect.id}
-            effect={effect}
-            onToggle={() => toggleEffect(effect.id)}
-            onRemove={() => removeEffect(effect.id)}
-            onParamChange={(param, value) => setParam(effect.id, param, value)}
-          />
+            onDragOver={(e) => handleDragOver(e, idx)}
+            onDrop={() => handleDrop(idx)}
+            onDragEnd={handleDragEnd}
+            className={dragOverIdx === idx ? 'opacity-50' : ''}
+          >
+            <EffectPedal
+              effect={effect}
+              onToggle={() => toggleEffect(effect.id)}
+              onRemove={() => removeEffect(effect.id)}
+              onParamChange={(param, value) => setParam(effect.id, param, value)}
+              onDragStart={(e) => handleDragStart(e, idx)}
+            />
+          </div>
         ))}
 
-        {/* Add effect button */}
         <div className="relative">
           <button
             onClick={() => setShowMenu(!showMenu)}

@@ -3,14 +3,27 @@ import { useEffectsStore, type EffectConfig } from '../stores/effects-store'
 import { getEngine } from './useAudioEngine'
 import { useAudioStore } from '../stores/audio-store'
 import type { EffectNode } from '../audio/pipeline'
-import type { AudioProcessorType } from '../audio/types'
-import { gainProcessorUrl, delayProcessorUrl } from '../audio/worklet-urls'
-
+import {
+  gainProcessorUrl,
+  delayProcessorUrl,
+  chorusProcessorUrl,
+  compressorProcessorUrl,
+  noisegateProcessorUrl
+} from '../audio/worklet-urls'
 
 interface ManagedEffect {
   config: EffectConfig
   pipelineNode: EffectNode
+  internals: Record<string, AudioNode>
   dispose: () => void
+}
+
+const WORKLET_URLS: Record<string, string> = {
+  gain: gainProcessorUrl,
+  delay: delayProcessorUrl,
+  chorus: chorusProcessorUrl,
+  compressor: compressorProcessorUrl,
+  noisegate: noisegateProcessorUrl
 }
 
 export function useEffectsChain() {
@@ -30,13 +43,8 @@ export function useEffectsChain() {
     if (!ctx || !pipeline) return
 
     const sync = async () => {
-      // Load needed worklet modules
-      const workletUrls: Record<string, string> = {
-        gain: gainProcessorUrl,
-        delay: delayProcessorUrl
-      }
       for (const effect of chain) {
-        const url = workletUrls[effect.type]
+        const url = WORKLET_URLS[effect.type]
         if (url && !workletLoadedRef.current.has(effect.type)) {
           try {
             await ctx.audioWorklet.addModule(url)
@@ -47,7 +55,6 @@ export function useEffectsChain() {
         }
       }
 
-      // Remove effects no longer in chain
       for (const [id, managed] of managedRef.current) {
         if (!chain.find((e) => e.id === id)) {
           managed.dispose()
@@ -55,7 +62,6 @@ export function useEffectsChain() {
         }
       }
 
-      // Create new effect nodes as needed
       for (const effect of chain) {
         if (!managedRef.current.has(effect.id)) {
           const managed = createManagedEffect(ctx, effect)
@@ -64,7 +70,6 @@ export function useEffectsChain() {
           }
         }
 
-        // Update params and enabled state
         const managed = managedRef.current.get(effect.id)
         if (managed) {
           managed.config = { ...effect }
@@ -73,7 +78,6 @@ export function useEffectsChain() {
         }
       }
 
-      // Build ordered pipeline node list, preserving nodes we don't manage (e.g. tuner)
       const existingNodes = pipeline.getEffectNodes()
       const unmanagedNodes = existingNodes.filter(
         (n) => !managedRef.current.has(n.id)
@@ -93,7 +97,6 @@ export function useEffectsChain() {
     sync()
   }, [chain, isConnected])
 
-  // Clean up all effects on unmount
   useEffect(() => {
     return () => {
       for (const managed of managedRef.current.values()) {
@@ -116,20 +119,30 @@ export function useEffectsChain() {
 function createManagedEffect(ctx: AudioContext, effect: EffectConfig): ManagedEffect | null {
   switch (effect.type) {
     case 'gain':
-      return createGainEffect(ctx, effect)
+    case 'delay':
+    case 'chorus':
+    case 'compressor':
+    case 'noisegate':
+      return createWorkletEffect(ctx, effect)
     case 'eq':
       return createEqEffect(ctx, effect)
     case 'reverb':
       return createReverbEffect(ctx, effect)
-    case 'delay':
-      return createDelayEffect(ctx, effect)
     default:
       return null
   }
 }
 
-function createGainEffect(ctx: AudioContext, config: EffectConfig): ManagedEffect {
-  const node = new AudioWorkletNode(ctx, 'gain-drive-processor')
+const WORKLET_NAMES: Record<string, string> = {
+  gain: 'gain-drive-processor',
+  delay: 'delay-processor',
+  chorus: 'chorus-processor',
+  compressor: 'compressor-processor',
+  noisegate: 'noisegate-processor'
+}
+
+function createWorkletEffect(ctx: AudioContext, config: EffectConfig): ManagedEffect {
+  const node = new AudioWorkletNode(ctx, WORKLET_NAMES[config.type])
   return {
     config,
     pipelineNode: {
@@ -138,6 +151,7 @@ function createGainEffect(ctx: AudioContext, config: EffectConfig): ManagedEffec
       getInput: () => node,
       getOutput: () => node
     },
+    internals: { node },
     dispose: () => node.disconnect()
   }
 }
@@ -167,6 +181,7 @@ function createEqEffect(ctx: AudioContext, config: EffectConfig): ManagedEffect 
       getInput: () => low,
       getOutput: () => high
     },
+    internals: { low, mid, high },
     dispose: () => {
       low.disconnect()
       mid.disconnect()
@@ -182,7 +197,6 @@ function createReverbEffect(ctx: AudioContext, config: EffectConfig): ManagedEff
   const convolver = ctx.createConvolver()
   const merger = ctx.createGain()
 
-  // Generate synthetic impulse response
   const impulseLength = Math.floor(ctx.sampleRate * 1.5)
   const impulse = ctx.createBuffer(2, impulseLength, ctx.sampleRate)
   for (let ch = 0; ch < 2; ch++) {
@@ -211,6 +225,7 @@ function createReverbEffect(ctx: AudioContext, config: EffectConfig): ManagedEff
       getInput: () => splitter,
       getOutput: () => merger
     },
+    internals: { splitter, dry, wet, convolver, merger },
     dispose: () => {
       splitter.disconnect()
       dry.disconnect()
@@ -221,52 +236,41 @@ function createReverbEffect(ctx: AudioContext, config: EffectConfig): ManagedEff
   }
 }
 
-function createDelayEffect(ctx: AudioContext, config: EffectConfig): ManagedEffect {
-  const node = new AudioWorkletNode(ctx, 'delay-processor')
-  return {
-    config,
-    pipelineNode: {
-      id: config.id,
-      enabled: config.enabled,
-      getInput: () => node,
-      getOutput: () => node
-    },
-    dispose: () => node.disconnect()
-  }
-}
-
 function updateParams(managed: ManagedEffect, effect: EffectConfig, ctx: AudioContext): void {
   const t = ctx.currentTime
 
   switch (effect.type) {
     case 'gain': {
-      const node = managed.pipelineNode.getInput() as AudioWorkletNode
+      const node = managed.internals.node as AudioWorkletNode
       node.parameters.get('gain')?.setTargetAtTime(effect.params.gain ?? 1, t, 0.01)
       node.parameters.get('drive')?.setTargetAtTime(effect.params.drive ?? 0, t, 0.01)
       break
     }
     case 'eq': {
-      // The EQ nodes are chained: low → mid → high
-      // getInput returns low, we need to traverse
-      const low = managed.pipelineNode.getInput() as BiquadFilterNode
+      const low = managed.internals.low as BiquadFilterNode
+      const mid = managed.internals.mid as BiquadFilterNode
+      const high = managed.internals.high as BiquadFilterNode
       low.gain.setTargetAtTime(effect.params.low ?? 0, t, 0.01)
-      // Access mid and high through the chain - they're internal
-      // We stored them in the closure, so we need another approach
-      // For now, recreating is simplest. TODO: store refs properly
+      mid.gain.setTargetAtTime(effect.params.mid ?? 0, t, 0.01)
+      high.gain.setTargetAtTime(effect.params.high ?? 0, t, 0.01)
       break
     }
     case 'reverb': {
-      const splitter = managed.pipelineNode.getInput() as GainNode
-      // Access dry/wet gains - they're internal nodes
-      // The splitter connects to both dry and wet, which connect to merger
-      // For simplicity, we'll track these via the config and recreate if needed
+      const dry = managed.internals.dry as GainNode
+      const wet = managed.internals.wet as GainNode
+      const mix = effect.params.mix ?? 0.3
+      dry.gain.setTargetAtTime(1 - mix, t, 0.01)
+      wet.gain.setTargetAtTime(mix, t, 0.01)
       break
     }
-    case 'delay': {
-      const node = managed.pipelineNode.getInput() as AudioWorkletNode
-      node.parameters.get('time')?.setTargetAtTime(effect.params.time ?? 300, t, 0.01)
-      node.parameters.get('feedback')?.setTargetAtTime(effect.params.feedback ?? 0.3, t, 0.01)
-      node.parameters.get('mix')?.setTargetAtTime(effect.params.mix ?? 0.3, t, 0.01)
+    case 'delay':
+    case 'chorus':
+    case 'compressor':
+    case 'noisegate': {
+      const node = managed.internals.node as AudioWorkletNode
+      for (const [param, value] of Object.entries(effect.params)) {
+        node.parameters.get(param)?.setTargetAtTime(value, t, 0.01)
+      }
       break
     }
   }
