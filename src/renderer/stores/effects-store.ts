@@ -84,7 +84,7 @@ export const useEffectsStore = create<EffectsState>()(
         })
     }),
     {
-      name: 'soundgarden-effects',
+      name: 'tonefield-effects',
       partialize: (state) => ({ chain: state.chain, nextId: state.nextId })
     }
   )

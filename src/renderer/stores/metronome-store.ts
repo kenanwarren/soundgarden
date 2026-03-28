@@ -31,7 +31,7 @@ export const useMetronomeStore = create<MetronomeState>()(
       setAccentFirst: (accent) => set({ accentFirst: accent })
     }),
     {
-      name: 'soundgarden-metronome',
+      name: 'tonefield-metronome',
       partialize: (state) => ({
         bpm: state.bpm,
         beatsPerMeasure: state.beatsPerMeasure,

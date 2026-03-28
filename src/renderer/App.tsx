@@ -28,7 +28,7 @@ function HomePage(): JSX.Element {
 
   return (
     <div className="flex flex-col items-center justify-center h-full gap-8 p-8">
-      <h1 className="text-4xl font-bold text-white">SoundGarden</h1>
+      <h1 className="text-4xl font-bold text-white">ToneField</h1>
       <p className="text-zinc-400 text-lg">Plug in your guitar and start playing</p>
 
       <DeviceSelector />
