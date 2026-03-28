@@ -7,27 +7,10 @@
     "tier": "Beginner",
     "grade": 1
   },
-  "focusSkills": [
-    "chords",
-    "rhythm",
-    "ear",
-    "scales"
-  ],
-  "recommendedTools": [
-    "chord-library",
-    "rhythm-trainer",
-    "ear-training",
-    "scale-explorer"
-  ],
-  "toneSuggestions": [
-    "Neutral clean tone",
-    "Metronome-forward setup",
-    "Low-ambience monitoring"
-  ],
-  "starterPresetIds": [
-    "rhythm:quarter-notes",
-    "rhythm:eighth-notes"
-  ],
+  "focusSkills": ["chords", "rhythm", "ear", "scales"],
+  "recommendedTools": ["chord-library", "rhythm-trainer", "ear-training", "scale-explorer"],
+  "toneSuggestions": ["Neutral clean tone", "Metronome-forward setup", "Low-ambience monitoring"],
+  "starterPresetIds": ["rhythm:quarter-notes", "rhythm:eighth-notes"],
   "steps": [
     {
       "id": "foundations-setup",

@@ -7,19 +7,8 @@
     "tier": "Beginner",
     "grade": 1
   },
-  "focusSkills": [
-    "chords",
-    "rhythm",
-    "scales",
-    "ear",
-    "groove"
-  ],
-  "recommendedTools": [
-    "rhythm-trainer",
-    "chord-changes",
-    "scale-sequences",
-    "ear-training"
-  ],
+  "focusSkills": ["chords", "rhythm", "scales", "ear", "groove"],
+  "recommendedTools": ["rhythm-trainer", "chord-changes", "scale-sequences", "ear-training"],
   "toneSuggestions": [
     "Edge-of-breakup amp with spring-style reverb",
     "Neck pickup with light compression",

@@ -1,20 +1,13 @@
 {
   "id": "scarborough-fair",
   "title": "Scarborough Fair",
-  "genres": [
-    "fingerpicking"
-  ],
+  "genres": ["fingerpicking"],
   "difficulty": {
     "tier": "Intermediate",
     "grade": 1
   },
   "key": "Am",
-  "chords": [
-    "Am",
-    "G",
-    "C",
-    "D"
-  ],
+  "chords": ["Am", "G", "C", "D"],
   "attribution": "Traditional",
   "lines": [
     "[section:Verse 1]",
@@ -36,10 +29,7 @@
     "Then [Am]she'll [G]be a true love of [Am]mine"
   ],
   "notation": {
-    "timeSignature": [
-      3,
-      4
-    ],
+    "timeSignature": [3, 4],
     "tempo": 95,
     "measures": [
       {

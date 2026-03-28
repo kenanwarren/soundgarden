@@ -56,9 +56,8 @@ export function buildBeatGrid(beats: SngBeat[]): GridMeasure[] {
 
     const gridBeats: GridBeat[] = measureBeats.map((b, j) => ({
       time: b.time,
-      duration:
-        j + 1 < measureBeats.length ? measureBeats[j + 1].time - b.time : endTime - b.time,
-      beatIndex: j,
+      duration: j + 1 < measureBeats.length ? measureBeats[j + 1].time - b.time : endTime - b.time,
+      beatIndex: j
     }))
 
     measures.push({
@@ -68,7 +67,7 @@ export function buildBeatGrid(beats: SngBeat[]): GridMeasure[] {
       beatsInMeasure,
       beatDuration,
       tempo,
-      beats: gridBeats,
+      beats: gridBeats
     })
   }
 

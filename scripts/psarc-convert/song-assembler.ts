@@ -6,7 +6,7 @@ import type {
   PracticeDifficulty,
   SongArrangement,
   SongDefinition,
-  SongNotation,
+  SongNotation
 } from '../../src/renderer/utils/learn-types'
 import type { ManifestData, SngData, SngNoteData, SngVocal } from './types'
 import { buildBeatGrid, detectTimeSignature, findMeasureAtTime } from './beat-grid'
@@ -41,7 +41,14 @@ export interface ArrangementInput {
   type: ArrangementType
   manifest?: ManifestData
   sngData: SngData
-  chordInstances?: Map<number, Array<{ time: number; chordId: number; chordNotes: Array<{ string: number; fret: number; sustain: number }> }>>
+  chordInstances?: Map<
+    number,
+    Array<{
+      time: number
+      chordId: number
+      chordNotes: Array<{ string: number; fret: number; sustain: number }>
+    }>
+  >
 }
 
 export function assembleSong(
@@ -86,9 +93,12 @@ export function assembleSong(
           .filter(
             (c) =>
               c.time >= s.startTime &&
-              c.time < (i + 1 < primaryData.sections.length ? primaryData.sections[i + 1].startTime : Infinity)
+              c.time <
+                (i + 1 < primaryData.sections.length
+                  ? primaryData.sections[i + 1].startTime
+                  : Infinity)
           )
-          .map((c) => c.name),
+          .map((c) => c.name)
       }))
     )
 
@@ -105,10 +115,12 @@ export function assembleSong(
   for (const arr of arrangements) {
     const arrGrid = arr === arrangements[0] ? grid : buildBeatGrid(arr.sngData.beats)
     const arrTimeSig = arr === arrangements[0] ? timeSignature : detectTimeSignature(arrGrid)
-    const arrChordMapping = arr === arrangements[0] ? chordMapping : buildChordMapping(arr.sngData.chordTemplates)
+    const arrChordMapping =
+      arr === arrangements[0] ? chordMapping : buildChordMapping(arr.sngData.chordTemplates)
     const arrTuning = arr.manifest ? parseTuning(arr.manifest.attributes.tuning) : tuningInfo
     const arrCapo = arr.manifest?.attributes.capo ?? capo
-    const arrChordEvents = arr === arrangements[0] ? chordEvents : buildChordEvents(arr, arrChordMapping)
+    const arrChordEvents =
+      arr === arrangements[0] ? chordEvents : buildChordEvents(arr, arrChordMapping)
 
     const idx = (typeIndex.get(arr.type) ?? 0) + 1
     typeIndex.set(arr.type, idx)
@@ -130,10 +142,18 @@ export function assembleSong(
         arr.chordInstances
       )
 
-      const label = buildArrangementLabel(arr.type, level.difficulty, levels.length > 1, hasMultiple ? idx : undefined)
+      const label = buildArrangementLabel(
+        arr.type,
+        level.difficulty,
+        levels.length > 1,
+        hasMultiple ? idx : undefined
+      )
 
       songArrangements.push({
-        id: levels.length > 1 ? `${songId}-${typeSuffix}-${level.rsLevel}` : `${songId}-${typeSuffix}`,
+        id:
+          levels.length > 1
+            ? `${songId}-${typeSuffix}-${level.rsLevel}`
+            : `${songId}-${typeSuffix}`,
         label,
         isDefault: songArrangements.length === 0,
         difficulty: level.difficulty,
@@ -143,7 +163,7 @@ export function assembleSong(
         lines,
         notation,
         tuning: arrTuning.name !== 'Standard' ? arrTuning.name : undefined,
-        capo: arrCapo > 0 ? arrCapo : undefined,
+        capo: arrCapo > 0 ? arrCapo : undefined
       })
     }
   }
@@ -164,7 +184,7 @@ export function assembleSong(
     notation: defaultArr.notation,
     tuning: defaultArr.tuning,
     capo: defaultArr.capo,
-    arrangements: songArrangements,
+    arrangements: songArrangements
   }
 }
 
@@ -204,7 +224,14 @@ function buildNotation(
   capo: number,
   chordMapping: ChordMapping,
   chordEvents: Array<{ time: number; name: string }>,
-  chordInstances?: Map<number, Array<{ time: number; chordId: number; chordNotes: Array<{ string: number; fret: number; sustain: number }> }>>
+  chordInstances?: Map<
+    number,
+    Array<{
+      time: number
+      chordId: number
+      chordNotes: Array<{ string: number; fret: number; sustain: number }>
+    }>
+  >
 ): SongNotation {
   // Get notes at the requested difficulty level
   const levelData = sngData.arrangements.find((a) => a.difficulty === rsLevel)
@@ -242,7 +269,7 @@ function buildNotation(
         ...(quantized.dotted ? { dotted: true } : {}),
         ...(event.tab ? { tab: event.tab } : {}),
         ...(event.techniques.length > 0 ? { technique: event.techniques } : {}),
-        ...(event.simultaneous.length > 0 ? { simultaneous: event.simultaneous } : {}),
+        ...(event.simultaneous.length > 0 ? { simultaneous: event.simultaneous } : {})
       }
 
       measureNotes.push(note)
@@ -252,19 +279,20 @@ function buildNotation(
     const measureChord = findChordForTime(measure.startTime, chordEvents)
 
     // Find lyric fragment (not used here — lyrics are in lines[])
-    const tempoOverride = Math.abs(measure.tempo - avgTempo) > 5 ? Math.round(measure.tempo) : undefined
+    const tempoOverride =
+      Math.abs(measure.tempo - avgTempo) > 5 ? Math.round(measure.tempo) : undefined
 
     measures.push({
       notes: measureNotes,
       ...(measureChord ? { chord: measureChord } : {}),
-      ...(tempoOverride ? { tempo: tempoOverride } : {}),
+      ...(tempoOverride ? { tempo: tempoOverride } : {})
     })
   }
 
   return {
     timeSignature,
     tempo: Math.round(avgTempo),
-    measures,
+    measures
   }
 }
 
@@ -279,7 +307,11 @@ interface NoteEvent {
 
 function buildNoteTimeline(
   notes: SngNoteData[],
-  chordInstances: Array<{ time: number; chordId: number; chordNotes: Array<{ string: number; fret: number; sustain: number }> }>,
+  chordInstances: Array<{
+    time: number
+    chordId: number
+    chordNotes: Array<{ string: number; fret: number; sustain: number }>
+  }>,
   tuning: TuningInfo,
   capo: number,
   chordMapping: ChordMapping
@@ -296,7 +328,7 @@ function buildNoteTimeline(
       sustain: note.sustain,
       tab: { string: rsStringToTabString(note.string), fret: note.fret },
       techniques: extractTechniques(note.mask, note),
-      simultaneous: [],
+      simultaneous: []
     })
   }
 
@@ -317,8 +349,8 @@ function buildNoteTimeline(
       techniques: [],
       simultaneous: rest.map((cn) => ({
         pitch: fretToPitch(cn.string, cn.fret, tuning.offsets, capo),
-        tab: { string: rsStringToTabString(cn.string), fret: cn.fret },
-      })),
+        tab: { string: rsStringToTabString(cn.string), fret: cn.fret }
+      }))
     })
   }
 

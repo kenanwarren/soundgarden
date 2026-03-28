@@ -19,15 +19,12 @@ const DURATION_SPECS: Array<QuantizedDuration & { beats: number }> = [
   { duration: 'eighth', beats: 0.5 },
   { duration: 'sixteenth', dotted: true, beats: 0.375 },
   { duration: 'sixteenth', beats: 0.25 },
-  { duration: 'thirtySecond', beats: 0.125 },
+  { duration: 'thirtySecond', beats: 0.125 }
 ]
 
-const SNAP_TOLERANCE = 0.20
+const SNAP_TOLERANCE = 0.2
 
-export function quantizeDuration(
-  durationSeconds: number,
-  beatDuration: number
-): QuantizedDuration {
+export function quantizeDuration(durationSeconds: number, beatDuration: number): QuantizedDuration {
   if (beatDuration <= 0) return { duration: 'quarter' }
 
   const durationInBeats = durationSeconds / beatDuration
@@ -60,7 +57,7 @@ export function quantizeDuration(
 
   return {
     duration: bestMatch.duration,
-    ...(bestMatch.dotted ? { dotted: true } : {}),
+    ...(bestMatch.dotted ? { dotted: true } : {})
   }
 }
 
@@ -75,10 +72,7 @@ export interface QuantizedNote {
   dotted?: boolean
 }
 
-export function quantizeNoteInGrid(
-  note: TimedNote,
-  grid: GridMeasure[]
-): QuantizedNote | null {
+export function quantizeNoteInGrid(note: TimedNote, grid: GridMeasure[]): QuantizedNote | null {
   const measure = findMeasureAtTime(grid, note.time)
   if (!measure) return null
 
@@ -89,7 +83,7 @@ export function quantizeNoteInGrid(
   return {
     measureIndex,
     duration: quantized.duration,
-    ...(quantized.dotted ? { dotted: true } : {}),
+    ...(quantized.dotted ? { dotted: true } : {})
   }
 }
 

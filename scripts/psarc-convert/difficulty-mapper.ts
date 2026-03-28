@@ -1,4 +1,8 @@
-import type { DifficultyGrade, DifficultyTier, PracticeDifficulty } from '../../src/renderer/utils/learn-types'
+import type {
+  DifficultyGrade,
+  DifficultyTier,
+  PracticeDifficulty
+} from '../../src/renderer/utils/learn-types'
 import type { SngData } from './types'
 
 export type ArrangementType = 'lead' | 'rhythm' | 'bass'
@@ -12,7 +16,7 @@ interface DifficultyLevel {
 const ARRANGEMENT_TIERS: Record<ArrangementType, [DifficultyTier, DifficultyTier]> = {
   rhythm: ['Beginner', 'Intermediate'],
   lead: ['Intermediate', 'Advanced'],
-  bass: ['Intermediate', 'Advanced'],
+  bass: ['Intermediate', 'Advanced']
 }
 
 export function sampleDifficultyLevels(
@@ -53,10 +57,7 @@ function getMaxDifficulty(sngData: SngData): number {
   return max
 }
 
-function mapDefault(
-  sampledLevels: number[],
-  arrangementType: ArrangementType
-): DifficultyLevel[] {
+function mapDefault(sampledLevels: number[], arrangementType: ArrangementType): DifficultyLevel[] {
   const [lowTier, highTier] = ARRANGEMENT_TIERS[arrangementType]
 
   if (sampledLevels.length === 1) {
@@ -66,7 +67,7 @@ function mapDefault(
   if (sampledLevels.length === 2) {
     return [
       { rsLevel: sampledLevels[0], difficulty: { tier: lowTier, grade: 1 } },
-      { rsLevel: sampledLevels[1], difficulty: { tier: highTier, grade: 1 } },
+      { rsLevel: sampledLevels[1], difficulty: { tier: highTier, grade: 1 } }
     ]
   }
 
@@ -74,14 +75,11 @@ function mapDefault(
   return [
     { rsLevel: sampledLevels[0], difficulty: { tier: lowTier, grade: 1 } },
     { rsLevel: sampledLevels[1], difficulty: { tier: lowTier, grade: 3 } },
-    { rsLevel: sampledLevels[2], difficulty: { tier: highTier, grade: 2 } },
+    { rsLevel: sampledLevels[2], difficulty: { tier: highTier, grade: 2 } }
   ]
 }
 
-function mapWithBase(
-  sampledLevels: number[],
-  base: PracticeDifficulty
-): DifficultyLevel[] {
+function mapWithBase(sampledLevels: number[], base: PracticeDifficulty): DifficultyLevel[] {
   const baseRank = tierRank(base.tier) * 3 + (base.grade - 1)
 
   return sampledLevels.map((rsLevel, i) => {

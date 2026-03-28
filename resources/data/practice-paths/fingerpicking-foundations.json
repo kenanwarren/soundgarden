@@ -7,18 +7,8 @@
     "tier": "Beginner",
     "grade": 1
   },
-  "focusSkills": [
-    "fingerstyle",
-    "rhythm",
-    "technique",
-    "chords"
-  ],
-  "recommendedTools": [
-    "rhythm-trainer",
-    "chord-changes",
-    "scale-sequences",
-    "ear-training"
-  ],
+  "focusSkills": ["fingerstyle", "rhythm", "technique", "chords"],
+  "recommendedTools": ["rhythm-trainer", "chord-changes", "scale-sequences", "ear-training"],
   "toneSuggestions": [
     "Dry clean tone with a little room reverb",
     "Gentle compression for even plucks",

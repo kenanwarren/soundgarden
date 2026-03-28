@@ -7,18 +7,8 @@
     "tier": "Advanced",
     "grade": 1
   },
-  "focusSkills": [
-    "rhythm",
-    "groove",
-    "chords",
-    "timing"
-  ],
-  "recommendedTools": [
-    "rhythm-trainer",
-    "chord-changes",
-    "chord-library",
-    "scale-sequences"
-  ],
+  "focusSkills": ["rhythm", "groove", "chords", "timing"],
+  "recommendedTools": ["rhythm-trainer", "chord-changes", "chord-library", "scale-sequences"],
   "toneSuggestions": [
     "Very clean compressor-forward tone",
     "Auto-wah or envelope-style filter used sparingly",

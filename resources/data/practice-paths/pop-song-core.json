@@ -7,18 +7,8 @@
     "tier": "Beginner",
     "grade": 1
   },
-  "focusSkills": [
-    "chords",
-    "rhythm",
-    "timing",
-    "ear"
-  ],
-  "recommendedTools": [
-    "chord-changes",
-    "rhythm-trainer",
-    "ear-training",
-    "scale-sequences"
-  ],
+  "focusSkills": ["chords", "rhythm", "timing", "ear"],
+  "recommendedTools": ["chord-changes", "rhythm-trainer", "ear-training", "scale-sequences"],
   "toneSuggestions": [
     "Clean compressor with subtle chorus",
     "Bright stereo-style delay kept low in the mix",

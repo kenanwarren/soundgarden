@@ -16,7 +16,7 @@ const TUNING_NAMES: Array<{ offsets: number[]; name: string }> = [
   { offsets: [-2, 0, 0, -1, 0, 0], name: 'DADGAD' },
   { offsets: [0, 0, 2, 2, 2, 0], name: 'Open A' },
   { offsets: [-2, 0, 0, -1, -2, -2], name: 'Open D' },
-  { offsets: [0, 0, 0, 0, 1, 0], name: 'Open E' },
+  { offsets: [0, 0, 0, 0, 1, 0], name: 'Open E' }
 ]
 
 export interface TuningInfo {
@@ -38,7 +38,7 @@ export function parseTuning(tuning: {
     tuning.string2,
     tuning.string3,
     tuning.string4,
-    tuning.string5,
+    tuning.string5
   ]
 
   const match = TUNING_NAMES.find(
@@ -47,7 +47,7 @@ export function parseTuning(tuning: {
 
   return {
     offsets,
-    name: match?.name ?? formatTuningOffsets(offsets),
+    name: match?.name ?? formatTuningOffsets(offsets)
   }
 }
 
@@ -91,7 +91,9 @@ export function rsStringToTabString(rsString: number): number {
 
 export function chordRoot(chordName: string): string {
   // Extract root note from chord name: "Am7" → "Am", "C#5" → "C#", "Dmin" → "D"
-  const match = chordName.match(/^([A-G][#b]?)(m(?:in|aj)?|min|Maj|Min|sus|dim|aug|add|5|6|7|9|11|13)?/)
+  const match = chordName.match(
+    /^([A-G][#b]?)(m(?:in|aj)?|min|Maj|Min|sus|dim|aug|add|5|6|7|9|11|13)?/
+  )
   if (!match) return chordName
   const root = match[1]
   const quality = match[2] ?? ''

@@ -1,19 +1,13 @@
 {
   "id": "wildwood-flower",
   "title": "Wildwood Flower",
-  "genres": [
-    "country"
-  ],
+  "genres": ["country"],
   "difficulty": {
     "tier": "Beginner",
     "grade": 1
   },
   "key": "C",
-  "chords": [
-    "C",
-    "G",
-    "F"
-  ],
+  "chords": ["C", "G", "F"],
   "attribution": "Traditional, 1860",
   "lines": [
     "[section:Verse 1]",
@@ -35,10 +29,7 @@
     "He [G]left me no warning, no [C]words of farewell"
   ],
   "notation": {
-    "timeSignature": [
-      4,
-      4
-    ],
+    "timeSignature": [4, 4],
     "tempo": 110,
     "measures": [
       {

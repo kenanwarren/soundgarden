@@ -217,8 +217,8 @@ function readBendData32(r: BinaryReader): void {
   for (let i = 0; i < 32; i++) {
     r.readFloat32LE() // time
     r.readFloat32LE() // step
-    r.skip(3)         // padding
-    r.readUInt8()     // used flag
+    r.skip(3) // padding
+    r.readUInt8() // used flag
   }
 }
 

@@ -165,7 +165,14 @@ interface ChordInLevel {
   time: number
   chordId: number
   strum: string
-  chordNotes: Array<{ string: number; fret: number; sustain: number; slideTo: number; bend: number; mask: number }>
+  chordNotes: Array<{
+    string: number
+    fret: number
+    sustain: number
+    slideTo: number
+    bend: number
+    mask: number
+  }>
 }
 
 function parseChords(levelBlock: string): ChordInLevel[] {
@@ -205,7 +212,9 @@ function parseChords(levelBlock: string): ChordInLevel[] {
   return results
 }
 
-function parseLevels(xml: string): Array<{ difficulty: number; notes: SngNoteData[]; chords: ChordInLevel[] }> {
+function parseLevels(
+  xml: string
+): Array<{ difficulty: number; notes: SngNoteData[]; chords: ChordInLevel[] }> {
   const levelsBlock = findBlock(xml, 'levels')
   const levels: Array<{ difficulty: number; notes: SngNoteData[]; chords: ChordInLevel[] }> = []
 
@@ -231,7 +240,9 @@ function parseLevels(xml: string): Array<{ difficulty: number; notes: SngNoteDat
   return levels
 }
 
-export function parseArrangementXml(xml: string): SngData & { chordInstances: Map<number, ChordInLevel[]> } {
+export function parseArrangementXml(
+  xml: string
+): SngData & { chordInstances: Map<number, ChordInLevel[]> } {
   const beats = parseBeats(xml)
   const phrases = parsePhrases(xml)
   const phraseIterations = parsePhraseIterations(xml)

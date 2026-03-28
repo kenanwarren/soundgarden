@@ -145,7 +145,8 @@ function mergeWithSections(
 
       // Add chord-only content for instrumental sections
       const sectionStart = sections[sectionIdx].startTime
-      const sectionEnd = sectionIdx + 1 < sections.length ? sections[sectionIdx + 1].startTime : Infinity
+      const sectionEnd =
+        sectionIdx + 1 < sections.length ? sections[sectionIdx + 1].startTime : Infinity
       const sectionChords = chordEvents.filter(
         (c) => c.time >= sectionStart - 0.1 && c.time < sectionEnd - 0.1
       )
@@ -221,10 +222,7 @@ function cleanLyricText(text: string): string {
     .replace(/&quot;/g, '"')
 }
 
-function buildChordOnlyLines(
-  sections: SngSection[],
-  chordEvents: ChordEvent[]
-): string[] {
+function buildChordOnlyLines(sections: SngSection[], chordEvents: ChordEvent[]): string[] {
   const lines: string[] = []
 
   for (let i = 0; i < sections.length; i++) {

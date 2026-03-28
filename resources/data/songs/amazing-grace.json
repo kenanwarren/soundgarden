@@ -1,20 +1,13 @@
 {
   "id": "amazing-grace",
   "title": "Amazing Grace",
-  "genres": [
-    "rock"
-  ],
+  "genres": ["rock"],
   "difficulty": {
     "tier": "Beginner",
     "grade": 1
   },
   "key": "G",
-  "chords": [
-    "G",
-    "G7",
-    "C",
-    "D7"
-  ],
+  "chords": ["G", "G7", "C", "D7"],
   "attribution": "John Newton, 1779",
   "lines": [
     "[section:Verse 1]",
@@ -36,10 +29,7 @@
     "And [G]grace will [D7]lead me [G]home"
   ],
   "notation": {
-    "timeSignature": [
-      3,
-      4
-    ],
+    "timeSignature": [3, 4],
     "tempo": 80,
     "measures": [
       {

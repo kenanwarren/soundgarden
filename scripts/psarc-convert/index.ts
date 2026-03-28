@@ -58,7 +58,15 @@ function parseArgs(argv: string[]): {
     process.exit(1)
   }
 
-  return { input: resolve(input), dump, output: output ? resolve(output) : null, platform, key, genre, baseDifficulty }
+  return {
+    input: resolve(input),
+    dump,
+    output: output ? resolve(output) : null,
+    platform,
+    key,
+    genre,
+    baseDifficulty
+  }
 }
 
 function classifyFile(
@@ -95,10 +103,7 @@ interface ParsedArrangement {
   vocals: SngVocal[] | null
 }
 
-function parseFromXml(
-  files: PsarcFile[],
-  manifests: ManifestData[]
-): ParsedArrangement[] {
+function parseFromXml(files: PsarcFile[], manifests: ManifestData[]): ParsedArrangement[] {
   const xmlFiles = files.filter((f) => f.path.startsWith('songs/arr/') && f.path.endsWith('.xml'))
   const results: ParsedArrangement[] = []
 
@@ -124,13 +129,27 @@ function parseFromXml(
         console.log(`    Difficulty levels: ${parsed.arrangements.length}`)
         for (const level of parsed.arrangements) {
           const chordCount = parsed.chordInstances.get(level.difficulty)?.length ?? 0
-          console.log(`      Level ${level.difficulty}: ${level.notes.length} notes, ${chordCount} chords`)
+          console.log(
+            `      Level ${level.difficulty}: ${level.notes.length} notes, ${chordCount} chords`
+          )
         }
-        results.push({ path: xmlFile.path, type: classification.type, manifest: classification.manifest, data: parsed, vocals: null })
+        results.push({
+          path: xmlFile.path,
+          type: classification.type,
+          manifest: classification.manifest,
+          data: parsed,
+          vocals: null
+        })
       }
     } catch (err) {
       console.error(`    Failed to parse: ${err}`)
-      results.push({ path: xmlFile.path, type: classification.type, manifest: classification.manifest, data: null, vocals: null })
+      results.push({
+        path: xmlFile.path,
+        type: classification.type,
+        manifest: classification.manifest,
+        data: null,
+        vocals: null
+      })
     }
   }
 
@@ -166,11 +185,23 @@ function parseFromSng(
         for (const level of sngData.arrangements) {
           console.log(`      Level ${level.difficulty}: ${level.notes.length} notes`)
         }
-        results.push({ path: sngFile.path, type: classification.type, manifest: classification.manifest, data: sngData, vocals: null })
+        results.push({
+          path: sngFile.path,
+          type: classification.type,
+          manifest: classification.manifest,
+          data: sngData,
+          vocals: null
+        })
       }
     } catch (err) {
       console.error(`    Failed to parse SNG: ${err}`)
-      results.push({ path: sngFile.path, type: classification.type, manifest: classification.manifest, data: null, vocals: null })
+      results.push({
+        path: sngFile.path,
+        type: classification.type,
+        manifest: classification.manifest,
+        data: null,
+        vocals: null
+      })
     }
   }
 
@@ -192,7 +223,9 @@ function main(): void {
   const manifests = parseManifests(files)
   console.log(`\nFound ${manifests.length} manifest(s):`)
   for (const m of manifests) {
-    console.log(`  ${m.attributes.songName} - ${m.attributes.artistName} [${m.attributes.arrangementName}]`)
+    console.log(
+      `  ${m.attributes.songName} - ${m.attributes.artistName} [${m.attributes.arrangementName}]`
+    )
   }
 
   const hasXml = files.some((f) => f.path.startsWith('songs/arr/') && f.path.endsWith('.xml'))
@@ -214,11 +247,12 @@ function main(): void {
         phrases: a.data?.phrases ?? [],
         phraseIterations: a.data?.phraseIterations ?? [],
         chordTemplates: a.data?.chordTemplates ?? [],
-        difficultyLevels: a.data?.arrangements.map((level) => ({
-          difficulty: level.difficulty,
-          noteCount: level.notes.length,
-          sampleNotes: level.notes.slice(0, 10)
-        })) ?? [],
+        difficultyLevels:
+          a.data?.arrangements.map((level) => ({
+            difficulty: level.difficulty,
+            noteCount: level.notes.length,
+            sampleNotes: level.notes.slice(0, 10)
+          })) ?? [],
         vocals: a.vocals?.slice(0, 50) ?? []
       }))
     }
@@ -243,7 +277,7 @@ function main(): void {
         type: parsed.type,
         manifest: parsed.manifest,
         sngData: parsed.data,
-        chordInstances: (parsed.data as any).chordInstances,
+        chordInstances: (parsed.data as any).chordInstances
       })
     }
   }
@@ -253,12 +287,14 @@ function main(): void {
     return
   }
 
-  console.log(`\nConverting ${arrangementInputs.length} arrangement(s) with ${allVocals.length} vocal syllables...`)
+  console.log(
+    `\nConverting ${arrangementInputs.length} arrangement(s) with ${allVocals.length} vocal syllables...`
+  )
 
   const song = assembleSong(arrangementInputs, allVocals, {
     key: args.key,
     genre: args.genre,
-    baseDifficulty: args.baseDifficulty,
+    baseDifficulty: args.baseDifficulty
   })
 
   if (!song) {
@@ -275,7 +311,9 @@ function main(): void {
   if (song.tuning) console.log(`  Tuning: ${song.tuning}`)
   if (song.capo) console.log(`  Capo: ${song.capo}`)
   if (song.notation) {
-    console.log(`  Notation: ${song.notation.measures.length} measures, time sig ${song.notation.timeSignature.join('/')}`)
+    console.log(
+      `  Notation: ${song.notation.measures.length} measures, time sig ${song.notation.timeSignature.join('/')}`
+    )
   }
 
   const outputDir = args.output ?? resolve(__dirname, '..', '..', 'resources', 'data', 'songs')

@@ -1,21 +1,13 @@
 {
   "id": "home-on-the-range",
   "title": "Home on the Range",
-  "genres": [
-    "pop"
-  ],
+  "genres": ["pop"],
   "difficulty": {
     "tier": "Intermediate",
     "grade": 1
   },
   "key": "G",
-  "chords": [
-    "G",
-    "C",
-    "D7",
-    "Em",
-    "A7"
-  ],
+  "chords": ["G", "C", "D7", "Em", "A7"],
   "attribution": "Traditional, 1870s",
   "lines": [
     "[section:Verse 1]",
@@ -37,10 +29,7 @@
     "For [G]all of the [D7]cities so [G]bright"
   ],
   "notation": {
-    "timeSignature": [
-      3,
-      4
-    ],
+    "timeSignature": [3, 4],
     "tempo": 90,
     "measures": [
       {

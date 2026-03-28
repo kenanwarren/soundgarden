@@ -1,19 +1,13 @@
 {
   "id": "shell-be-coming",
   "title": "She'll Be Coming 'Round the Mountain",
-  "genres": [
-    "pop"
-  ],
+  "genres": ["pop"],
   "difficulty": {
     "tier": "Beginner",
     "grade": 1
   },
   "key": "G",
-  "chords": [
-    "G",
-    "D7",
-    "C"
-  ],
+  "chords": ["G", "D7", "C"],
   "attribution": "Traditional",
   "lines": [
     "[section:Verse 1]",
@@ -38,10 +32,7 @@
     "Oh we'll [G]all come out to [D7]meet her when she [G]comes"
   ],
   "notation": {
-    "timeSignature": [
-      4,
-      4
-    ],
+    "timeSignature": [4, 4],
     "tempo": 120,
     "measures": [
       {

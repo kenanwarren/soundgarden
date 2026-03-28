@@ -7,22 +7,10 @@
     "tier": "Intermediate",
     "grade": 1
   },
-  "focusSkills": [
-    "rhythm",
-    "timing",
-    "groove"
-  ],
-  "recommendedTools": [
-    "rhythm-trainer"
-  ],
-  "toneSuggestions": [
-    "Dry practice tone",
-    "Clear attack with low ambience"
-  ],
-  "starterPresetIds": [
-    "rhythm:quarter-notes",
-    "rhythm:shuffle"
-  ],
+  "focusSkills": ["rhythm", "timing", "groove"],
+  "recommendedTools": ["rhythm-trainer"],
+  "toneSuggestions": ["Dry practice tone", "Clear attack with low ambience"],
+  "starterPresetIds": ["rhythm:quarter-notes", "rhythm:shuffle"],
   "steps": [
     {
       "id": "timing-quarter-notes",

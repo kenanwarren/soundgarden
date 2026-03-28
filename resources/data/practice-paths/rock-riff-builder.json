@@ -7,19 +7,8 @@
     "tier": "Intermediate",
     "grade": 1
   },
-  "focusSkills": [
-    "chords",
-    "rhythm",
-    "scales",
-    "timing",
-    "technique"
-  ],
-  "recommendedTools": [
-    "chord-library",
-    "chord-changes",
-    "rhythm-trainer",
-    "scale-sequences"
-  ],
+  "focusSkills": ["chords", "rhythm", "scales", "timing", "technique"],
+  "recommendedTools": ["chord-library", "chord-changes", "rhythm-trainer", "scale-sequences"],
   "toneSuggestions": [
     "Crunch drive into cabinet sim",
     "Tighter noise gate before gain",

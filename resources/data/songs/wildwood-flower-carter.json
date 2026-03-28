@@ -3,20 +3,13 @@
   "variantOf": "wildwood-flower",
   "variantLabel": "Carter Style",
   "title": "Wildwood Flower (Carter Style)",
-  "genres": [
-    "country",
-    "fingerpicking"
-  ],
+  "genres": ["country", "fingerpicking"],
   "difficulty": {
     "tier": "Intermediate",
     "grade": 1
   },
   "key": "C",
-  "chords": [
-    "C",
-    "G",
-    "F"
-  ],
+  "chords": ["C", "G", "F"],
   "attribution": "Traditional, 1860; Carter Family style arrangement",
   "lines": [
     "[section:Verse 1]",
@@ -38,10 +31,7 @@
     "He [G]left me no warning, no [C]words of farewell"
   ],
   "notation": {
-    "timeSignature": [
-      4,
-      4
-    ],
+    "timeSignature": [4, 4],
     "tempo": 120,
     "measures": [
       {

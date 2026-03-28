@@ -24,7 +24,15 @@ export function parseManifests(files: PsarcFile[]): ManifestData[] {
             albumName: attrs.AlbumName ?? attrs.albumName ?? '',
             songYear: attrs.SongYear ?? attrs.songYear ?? 0,
             arrangementName: attrs.ArrangementName ?? attrs.arrangementName ?? '',
-            tuning: attrs.Tuning ?? attrs.tuning ?? { string0: 0, string1: 0, string2: 0, string3: 0, string4: 0, string5: 0 },
+            tuning: attrs.Tuning ??
+              attrs.tuning ?? {
+                string0: 0,
+                string1: 0,
+                string2: 0,
+                string3: 0,
+                string4: 0,
+                string5: 0
+              },
             capo: attrs.CapoFret ?? attrs.capoFret ?? 0,
             centOffset: attrs.CentOffset ?? attrs.centOffset ?? 0,
             songLength: attrs.SongLength ?? attrs.songLength ?? 0,

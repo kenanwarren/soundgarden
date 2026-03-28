@@ -9,7 +9,8 @@ const DURATION_BEATS: Record<NoteDuration, number> = {
   half: 2,
   quarter: 1,
   eighth: 0.5,
-  sixteenth: 0.25
+  sixteenth: 0.25,
+  thirtySecond: 0.125
 }
 
 function parsePitch(pitch: string): { note: string; octave: number } | null {

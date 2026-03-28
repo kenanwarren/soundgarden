@@ -17,7 +17,7 @@ export function decryptSng(data: Buffer, platform: Platform = Platform.PC): Buff
   }
 
   const magic = data.readUInt32LE(0)
-  if (magic !== 0x4A) {
+  if (magic !== 0x4a) {
     return data
   }
 

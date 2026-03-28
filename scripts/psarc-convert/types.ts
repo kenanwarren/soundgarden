@@ -165,7 +165,14 @@ export interface ManifestAttributes {
   albumName: string
   songYear: number
   arrangementName: string
-  tuning: { string0: number; string1: number; string2: number; string3: number; string4: number; string5: number }
+  tuning: {
+    string0: number
+    string1: number
+    string2: number
+    string3: number
+    string4: number
+    string5: number
+  }
   capo: number
   centOffset: number
   songLength: number

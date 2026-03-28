@@ -7,22 +7,10 @@
     "tier": "Advanced",
     "grade": 1
   },
-  "focusSkills": [
-    "chords",
-    "technique",
-    "timing"
-  ],
-  "recommendedTools": [
-    "chord-library",
-    "chord-changes"
-  ],
-  "toneSuggestions": [
-    "Clean or edge-of-breakup tone",
-    "Low noise floor for clearer detection"
-  ],
-  "starterPresetIds": [
-    "chord-changes:pop-four"
-  ],
+  "focusSkills": ["chords", "technique", "timing"],
+  "recommendedTools": ["chord-library", "chord-changes"],
+  "toneSuggestions": ["Clean or edge-of-breakup tone", "Low noise floor for clearer detection"],
+  "starterPresetIds": ["chord-changes:pop-four"],
   "steps": [
     {
       "id": "chord-fluency-open-major",
