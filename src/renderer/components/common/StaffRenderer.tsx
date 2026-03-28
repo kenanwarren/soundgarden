@@ -9,7 +9,9 @@ import {
   Accidental,
   TabStave,
   TabNote,
-  Dot
+  Dot,
+  GhostNote,
+  type Tickable
 } from 'vexflow'
 import type {
   SongNotation,
@@ -17,6 +19,7 @@ import type {
   NotationNote,
   NoteDuration
 } from '../../utils/learn-types'
+import { getMeasureDurationUnits, getTimeSignatureUnits } from '../../utils/notation'
 
 type ViewMode = 'staff' | 'tab' | 'staff+tab'
 
@@ -27,7 +30,11 @@ interface StaffRendererProps {
   measuresPerLine?: number
 }
 
-const MEASURE_WIDTH = 220
+const BASE_MEASURE_WIDTH = 210
+const MIN_MEASURE_WIDTH = 118
+const FIRST_SYSTEM_PADDING = 96
+const SYSTEM_CLEF_PADDING = 34
+const TAB_ONLY_CLEF_PADDING = 28
 const STAVE_X_START = 10
 const STAFF_Y_START = 40
 
@@ -41,11 +48,93 @@ const DURATION_MAP: Record<NoteDuration, string> = {
   sixteenth: '16'
 }
 
+const GHOST_DURATION_MAP: Record<NoteDuration, string> = {
+  whole: '1',
+  half: '2',
+  quarter: '4',
+  eighth: '8',
+  sixteenth: '16'
+}
+
 function pitchToVex(pitch: string): string {
   if (pitch === 'rest') return 'b/4'
   const match = pitch.match(/^([A-G])(#|b)?(\d)$/)
   if (!match) return 'c/4'
   return `${match[1].toLowerCase()}${match[2] ?? ''}/${match[3]}`
+}
+
+function buildMeasureVoice(measure: NotationMeasure): Voice {
+  return new Voice({
+    numBeats: Math.max(getMeasureDurationUnits(measure), 1),
+    beatValue: 32
+  }).setMode(Voice.Mode.FULL)
+}
+
+function createStaffNote(note: NotationNote): StaveNote {
+  const isRest = note.pitch === 'rest'
+  const duration = DURATION_MAP[note.duration] + (isRest ? 'r' : '')
+  const keys = isRest ? ['b/4'] : [pitchToVex(note.pitch)]
+  const staveNote = new StaveNote({ keys, duration })
+
+  if (!isRest) {
+    const parsed = note.pitch.match(/^([A-G])(#|b)?(\d)$/)
+    if (parsed?.[2] === '#') staveNote.addModifier(new Accidental('#'), 0)
+    else if (parsed?.[2] === 'b') staveNote.addModifier(new Accidental('b'), 0)
+  }
+
+  if (note.dotted) Dot.buildAndAttach([staveNote])
+
+  staveNote.setStyle(NOTE_STYLE)
+  staveNote.setStemStyle(NOTE_STYLE)
+  if (!isRest) staveNote.setFlagStyle(NOTE_STYLE)
+
+  return staveNote
+}
+
+function createTabTickable(note: NotationNote): Tickable {
+  if (note.pitch === 'rest') {
+    return new GhostNote({
+      duration: GHOST_DURATION_MAP[note.duration] + (note.dotted ? 'd' : '')
+    })
+  }
+
+  const tabNote = new TabNote({
+    positions: note.tab ? [{ str: note.tab.string + 1, fret: note.tab.fret }] : [{ str: 1, fret: 0 }],
+    duration: DURATION_MAP[note.duration]
+  })
+
+  if (note.dotted) Dot.buildAndAttach([tabNote])
+  tabNote.setStyle(NOTE_STYLE)
+  return tabNote
+}
+
+function getMeasureWidth(
+  measure: NotationMeasure,
+  expectedUnits: number,
+  isFirstMeasureOfSong: boolean,
+  isFirstMeasureOfSystem: boolean,
+  showStaff: boolean,
+  showTab: boolean
+): number {
+  const actualUnits = Math.max(getMeasureDurationUnits(measure), 1)
+  const widthRatio = Math.max(actualUnits / expectedUnits, 0.35)
+  const accidentalCount = measure.notes.filter((note) => /[#b]/.test(note.pitch)).length
+  const denseNotePadding = Math.max(0, measure.notes.length - 4) * 18
+  const dottedPadding = measure.notes.filter((note) => note.dotted).length * 6
+  const lyricPadding = Math.max(0, (measure.lyricFragment?.length ?? 0) - 12) * 2
+
+  let width = Math.max(Math.round(BASE_MEASURE_WIDTH * widthRatio), MIN_MEASURE_WIDTH)
+  width += accidentalCount * 12 + denseNotePadding + dottedPadding + lyricPadding
+
+  if (isFirstMeasureOfSystem) {
+    if (showStaff) {
+      width += isFirstMeasureOfSong ? FIRST_SYSTEM_PADDING : SYSTEM_CLEF_PADDING
+    } else if (showTab) {
+      width += TAB_ONLY_CLEF_PADDING
+    }
+  }
+
+  return width
 }
 
 function renderNotation(
@@ -60,12 +149,31 @@ function renderNotation(
   const showStaff = viewMode === 'staff' || viewMode === 'staff+tab'
   const showTab = viewMode === 'tab' || viewMode === 'staff+tab'
 
-  const systems: NotationMeasure[][] = []
+  const expectedUnits = getTimeSignatureUnits(notation.timeSignature)
+  const systems: Array<Array<{ measure: NotationMeasure; width: number }>> = []
   for (let i = 0; i < notation.measures.length; i += measuresPerLine) {
-    systems.push(notation.measures.slice(i, i + measuresPerLine))
+    systems.push(
+      notation.measures.slice(i, i + measuresPerLine).map((measure, offset) => ({
+        measure,
+        width: getMeasureWidth(
+          measure,
+          expectedUnits,
+          i === 0 && offset === 0,
+          offset === 0,
+          showStaff,
+          showTab
+        )
+      }))
+    )
   }
 
-  const totalWidth = STAVE_X_START + measuresPerLine * MEASURE_WIDTH + 20
+  const totalWidth =
+    Math.max(
+      ...systems.map(
+        (system) => STAVE_X_START + system.reduce((sum, measure) => sum + measure.width, 0) + 20
+      ),
+      STAVE_X_START + 20
+    )
   let systemHeight = 0
   if (showStaff) systemHeight += 130
   if (showTab) systemHeight += 130
@@ -91,22 +199,22 @@ function renderNotation(
   const timeSig = `${tsNum}/${tsDen}`
 
   systems.forEach((measures, si) => {
-    const isFirst = si === 0
     const yStaff = si * systemHeight + STAFF_Y_START
     const yTab = yStaff + (showStaff ? 110 : 0)
+    let x = STAVE_X_START
 
-    measures.forEach((measure, mi) => {
-      const x = STAVE_X_START + mi * MEASURE_WIDTH
-      const width = MEASURE_WIDTH
+    measures.forEach(({ measure, width }, mi) => {
+      const isFirstMeasureOfSystem = mi === 0
+      const isFirstMeasureOfSong = si === 0 && mi === 0
 
       let stave: Stave | null = null
       let tabStave: TabStave | null = null
 
       if (showStaff) {
         stave = new Stave(x, yStaff, width)
-        if (mi === 0 && isFirst) {
+        if (isFirstMeasureOfSong) {
           stave.addClef('treble').addKeySignature(songKey).addTimeSignature(timeSig)
-        } else if (mi === 0) {
+        } else if (isFirstMeasureOfSystem) {
           stave.addClef('treble')
         }
         stave.setContext(context)
@@ -116,55 +224,38 @@ function renderNotation(
 
       if (showTab) {
         tabStave = new TabStave(x, yTab, width)
-        if (mi === 0) tabStave.addClef('tab')
+        if (isFirstMeasureOfSystem) tabStave.addClef('tab')
         tabStave.setContext(context)
         tabStave.setStyle({ fillStyle: '#71717a', strokeStyle: '#52525b' })
         tabStave.draw()
       }
 
       const staveNotes: StaveNote[] = []
-      const tabNotes: TabNote[] = []
+      const tabTickables: Tickable[] = []
 
       for (const note of measure.notes) {
-        const isRest = note.pitch === 'rest'
-
-        if (showStaff) {
-          const dur = DURATION_MAP[note.duration] + (isRest ? 'r' : '')
-          const keys = isRest ? ['b/4'] : [pitchToVex(note.pitch)]
-          const sn = new StaveNote({ keys, duration: dur })
-
-          if (!isRest) {
-            const parsed = note.pitch.match(/^([A-G])(#|b)?(\d)$/)
-            if (parsed?.[2] === '#') sn.addModifier(new Accidental('#'), 0)
-            else if (parsed?.[2] === 'b') sn.addModifier(new Accidental('b'), 0)
-          }
-
-          if (note.dotted) Dot.buildAndAttach([sn])
-
-          sn.setStyle(NOTE_STYLE)
-          sn.setStemStyle(NOTE_STYLE)
-          if (!isRest) sn.setFlagStyle(NOTE_STYLE)
-
-          staveNotes.push(sn)
-        }
-
-        if (showTab) {
-          const positions = isRest
-            ? [{ str: 1, fret: 0 }]
-            : note.tab
-              ? [{ str: note.tab.string + 1, fret: note.tab.fret }]
-              : [{ str: 1, fret: 0 }]
-          const tn = new TabNote({ positions, duration: DURATION_MAP[note.duration] })
-          tn.setStyle(NOTE_STYLE)
-          tabNotes.push(tn)
-        }
+        if (showStaff) staveNotes.push(createStaffNote(note))
+        if (showTab) tabTickables.push(createTabTickable(note))
       }
 
-      if (showStaff && stave && staveNotes.length > 0) {
-        const voice = new Voice({ numBeats: tsNum, beatValue: tsDen })
-        voice.setStrict(false)
+      if (showStaff && showTab && stave && tabStave && staveNotes.length > 0 && tabTickables.length > 0) {
+        const voice = buildMeasureVoice(measure)
+        const tabVoice = buildMeasureVoice(measure)
         voice.addTickables(staveNotes)
-        new Formatter().joinVoices([voice]).format([voice], width - 50)
+        tabVoice.addTickables(tabTickables)
+        tabStave.setNoteStartX(stave.getNoteStartX())
+        new Formatter().joinVoices([voice]).joinVoices([tabVoice]).formatToStave([voice, tabVoice], stave)
+        const beams = Beam.generateBeams(staveNotes)
+        voice.draw(context, stave)
+        tabVoice.draw(context, tabStave)
+        beams.forEach((b) => {
+          b.setStyle(NOTE_STYLE)
+          b.setContext(context).draw()
+        })
+      } else if (showStaff && stave && staveNotes.length > 0) {
+        const voice = buildMeasureVoice(measure)
+        voice.addTickables(staveNotes)
+        new Formatter().joinVoices([voice]).formatToStave([voice], stave)
 
         const beams = Beam.generateBeams(staveNotes)
         voice.draw(context, stave)
@@ -172,13 +263,10 @@ function renderNotation(
           b.setStyle(NOTE_STYLE)
           b.setContext(context).draw()
         })
-      }
-
-      if (showTab && tabStave && tabNotes.length > 0) {
-        const tabVoice = new Voice({ numBeats: tsNum, beatValue: tsDen })
-        tabVoice.setStrict(false)
-        tabVoice.addTickables(tabNotes)
-        new Formatter().joinVoices([tabVoice]).format([tabVoice], width - 50)
+      } else if (showTab && tabStave && tabTickables.length > 0) {
+        const tabVoice = buildMeasureVoice(measure)
+        tabVoice.addTickables(tabTickables)
+        new Formatter().joinVoices([tabVoice]).formatToStave([tabVoice], tabStave)
         tabVoice.draw(context, tabStave)
       }
 
@@ -205,9 +293,11 @@ function renderNotation(
         context.save()
         context.setFont('sans-serif', 10, 'italic')
         context.setFillStyle('#a1a1aa')
-        context.fillText(measure.lyricFragment, x + width / 2 - 20, lyricY)
+        context.fillText(measure.lyricFragment, x + 10, lyricY)
         context.restore()
       }
+
+      x += width
     })
   })
 
