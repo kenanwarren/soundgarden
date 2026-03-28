@@ -1,0 +1,5197 @@
+[
+  {
+    "id": "st-james-infirmary",
+    "title": "St. James Infirmary Blues",
+    "genres": ["blues"],
+    "difficulty": "Beginner",
+    "key": "Am",
+    "chords": ["Am", "E7", "Dm", "F"],
+    "attribution": "Traditional",
+    "lines": [
+      "[section:Verse 1]",
+      "I went [Am]down to [E7]St. James In[Am]firmary",
+      "To see my [Dm]baby [Am]there",
+      "She was [Dm]lying on a [Am]long white [E7]table",
+      "So [F]sweet, so [E7]cool, so [Am]fair",
+      "",
+      "[section:Verse 2]",
+      "Let her [Am]go, let her [E7]go, God [Am]bless her",
+      "Wherever [Dm]she may [Am]be",
+      "She may [Dm]search this [Am]wide world [E7]over",
+      "She'll [F]never find a [E7]man like [Am]me",
+      "",
+      "[section:Verse 3]",
+      "When I [Am]die please [E7]bury me",
+      "In my [Dm]high-top [Am]Stetson hat",
+      "Put a [Dm]twenty-dollar [Am]gold piece [E7]on my",
+      "[F]Watch chain so [E7]they'll know I [Am]died standing pat"
+    ],
+    "notation": {
+      "timeSignature": [4, 4],
+      "tempo": 80,
+      "measures": [
+        {
+          "chord": "Am",
+          "lyricFragment": "I went down to",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration": "quarter",
+              "tab": {
+                "string": 2,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            }
+          ]
+        },
+        {
+          "chord": "E7",
+          "lyricFragment": "St. James In-",
+          "notes": [
+            {
+              "pitch": "G#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 4
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "Am",
+          "lyricFragment": "firmary",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration": "half",
+              "tab": {
+                "string": 2,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "rest",
+              "duration": "half"
+            }
+          ]
+        },
+        {
+          "chord": "Dm",
+          "lyricFragment": "To see my",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "F4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "half",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            }
+          ]
+        },
+        {
+          "chord": "Am",
+          "lyricFragment": "baby there",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "half",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            }
+          ]
+        },
+        {
+          "chord": "Dm",
+          "lyricFragment": "She was lying on a",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "eighth",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "F4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            }
+          ]
+        },
+        {
+          "chord": "Am",
+          "lyricFragment": "long white",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "E7",
+          "lyricFragment": "table",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "rest",
+              "duration": "half"
+            }
+          ]
+        },
+        {
+          "chord": "F",
+          "lyricFragment": "So sweet, so",
+          "notes": [
+            {
+              "pitch": "F4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "half",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "E7",
+          "lyricFragment": "cool, so",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "half",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "Am",
+          "lyricFragment": "fair",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration": "half",
+              "tab": {
+                "string": 2,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "rest",
+              "duration": "half"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "nobody-knows-you",
+    "title": "Nobody Knows You When You're Down and Out",
+    "genres": ["blues"],
+    "difficulty": "Developing",
+    "key": "C",
+    "chords": ["C", "E7", "A7", "Dm", "F", "D7", "G7"],
+    "attribution": "Jimmie Cox, 1923",
+    "lines": [
+      "[section:Verse 1]",
+      "[C]Once I lived the [E7]life of a [A7]millionaire",
+      "[Dm]Spending my money, [A7]I didn't care",
+      "[Dm]Taking my friends out [A7]for a mighty good time",
+      "[D7]Buying bootleg liquor, [G7]champagne and wine",
+      "",
+      "[section:Verse 2]",
+      "[C]Then I began to [E7]fall so [A7]low",
+      "[Dm]Lost all my good friends, [A7]had nowhere to go",
+      "[Dm]If I ever get my [A7]hands on a dollar again",
+      "I'm gonna [D7]hold on to it till that [G7]eagle grins",
+      "",
+      "[section:Chorus]",
+      "[C]Nobody [E7]knows you [A7]when you're down and [Dm]out",
+      "[A7]In your pocket, [Dm]not one [A7]penny",
+      "[Dm]And as for friends, [A7]you don't have any",
+      "[D7]When you get back on your [G7]feet again",
+      "[C]Everybody [E7]wants to [A7]be your long-lost [Dm]friend",
+      "It's [D7]mighty strange, with[G7]out a [C]doubt"
+    ],
+    "notation": {
+      "timeSignature": [4, 4],
+      "tempo": 90,
+      "measures": [
+        {
+          "chord": "C",
+          "lyricFragment": "Once I lived the",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "eighth",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            }
+          ]
+        },
+        {
+          "chord": "E7",
+          "lyricFragment": "life of a",
+          "notes": [
+            {
+              "pitch": "G#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 4
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "half",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "A7",
+          "lyricFragment": "millionaire",
+          "notes": [
+            {
+              "pitch": "C#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "A3",
+              "duration": "half",
+              "tab": {
+                "string": 2,
+                "fret": 2
+              }
+            }
+          ]
+        },
+        {
+          "chord": "Dm",
+          "lyricFragment": "Spending my money",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "F4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "A7",
+          "lyricFragment": "I didn't care",
+          "notes": [
+            {
+              "pitch": "C#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "A3",
+              "duration": "quarter",
+              "tab": {
+                "string": 2,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "rest",
+              "duration": "half"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "careless-love",
+    "title": "Careless Love",
+    "genres": ["blues"],
+    "difficulty": "Beginner",
+    "key": "G",
+    "chords": ["G", "D7", "C"],
+    "attribution": "Traditional",
+    "lines": [
+      "[section:Verse 1]",
+      "[G]Love, oh love, oh [D7]careless love",
+      "[G]Love, oh love, oh [C]careless love",
+      "[G]Love, oh [C]love, oh [G]careless [D7]love",
+      "You [C]see what [D7]love has [G]done to me",
+      "",
+      "[section:Verse 2]",
+      "[G]I love my mama [D7]and papa too",
+      "[G]I love my mama [C]and papa too",
+      "[G]I love my [C]mama [G]and papa [D7]too",
+      "But I'd [C]leave them [D7]both to go with [G]you",
+      "",
+      "[section:Verse 3]",
+      "[G]What, oh what will [D7]mama say",
+      "[G]What, oh what will [C]mama say",
+      "[G]When she [C]hears I've [G]gone a[D7]stray",
+      "What, oh [C]what will [D7]mama [G]say"
+    ],
+    "notation": {
+      "timeSignature": [4, 4],
+      "tempo": 90,
+      "measures": [
+        {
+          "chord": "G",
+          "lyricFragment": "Love, oh love, oh",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            }
+          ]
+        },
+        {
+          "chord": "D7",
+          "lyricFragment": "careless love",
+          "notes": [
+            {
+              "pitch": "F#4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "Love, oh love, oh",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "careless love",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "Love, oh",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "B3",
+              "duration": "half",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "love, oh",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration": "half",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "half",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "careless",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "B3",
+              "duration": "half",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "D7",
+          "lyricFragment": "love",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration": "half",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "You see what",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "half",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            }
+          ]
+        },
+        {
+          "chord": "D7",
+          "lyricFragment": "love has",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration": "half",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "done to me",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "rest",
+              "duration": "quarter"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "wildwood-flower",
+    "title": "Wildwood Flower",
+    "genres": ["country"],
+    "difficulty": "Beginner",
+    "key": "C",
+    "chords": ["C", "G", "F"],
+    "attribution": "Traditional, 1860",
+    "lines": [
+      "[section:Verse 1]",
+      "Oh I'll [C]twine with my mingles and [F]waving black [C]hair",
+      "With the [G]roses so red and the [C]lilies so fair",
+      "And the [C]myrtle so bright with the [F]emerald [C]hue",
+      "The pale [G]and the leader and [C]eyes look like blue",
+      "",
+      "[section:Verse 2]",
+      "I will [C]dance, I will sing and my [F]laugh shall be [C]gay",
+      "I will [G]charm every heart, in his [C]crown I will sway",
+      "When I [C]woke from my dreaming, my [F]idol was [C]clay",
+      "All [G]portions of love had all [C]flown away",
+      "",
+      "[section:Verse 3]",
+      "He [C]taught me to love him and [F]promised to [C]love",
+      "And to [G]cherish me over all [C]others above",
+      "How my [C]heart is now wondering, no [F]misery can [C]tell",
+      "He [G]left me no warning, no [C]words of farewell"
+    ],
+    "notation": {
+      "timeSignature": [4, 4],
+      "tempo": 110,
+      "measures": [
+        {
+          "chord": "C",
+          "lyricFragment": "Oh I'll twine with my",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "eighth",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "mingles and",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "half",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            }
+          ]
+        },
+        {
+          "chord": "F",
+          "lyricFragment": "waving black",
+          "notes": [
+            {
+              "pitch": "F4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "half",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "hair",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "With the roses so",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "red and the lilies",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "so fair",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration": "half",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "rest",
+              "duration": "half"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "will-the-circle",
+    "title": "Will the Circle Be Unbroken",
+    "genres": ["country"],
+    "difficulty": "Beginner",
+    "key": "G",
+    "chords": ["G", "C", "D7"],
+    "attribution": "Ada Habershon / Charles Gabriel, 1907",
+    "lines": [
+      "[section:Verse 1]",
+      "I was [G]standing by the window",
+      "On one [C]cold and cloudy [G]day",
+      "And I saw the hearse come rolling",
+      "For to [D7]carry my mother a[G]way",
+      "",
+      "[section:Chorus]",
+      "Will the [G]circle be unbroken",
+      "By and [C]by, Lord, by and [G]by",
+      "There's a better home a-waiting",
+      "In the [D7]sky, Lord, in the [G]sky",
+      "",
+      "[section:Verse 2]",
+      "Lord I [G]told the undertaker",
+      "Under[C]taker please drive [G]slow",
+      "For this body you are hauling",
+      "Lord I [D7]hate to see her [G]go",
+      "",
+      "[section:Chorus]",
+      "Will the [G]circle be unbroken",
+      "By and [C]by, Lord, by and [G]by",
+      "There's a better home a-waiting",
+      "In the [D7]sky, Lord, in the [G]sky"
+    ],
+    "notation": {
+      "timeSignature": [4, 4],
+      "tempo": 100,
+      "measures": [
+        {
+          "chord": "G",
+          "lyricFragment": "I was standing",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "by the window",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "rest",
+              "duration": "half"
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "On one cold and",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "cloudy day",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "half",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "rest",
+              "duration": "half"
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "And I saw the",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "hearse come rolling",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            }
+          ]
+        },
+        {
+          "chord": "D7",
+          "lyricFragment": "For to carry my",
+          "notes": [
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "mother away",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "rest",
+              "duration": "half"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "red-river-valley",
+    "title": "Red River Valley",
+    "genres": ["country"],
+    "difficulty": "Beginner",
+    "key": "G",
+    "chords": ["G", "C", "D7"],
+    "attribution": "Traditional",
+    "lines": [
+      "[section:Verse 1]",
+      "From this [G]valley they say you are going",
+      "We will [C]miss your bright eyes and sweet [G]smile",
+      "For they say you are taking the sunshine",
+      "That has [D7]brightened our path for a [G]while",
+      "",
+      "[section:Chorus]",
+      "Come and [G]sit by my side if you love me",
+      "Do not [C]hasten to bid me a[G]dieu",
+      "But remember the Red River Valley",
+      "And the [D7]cowboy who loved you so [G]true",
+      "",
+      "[section:Verse 2]",
+      "Won't you [G]think of the valley you're leaving",
+      "Oh how [C]lonely, how sad it will [G]be",
+      "Oh think of the fond heart you're breaking",
+      "And the [D7]grief you are causing to [G]me"
+    ],
+    "notation": {
+      "timeSignature": [4, 4],
+      "tempo": 95,
+      "measures": [
+        {
+          "chord": "G",
+          "lyricFragment": "From this valley they",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "say you are going",
+          "notes": [
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "We will miss your",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "bright eyes and sweet smile",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "For they say you are",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "taking the sunshine",
+          "notes": [
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            }
+          ]
+        },
+        {
+          "chord": "D7",
+          "lyricFragment": "That has brightened our",
+          "notes": [
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "path for a while",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "rest",
+              "duration": "half"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "when-the-saints",
+    "title": "When the Saints Go Marching In",
+    "genres": ["rock"],
+    "difficulty": "Beginner",
+    "key": "G",
+    "chords": ["G", "D7", "C"],
+    "attribution": "Traditional",
+    "lines": [
+      "[section:Verse 1]",
+      "Oh when the [G]saints go marching in",
+      "Oh when the saints go [D7]marching in",
+      "Oh Lord I [G]want to [C]be in that number",
+      "When the [G]saints go [D7]marching [G]in",
+      "",
+      "[section:Verse 2]",
+      "Oh when the [G]sun refuse to shine",
+      "Oh when the sun refuse to [D7]shine",
+      "Oh Lord I [G]want to [C]be in that number",
+      "When the [G]sun re[D7]fuse to [G]shine",
+      "",
+      "[section:Verse 3]",
+      "Oh when the [G]stars have disappeared",
+      "Oh when the stars have [D7]disappeared",
+      "Oh Lord I [G]want to [C]be in that number",
+      "When the [G]stars have [D7]disap[G]peared"
+    ],
+    "notation": {
+      "timeSignature": [4, 4],
+      "tempo": 110,
+      "measures": [
+        {
+          "chord": "G",
+          "lyricFragment": "Oh when the saints",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "go marching",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "in, Oh when the",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "D7",
+          "lyricFragment": "saints go marching",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "in, Oh Lord I",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "want to be in that",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "number, when the",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "D7",
+          "lyricFragment": "saints go marching",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "half",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "in",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "rest",
+              "duration": "half"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "amazing-grace",
+    "title": "Amazing Grace",
+    "genres": ["rock"],
+    "difficulty": "Beginner",
+    "key": "G",
+    "chords": ["G", "G7", "C", "D7"],
+    "attribution": "John Newton, 1779",
+    "lines": [
+      "[section:Verse 1]",
+      "A[G]mazing grace, how [G7]sweet the [C]sound",
+      "That [G]saved a wretch like [D7]me",
+      "I [G]once was lost but [G7]now am [C]found",
+      "Was [G]blind but [D7]now I [G]see",
+      "",
+      "[section:Verse 2]",
+      "'Twas [G]grace that taught my [G7]heart to [C]fear",
+      "And [G]grace my fears re[D7]lieved",
+      "How [G]precious did that [G7]grace ap[C]pear",
+      "The [G]hour I [D7]first be[G]lieved",
+      "",
+      "[section:Verse 3]",
+      "Through [G]many dangers, [G7]toils and [C]snares",
+      "I [G]have already [D7]come",
+      "'Tis [G]grace hath brought me [G7]safe thus [C]far",
+      "And [G]grace will [D7]lead me [G]home"
+    ],
+    "notation": {
+      "timeSignature": [3, 4],
+      "tempo": 80,
+      "measures": [
+        {
+          "chord": "G",
+          "lyricFragment": "A-",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "mazing",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G7",
+          "lyricFragment": "grace, how",
+          "notes": [
+            {
+              "pitch": "B3",
+              "duration": "half",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "sweet the",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "sound, that",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "half",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "saved a",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            }
+          ]
+        },
+        {
+          "chord": "D7",
+          "lyricFragment": "wretch like",
+          "notes": [
+            {
+              "pitch": "F#4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "me. I",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "half",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "once was",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G7",
+          "lyricFragment": "lost, but",
+          "notes": [
+            {
+              "pitch": "B3",
+              "duration": "half",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "now am",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "found, was",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "half",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G3",
+              "duration": "quarter",
+              "tab": {
+                "string": 2,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "blind, but",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration": "half",
+              "tab": {
+                "string": 2,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "A3",
+              "duration": "quarter",
+              "tab": {
+                "string": 2,
+                "fret": 2
+              }
+            }
+          ]
+        },
+        {
+          "chord": "D7",
+          "lyricFragment": "now I",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration": "half",
+              "tab": {
+                "string": 2,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "F#3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 4
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "see.",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration": "half",
+              "dotted": true,
+              "tab": {
+                "string": 2,
+                "fret": 0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "swing-low",
+    "title": "Swing Low, Sweet Chariot",
+    "genres": ["rock"],
+    "difficulty": "Beginner",
+    "key": "G",
+    "chords": ["G", "C", "D7", "Em"],
+    "attribution": "Traditional",
+    "lines": [
+      "[section:Chorus]",
+      "[G]Swing low, sweet [C]chari[G]ot",
+      "Coming for to carry me [D7]home",
+      "[G]Swing low, sweet [C]chari[G]ot",
+      "Coming for to [D7]carry me [G]home",
+      "",
+      "[section:Verse 1]",
+      "I [G]looked over Jordan and [C]what did I [G]see",
+      "Coming for to carry me [D7]home",
+      "A [G]band of angels [C]coming after [G]me",
+      "Coming for to [D7]carry me [G]home",
+      "",
+      "[section:Chorus]",
+      "[G]Swing low, sweet [C]chari[G]ot",
+      "Coming for to carry me [D7]home",
+      "[G]Swing low, sweet [C]chari[G]ot",
+      "Coming for to [D7]carry me [G]home",
+      "",
+      "[section:Verse 2]",
+      "If you [G]get there be[C]fore I [G]do",
+      "Coming for to carry me [D7]home",
+      "[G]Tell all my friends I'm [C]coming [G]too",
+      "Coming for to [D7]carry me [G]home"
+    ],
+    "notation": {
+      "timeSignature": [4, 4],
+      "tempo": 85,
+      "measures": [
+        {
+          "chord": "G",
+          "lyricFragment": "Swing low, sweet",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "chari-",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "half",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "ot",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "whole",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "Coming for to",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            }
+          ]
+        },
+        {
+          "chord": "D7",
+          "lyricFragment": "carry me home",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "rest",
+              "duration": "half"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "oh-susanna",
+    "title": "Oh! Susanna",
+    "genres": ["pop"],
+    "difficulty": "Beginner",
+    "key": "C",
+    "chords": ["C", "G", "G7", "F"],
+    "attribution": "Stephen Foster, 1848",
+    "lines": [
+      "[section:Verse 1]",
+      "I [C]come from Alabama with my [G]banjo on my [C]knee",
+      "I'm going to Louisiana, my [G7]true love for to [C]see",
+      "It [C]rained all night the day I left, the [G]weather it was [C]dry",
+      "The sun so hot I froze to death, [G7]Susanna don't you [C]cry",
+      "",
+      "[section:Chorus]",
+      "[F]Oh Susanna, [C]oh don't you cry for [G]me",
+      "I [C]come from Alabama with my [G7]banjo on my [C]knee",
+      "",
+      "[section:Verse 2]",
+      "I [C]had a dream the other night when [G]everything was [C]still",
+      "I thought I saw Susanna a-[G7]coming down the [C]hill",
+      "A [C]buckwheat cake was in her mouth, a [G]tear was in her [C]eye",
+      "Says I, I'm coming from the south, [G7]Susanna don't you [C]cry",
+      "",
+      "[section:Chorus]",
+      "[F]Oh Susanna, [C]oh don't you cry for [G]me",
+      "I [C]come from Alabama with my [G7]banjo on my [C]knee"
+    ],
+    "notation": {
+      "timeSignature": [4, 4],
+      "tempo": 120,
+      "measures": [
+        {
+          "chord": "C",
+          "lyricFragment": "I come from Ala-",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "eighth",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "bama with my banjo",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "eighth",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "on my knee",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G7",
+          "lyricFragment": "Susanna don't you",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "cry",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration": "half",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "rest",
+              "duration": "half"
+            }
+          ]
+        },
+        {
+          "chord": "F",
+          "lyricFragment": "Oh Susanna, oh",
+          "notes": [
+            {
+              "pitch": "F4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "don't you cry for",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "me, I",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "rest",
+              "duration": "quarter"
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "eighth",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "come from Alabama",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "eighth",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G7",
+          "lyricFragment": "with my banjo on my",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "knee",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration": "whole",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "shell-be-coming",
+    "title": "She'll Be Coming 'Round the Mountain",
+    "genres": ["pop"],
+    "difficulty": "Beginner",
+    "key": "G",
+    "chords": ["G", "D7", "C"],
+    "attribution": "Traditional",
+    "lines": [
+      "[section:Verse 1]",
+      "[G]She'll be coming 'round the mountain when she [D7]comes",
+      "She'll be coming 'round the mountain when she [G]comes",
+      "She'll be [C]coming 'round the mountain",
+      "She'll be [G]coming 'round the mountain",
+      "She'll be [G]coming 'round the [D7]mountain when she [G]comes",
+      "",
+      "[section:Verse 2]",
+      "[G]She'll be driving six white horses when she [D7]comes",
+      "She'll be driving six white horses when she [G]comes",
+      "She'll be [C]driving six white horses",
+      "She'll be [G]driving six white horses",
+      "She'll be [G]driving six white [D7]horses when she [G]comes",
+      "",
+      "[section:Verse 3]",
+      "[G]Oh we'll all come out to meet her when she [D7]comes",
+      "Oh we'll all come out to meet her when she [G]comes",
+      "Oh we'll [C]all come out to meet her",
+      "Oh we'll [G]all come out to meet her",
+      "Oh we'll [G]all come out to [D7]meet her when she [G]comes"
+    ],
+    "notation": {
+      "timeSignature": [4, 4],
+      "tempo": 120,
+      "measures": [
+        {
+          "chord": "G",
+          "lyricFragment": "She'll be coming 'round the",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "eighth",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "eighth",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            }
+          ]
+        },
+        {
+          "chord": "D7",
+          "lyricFragment": "mountain when she comes",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            }
+          ]
+        },
+        {
+          "chord": "D7",
+          "lyricFragment": "She'll be coming 'round the",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "mountain when she comes",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "She'll be coming 'round the",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "mountain, when she",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "D7",
+          "lyricFragment": "mountain when she",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "comes",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "rest",
+              "duration": "half"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "home-on-the-range",
+    "title": "Home on the Range",
+    "genres": ["pop"],
+    "difficulty": "Developing",
+    "key": "G",
+    "chords": ["G", "C", "D7", "Em", "A7"],
+    "attribution": "Traditional, 1870s",
+    "lines": [
+      "[section:Verse 1]",
+      "Oh [G]give me a home where the [C]buffalo roam",
+      "Where the [G]deer and the [A7]antelope [D7]play",
+      "Where [G]seldom is heard a dis[C]couraging word",
+      "And the [G]skies are not [D7]cloudy all [G]day",
+      "",
+      "[section:Chorus]",
+      "[D7]Home, [G]home on the range",
+      "Where the [C]deer and the [G]ante[Em]lope [A7]play [D7]",
+      "Where [G]seldom is heard a dis[C]couraging word",
+      "And the [G]skies are not [D7]cloudy all [G]day",
+      "",
+      "[section:Verse 2]",
+      "Where the [G]air is so pure, the [C]zephyrs so free",
+      "The [G]breezes so [A7]balmy and [D7]light",
+      "That I [G]would not exchange my [C]home on the range",
+      "For [G]all of the [D7]cities so [G]bright"
+    ],
+    "notation": {
+      "timeSignature": [3, 4],
+      "tempo": 90,
+      "measures": [
+        {
+          "chord": "G",
+          "lyricFragment": "Oh give me a",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "home where the",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "buffalo",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "roam, where the",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration": "half",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "deer and the",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "A7",
+          "lyricFragment": "antelope",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 2
+              }
+            }
+          ]
+        },
+        {
+          "chord": "D7",
+          "lyricFragment": "play",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "half",
+              "dotted": true,
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "Where seldom is",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "heard a dis-",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "couraging",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "word, and the",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration": "half",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "skies are not",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            }
+          ]
+        },
+        {
+          "chord": "D7",
+          "lyricFragment": "cloudy all",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "day",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "dotted": true,
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "greensleeves",
+    "title": "Greensleeves",
+    "genres": ["fingerpicking"],
+    "difficulty": "Developing",
+    "key": "Am",
+    "chords": ["Am", "G", "Em", "E7"],
+    "attribution": "Traditional, 16th century",
+    "lines": [
+      "[section:Verse 1]",
+      "[Am]Alas, my love, you [G]do me wrong",
+      "To [Am]cast me off dis[E7]courteously",
+      "For [Am]I have loved you [G]well and long",
+      "De[Am]lighting [E7]in your [Am]company",
+      "",
+      "[section:Chorus]",
+      "[G]Greensleeves was [Em]all my joy",
+      "[Am]Greensleeves was [E7]my delight",
+      "[G]Greensleeves was my [Em]heart of gold",
+      "And [Am]who but my [E7]lady [Am]Greensleeves",
+      "",
+      "[section:Verse 2]",
+      "[Am]Your vows you've broken, [G]like my heart",
+      "Oh, [Am]why did you so en[E7]rapture me",
+      "Now [Am]I remain in a [G]world apart",
+      "But my [Am]heart re[E7]mains in cap[Am]tivity"
+    ],
+    "notation": {
+      "timeSignature": [3, 4],
+      "tempo": 100,
+      "measures": [
+        {
+          "chord": "Am",
+          "lyricFragment": "A-",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration": "quarter",
+              "tab": {
+                "string": 2,
+                "fret": 2
+              }
+            }
+          ]
+        },
+        {
+          "chord": "Am",
+          "lyricFragment": "las, my",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration": "half",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "love, you",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "half",
+              "dotted": true,
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "do me",
+          "notes": [
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "Am",
+          "lyricFragment": "wrong, to",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration": "half",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "A3",
+              "duration": "quarter",
+              "tab": {
+                "string": 2,
+                "fret": 2
+              }
+            }
+          ]
+        },
+        {
+          "chord": "Am",
+          "lyricFragment": "cast me",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration": "quarter",
+              "tab": {
+                "string": 2,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "G#3",
+              "duration": "quarter",
+              "tab": {
+                "string": 2,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "A3",
+              "duration": "quarter",
+              "tab": {
+                "string": 2,
+                "fret": 2
+              }
+            }
+          ]
+        },
+        {
+          "chord": "E7",
+          "lyricFragment": "off dis-",
+          "notes": [
+            {
+              "pitch": "B3",
+              "duration": "half",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G#3",
+              "duration": "quarter",
+              "tab": {
+                "string": 2,
+                "fret": 1
+              }
+            }
+          ]
+        },
+        {
+          "chord": "Am",
+          "lyricFragment": "courteously",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration": "half",
+              "dotted": true,
+              "tab": {
+                "string": 2,
+                "fret": 2
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "house-of-the-rising-sun",
+    "title": "House of the Rising Sun",
+    "genres": ["fingerpicking"],
+    "difficulty": "Developing",
+    "key": "Am",
+    "chords": ["Am", "C", "D", "F", "E7"],
+    "attribution": "Traditional",
+    "lines": [
+      "[section:Verse 1]",
+      "There [Am]is a [C]house in [D]New Or[F]leans",
+      "They [Am]call the [C]Rising [E7]Sun",
+      "And it's [Am]been the [C]ruin of [D]many a poor [F]boy",
+      "And [Am]God I [E7]know I'm [Am]one",
+      "",
+      "[section:Verse 2]",
+      "My [Am]mother [C]was a [D]tai[F]lor",
+      "She [Am]sewed my [C]new blue [E7]jeans",
+      "My [Am]father [C]was a [D]gamblin' [F]man",
+      "Down [Am]in [E7]New Or[Am]leans",
+      "",
+      "[section:Verse 3]",
+      "Oh [Am]mother [C]tell your [D]chil[F]dren",
+      "Not to [Am]do what [C]I have [E7]done",
+      "Spend your [Am]lives in [C]sin and [D]mise[F]ry",
+      "In the [Am]House of the [E7]Rising [Am]Sun"
+    ],
+    "notation": {
+      "timeSignature": [3, 4],
+      "tempo": 90,
+      "measures": [
+        {
+          "chord": "Am",
+          "lyricFragment": "There",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration": "half",
+              "tab": {
+                "string": 2,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "is a",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "half",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "D",
+          "lyricFragment": "house in",
+          "notes": [
+            {
+              "pitch": "F4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            }
+          ]
+        },
+        {
+          "chord": "F",
+          "lyricFragment": "New Or-",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration": "half",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            }
+          ]
+        },
+        {
+          "chord": "Am",
+          "lyricFragment": "leans they",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "call the",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "half",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "E7",
+          "lyricFragment": "Rising",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "E7",
+          "lyricFragment": "Sun",
+          "notes": [
+            {
+              "pitch": "B3",
+              "duration": "half",
+              "dotted": true,
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "scarborough-fair",
+    "title": "Scarborough Fair",
+    "genres": ["fingerpicking"],
+    "difficulty": "Developing",
+    "key": "Am",
+    "chords": ["Am", "G", "C", "D"],
+    "attribution": "Traditional",
+    "lines": [
+      "[section:Verse 1]",
+      "Are you [Am]going to [G]Scarborough [Am]Fair",
+      "[C]Parsley, [Am]sage, rose[D]mary and [Am]thyme",
+      "Re[Am]member [C]me to [G]one who lives [Am]there",
+      "She [Am]once [G]was a true love of [Am]mine",
+      "",
+      "[section:Verse 2]",
+      "Tell her to [Am]make me a [G]cambric [Am]shirt",
+      "[C]Parsley, [Am]sage, rose[D]mary and [Am]thyme",
+      "With[Am]out no [C]seams nor [G]needle[Am]work",
+      "Then [Am]she'll [G]be a true love of [Am]mine",
+      "",
+      "[section:Verse 3]",
+      "Tell her to [Am]find me an [G]acre of [Am]land",
+      "[C]Parsley, [Am]sage, rose[D]mary and [Am]thyme",
+      "Be[Am]tween the [C]salt [G]water and the sea [Am]strand",
+      "Then [Am]she'll [G]be a true love of [Am]mine"
+    ],
+    "notation": {
+      "timeSignature": [3, 4],
+      "tempo": 95,
+      "measures": [
+        {
+          "chord": "Am",
+          "lyricFragment": "Are you",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration": "half",
+              "tab": {
+                "string": 2,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "A3",
+              "duration": "quarter",
+              "tab": {
+                "string": 2,
+                "fret": 2
+              }
+            }
+          ]
+        },
+        {
+          "chord": "Am",
+          "lyricFragment": "going to",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "Scarborough",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "F4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 1
+              }
+            }
+          ]
+        },
+        {
+          "chord": "Am",
+          "lyricFragment": "Fair",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "half",
+              "dotted": true,
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "Parsley,",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration": "half",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "Am",
+          "lyricFragment": "sage, rose-",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration": "half",
+              "tab": {
+                "string": 2,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "D",
+          "lyricFragment": "mary and",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration": "half",
+              "tab": {
+                "string": 2,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "G3",
+              "duration": "quarter",
+              "tab": {
+                "string": 2,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "Am",
+          "lyricFragment": "thyme",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration": "half",
+              "dotted": true,
+              "tab": {
+                "string": 2,
+                "fret": 2
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "saints-funk",
+    "variantOf": "when-the-saints",
+    "variantLabel": "Funk",
+    "title": "When the Saints (Funk Arrangement)",
+    "genres": ["funk"],
+    "difficulty": "Developing",
+    "key": "G",
+    "chords": ["G7", "C7", "D7"],
+    "attribution": "Traditional, funk arrangement",
+    "lines": [
+      "[section:Verse 1]",
+      "Oh when the [G7]saints go marching in",
+      "Oh when the saints go [D7]marching in",
+      "Oh Lord I [G7]want to [C7]be in that number",
+      "When the [G7]saints go [D7]marching [G7]in",
+      "",
+      "[section:Verse 2]",
+      "Oh when the [G7]drums begin to bang",
+      "Oh when the drums begin to [D7]bang",
+      "Oh Lord I [G7]want to [C7]be in that number",
+      "When the [G7]drums be[D7]gin to [G7]bang",
+      "",
+      "[section:Verse 3]",
+      "Oh when the [G7]stars fall from the sky",
+      "Oh when the stars fall from the [D7]sky",
+      "Oh Lord I [G7]want to [C7]be in that number",
+      "When the [G7]stars fall [D7]from the [G7]sky"
+    ],
+    "notation": {
+      "timeSignature": [4, 4],
+      "tempo": 105,
+      "measures": [
+        {
+          "chord": "G7",
+          "lyricFragment": "Oh when the saints",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G7",
+          "lyricFragment": "go marching",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G7",
+          "lyricFragment": "in, Oh when the",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "D7",
+          "lyricFragment": "saints go marching",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G7",
+          "lyricFragment": "in, Oh Lord I",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C7",
+          "lyricFragment": "want to be in that",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G7",
+          "lyricFragment": "number, when the",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "F4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "D7",
+          "lyricFragment": "saints go marching",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "half",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G7",
+          "lyricFragment": "in",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "rest",
+              "duration": "half"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "mary-lamb-funk",
+    "title": "Mary Had a Little Lamb (Blues-Funk)",
+    "genres": ["funk"],
+    "difficulty": "Beginner",
+    "key": "E",
+    "chords": ["E7", "A7", "B7"],
+    "attribution": "Traditional, blues-funk arrangement",
+    "lines": [
+      "[section:Verse 1]",
+      "[E7]Mary had a little lamb",
+      "Little lamb, [A7]little lamb",
+      "[E7]Mary had a little lamb its",
+      "[B7]Fleece was white as [E7]snow",
+      "",
+      "[section:Verse 2]",
+      "[E7]Everywhere that Mary went",
+      "Mary went, [A7]Mary went",
+      "[E7]Everywhere that Mary went the",
+      "[B7]Lamb was sure to [E7]go",
+      "",
+      "[section:Verse 3]",
+      "[E7]It followed her to school one day",
+      "School one day, [A7]school one day",
+      "[E7]It followed her to school one day which",
+      "[B7]Was against the [E7]rules"
+    ],
+    "notation": {
+      "timeSignature": [4, 4],
+      "tempo": 100,
+      "measures": [
+        {
+          "chord": "E7",
+          "lyricFragment": "Mary had a little",
+          "notes": [
+            {
+              "pitch": "G#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 4
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            }
+          ]
+        },
+        {
+          "chord": "E7",
+          "lyricFragment": "lamb, little lamb",
+          "notes": [
+            {
+              "pitch": "G#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 4
+              }
+            },
+            {
+              "pitch": "G#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 4
+              }
+            },
+            {
+              "pitch": "G#4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 4
+              }
+            }
+          ]
+        },
+        {
+          "chord": "A7",
+          "lyricFragment": "little lamb",
+          "notes": [
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            }
+          ]
+        },
+        {
+          "chord": "E7",
+          "lyricFragment": "Mary had a little",
+          "notes": [
+            {
+              "pitch": "G#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 4
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            }
+          ]
+        },
+        {
+          "chord": "E7",
+          "lyricFragment": "lamb its",
+          "notes": [
+            {
+              "pitch": "G#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 4
+              }
+            },
+            {
+              "pitch": "G#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 4
+              }
+            },
+            {
+              "pitch": "G#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 4
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            }
+          ]
+        },
+        {
+          "chord": "B7",
+          "lyricFragment": "fleece was white as",
+          "notes": [
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "G#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 4
+              }
+            }
+          ]
+        },
+        {
+          "chord": "E7",
+          "lyricFragment": "snow",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "rest",
+              "duration": "half"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "skip-to-my-lou",
+    "title": "Skip to My Lou (Funky)",
+    "genres": ["funk"],
+    "difficulty": "Beginner",
+    "key": "G",
+    "chords": ["G7", "C7", "D7"],
+    "attribution": "Traditional, funk arrangement",
+    "lines": [
+      "[section:Verse 1]",
+      "[G7]Flies in the buttermilk, shoo fly shoo",
+      "[C7]Flies in the buttermilk, shoo fly shoo",
+      "[G7]Flies in the buttermilk, shoo fly shoo",
+      "[D7]Skip to my Lou my [G7]darling",
+      "",
+      "[section:Chorus]",
+      "[G7]Lou, Lou, skip to my Lou",
+      "[C7]Lou, Lou, skip to my Lou",
+      "[G7]Lou, Lou, skip to my Lou",
+      "[D7]Skip to my Lou my [G7]darling",
+      "",
+      "[section:Verse 2]",
+      "[G7]Lost my partner, what'll I do",
+      "[C7]Lost my partner, what'll I do",
+      "[G7]Lost my partner, what'll I do",
+      "[D7]Skip to my Lou my [G7]darling",
+      "",
+      "[section:Chorus]",
+      "[G7]Lou, Lou, skip to my Lou",
+      "[C7]Lou, Lou, skip to my Lou",
+      "[G7]Lou, Lou, skip to my Lou",
+      "[D7]Skip to my Lou my [G7]darling"
+    ],
+    "notation": {
+      "timeSignature": [4, 4],
+      "tempo": 115,
+      "measures": [
+        {
+          "chord": "G7",
+          "lyricFragment": "Flies in the buttermilk",
+          "notes": [
+            {
+              "pitch": "B3",
+              "duration": "eighth",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "B3",
+              "duration": "eighth",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            }
+          ]
+        },
+        {
+          "chord": "C7",
+          "lyricFragment": "shoo fly shoo",
+          "notes": [
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "E4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G7",
+          "lyricFragment": "Flies in the buttermilk",
+          "notes": [
+            {
+              "pitch": "B3",
+              "duration": "eighth",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "B3",
+              "duration": "eighth",
+              "tab": {
+                "string": 1,
+                "fret": 0
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            }
+          ]
+        },
+        {
+          "chord": "D7",
+          "lyricFragment": "Skip to my Lou my",
+          "notes": [
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": {
+                "string": 1,
+                "fret": 1
+              }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": {
+                "string": 0,
+                "fret": 2
+              }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": {
+                "string": 3,
+                "fret": 0
+              }
+            }
+          ]
+        },
+        {
+          "chord": "G7",
+          "lyricFragment": "darling",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "half",
+              "tab": {
+                "string": 0,
+                "fret": 3
+              }
+            },
+            {
+              "pitch": "rest",
+              "duration": "half"
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

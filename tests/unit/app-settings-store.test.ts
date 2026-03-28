@@ -65,4 +65,40 @@ describe('app-settings-store', () => {
       }
     })
   })
+
+  it('preserves new nested defaults when hydrating older persisted settings', async () => {
+    localStorage.setItem(
+      'soundgarden-app-settings',
+      JSON.stringify({
+        state: {
+          audio: {
+            masterVolume: 0.5
+          },
+          practice: {
+            referenceA4: 442
+          },
+          interface: {
+            reducedMotion: true
+          }
+        },
+        version: 0
+      })
+    )
+
+    await useAppSettingsStore.persist.rehydrate()
+
+    expect(useAppSettingsStore.getState().audio).toMatchObject({
+      ...DEFAULT_AUDIO_SETTINGS,
+      masterVolume: 0.5
+    })
+    expect(useAppSettingsStore.getState().practice).toMatchObject({
+      ...DEFAULT_PRACTICE_SETTINGS,
+      referenceA4: 442,
+      notationVoice: 'piano'
+    })
+    expect(useAppSettingsStore.getState().interface).toMatchObject({
+      ...DEFAULT_INTERFACE_SETTINGS,
+      reducedMotion: true
+    })
+  })
 })

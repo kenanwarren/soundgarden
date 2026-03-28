@@ -128,6 +128,8 @@ export function SettingsPanel(): JSX.Element {
   const setBeatsPerMeasure = useMetronomeStore((s) => s.setBeatsPerMeasure)
   const setAccentFirst = useMetronomeStore((s) => s.setAccentFirst)
   const hydrateMetronomeFromSettings = useMetronomeStore((s) => s.hydrateFromSettings)
+  const notationVoice = useAppSettingsStore((s) => s.practice.notationVoice)
+  const setPracticeSetting = useAppSettingsStore((s) => s.setPracticeSetting)
 
   const [checkResult, setCheckResult] = useState<CheckResult | null>(null)
   const monitoringSafe = !audioSettings.monitoringEnabled || audioSettings.masterVolume <= 0.85
@@ -395,6 +397,31 @@ export function SettingsPanel(): JSX.Element {
                 checked={accentFirst}
                 onChange={setAccentFirst}
               />
+            </div>
+            <div>
+              <div className="text-sm font-medium text-white">Notation Playback Voice</div>
+              <p className="mt-1 text-sm text-zinc-400">
+                Choose the sound used when playing back song notation.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {(['piano', 'guitar', 'music-box', 'sine'] as const).map((voice) => (
+                <button
+                  key={voice}
+                  onClick={() => setPracticeSetting('notationVoice', voice)}
+                  className={`rounded-xl px-3 py-2 text-sm capitalize transition-colors ${
+                    notationVoice === voice
+                      ? 'bg-emerald-600 text-white'
+                      : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white'
+                  }`}
+                >
+                  {voice === 'music-box'
+                    ? 'Music Box'
+                    : voice === 'sine'
+                      ? 'Sine Wave'
+                      : voice.charAt(0).toUpperCase() + voice.slice(1)}
+                </button>
+              ))}
             </div>
           </div>
         </div>

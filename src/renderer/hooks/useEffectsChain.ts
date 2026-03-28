@@ -6,6 +6,7 @@ import type { EffectNode } from '../audio/pipeline'
 import type { ManagedEffect } from '../audio/effects/types'
 import { createManagedEffect, updateEffectParams } from '../audio/effects/factory'
 import { WORKLET_URLS } from '../audio/worklet-urls'
+import { useUiStore } from '../stores/ui-store'
 
 export function useEffectsChain() {
   const chain = useEffectsStore((s) => s.chain)
@@ -31,7 +32,10 @@ export function useEffectsChain() {
             await ctx.audioWorklet.addModule(url)
             workletLoadedRef.current.add(effect.type)
           } catch (err) {
-            console.error(`Failed to load worklet for ${effect.type}:`, err)
+            useUiStore.getState().pushNotice({
+              tone: 'error',
+              title: `Failed to load ${effect.type} worklet`
+            })
           }
         }
       }
@@ -53,7 +57,10 @@ export function useEffectsChain() {
               managedRef.current.set(effect.id, managed)
             }
           } catch (err) {
-            console.error(`Failed to create effect ${effect.type}:`, err)
+            useUiStore.getState().pushNotice({
+              tone: 'error',
+              title: `Failed to create ${effect.type} effect`
+            })
           }
         }
 

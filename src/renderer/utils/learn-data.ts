@@ -1,4 +1,5 @@
 export { GENRE_DEFINITIONS } from './genres'
+export { SONGS } from './songs'
 export { PRACTICE_PATHS } from './practice-paths'
 export { CHORD_CHANGE_PRESETS } from './presets/chord-changes'
 export type { ChordChangePreset } from './presets/chord-changes'

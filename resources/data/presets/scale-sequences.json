@@ -1,0 +1,62 @@
+[
+  {
+    "id": "blues-box-run",
+    "name": "Blues Box Run",
+    "description": "Move through the A blues box without skipping the blue note.",
+    "root": "A",
+    "scaleName": "Blues",
+    "sequenceType": "ascending",
+    "loops": 2,
+    "genreTags": ["blues"]
+  },
+  {
+    "id": "rock-pentatonic-drive",
+    "name": "Rock Pentatonic Drive",
+    "description": "Run E minor pentatonic in an assertive, even sequence.",
+    "root": "E",
+    "scaleName": "Minor Pentatonic",
+    "sequenceType": "ascending",
+    "loops": 2,
+    "genreTags": ["rock"]
+  },
+  {
+    "id": "pop-major-hooks",
+    "name": "Pop Major Hooks",
+    "description": "Trace major-scale motion that feels singable and direct.",
+    "root": "C",
+    "scaleName": "Major",
+    "sequenceType": "ascending",
+    "loops": 2,
+    "genreTags": ["pop"]
+  },
+  {
+    "id": "funk-mixolydian-pocket",
+    "name": "Funk Mixolydian Pocket",
+    "description": "Move through A Mixolydian in thirds to hear groove-friendly color tones.",
+    "root": "A",
+    "scaleName": "Mixolydian",
+    "sequenceType": "thirds",
+    "loops": 2,
+    "genreTags": ["funk"]
+  },
+  {
+    "id": "country-major-pentatonic-roll",
+    "name": "Country Major Pentatonic Roll",
+    "description": "Descend through G major pentatonic with bright, skipping motion.",
+    "root": "G",
+    "scaleName": "Major Pentatonic",
+    "sequenceType": "descending",
+    "loops": 2,
+    "genreTags": ["country"]
+  },
+  {
+    "id": "fingerpicked-arpeggio-map",
+    "name": "Fingerpicked Arpeggio Map",
+    "description": "Use a C major sequence as a picking-hand timing map.",
+    "root": "C",
+    "scaleName": "Major",
+    "sequenceType": "descending",
+    "loops": 2,
+    "genreTags": ["fingerpicking"]
+  }
+]

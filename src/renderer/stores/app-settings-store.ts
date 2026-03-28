@@ -13,12 +13,15 @@ export interface AudioSettings {
   monitoringEnabled: boolean
 }
 
+export type NotationVoice = 'piano' | 'guitar' | 'sine' | 'music-box'
+
 export interface PracticeSettings {
   referenceA4: number
   tuningPreset: TuningPresetName
   metronomeBpm: number
   metronomeBeatsPerMeasure: number
   metronomeAccentFirst: boolean
+  notationVoice: NotationVoice
 }
 
 export interface InterfaceSettings {
@@ -40,7 +43,8 @@ export const DEFAULT_PRACTICE_SETTINGS: PracticeSettings = {
   tuningPreset: 'Standard',
   metronomeBpm: 120,
   metronomeBeatsPerMeasure: 4,
-  metronomeAccentFirst: true
+  metronomeAccentFirst: true,
+  notationVoice: 'piano'
 }
 
 export const DEFAULT_INTERFACE_SETTINGS: InterfaceSettings = {
@@ -88,7 +92,27 @@ export const useAppSettingsStore = create<AppSettingsState>()(
     }),
     {
       name: 'soundgarden-app-settings',
-      storage: zustandStorage
+      storage: zustandStorage,
+      merge: (persistedState, currentState) => {
+        const persisted = (persistedState as Partial<AppSettingsState> | undefined) ?? {}
+
+        return {
+          ...currentState,
+          ...persisted,
+          audio: {
+            ...currentState.audio,
+            ...persisted.audio
+          },
+          practice: {
+            ...currentState.practice,
+            ...persisted.practice
+          },
+          interface: {
+            ...currentState.interface,
+            ...persisted.interface
+          }
+        }
+      }
     }
   )
 )

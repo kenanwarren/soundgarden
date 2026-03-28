@@ -9,6 +9,8 @@ const runtime = {
 
 const api = {
   getVersion: (): Promise<string> => ipcRenderer.invoke('app:getVersion'),
+  loadData: (relativePath: string): Promise<unknown> =>
+    ipcRenderer.invoke('data:load', relativePath),
   runtime
 }
 

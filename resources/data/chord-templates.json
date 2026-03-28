@@ -1,0 +1,12 @@
+[
+  { "quality": "major", "intervals": [0, 4, 7] },
+  { "quality": "minor", "intervals": [0, 3, 7] },
+  { "quality": "7", "intervals": [0, 4, 7, 10] },
+  { "quality": "maj7", "intervals": [0, 4, 7, 11] },
+  { "quality": "m7", "intervals": [0, 3, 7, 10] },
+  { "quality": "dim", "intervals": [0, 3, 6] },
+  { "quality": "aug", "intervals": [0, 4, 8] },
+  { "quality": "sus2", "intervals": [0, 2, 7] },
+  { "quality": "sus4", "intervals": [0, 5, 7] },
+  { "quality": "5", "intervals": [0, 7] }
+]

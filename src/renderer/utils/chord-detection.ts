@@ -1,17 +1,10 @@
 import { NOTE_NAMES } from './constants'
 
-const CHORD_TEMPLATES: [string, number[]][] = [
-  ['major', [0, 4, 7]],
-  ['minor', [0, 3, 7]],
-  ['7', [0, 4, 7, 10]],
-  ['maj7', [0, 4, 7, 11]],
-  ['m7', [0, 3, 7, 10]],
-  ['dim', [0, 3, 6]],
-  ['aug', [0, 4, 8]],
-  ['sus2', [0, 2, 7]],
-  ['sus4', [0, 5, 7]],
-  ['5', [0, 7]]
-]
+let CHORD_TEMPLATES: [string, number[]][] = []
+
+export function _initChordTemplates(data: [string, number[]][]): void {
+  CHORD_TEMPLATES = data
+}
 
 export interface ChordResult {
   name: string

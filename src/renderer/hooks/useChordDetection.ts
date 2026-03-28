@@ -3,6 +3,7 @@ import { useChordStore } from '../stores/chord-store'
 import { useAudioStore } from '../stores/audio-store'
 import { getEngine } from './useAudioEngine'
 import { detectChord } from '../utils/chord-detection'
+import { safeDisconnect } from '../audio/safe-disconnect'
 
 export function useChordDetection() {
   const isConnected = useAudioStore((s) => s.isConnected)
@@ -25,11 +26,7 @@ export function useChordDetection() {
       clearInterval(intervalRef.current)
     }
     if (analyserRef.current) {
-      try {
-        analyserRef.current.disconnect()
-      } catch {
-        /* */
-      }
+      safeDisconnect(analyserRef.current)
     }
 
     const analyser = ctx.createAnalyser()
@@ -101,11 +98,7 @@ export function useChordDetection() {
     }
 
     if (analyserRef.current) {
-      try {
-        analyserRef.current.disconnect()
-      } catch {
-        /* */
-      }
+      safeDisconnect(analyserRef.current)
       analyserRef.current = null
     }
 

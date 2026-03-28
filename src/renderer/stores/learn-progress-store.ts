@@ -130,10 +130,11 @@ export const useLearnProgressStore = create<LearnProgressState>()(
         set((state) => ({
           completedSteps: { ...state.completedSteps, [stepId]: Date.now() }
         })),
-      reset: () => ({
-        progress: {},
-        completedSteps: {}
-      })
+      reset: () =>
+        set({
+          progress: {},
+          completedSteps: {}
+        })
     }),
     {
       name: 'soundgarden-learn-progress',

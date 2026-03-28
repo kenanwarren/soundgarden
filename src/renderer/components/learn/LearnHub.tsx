@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   ArrowRight,
@@ -7,6 +7,7 @@ import {
   Clock3,
   Drum,
   Ear,
+  FileMusic,
   Gauge,
   Layers3,
   Music2
@@ -41,7 +42,8 @@ const featureIcons: Record<LearnModuleId, typeof Music2> = {
   'rhythm-trainer': Drum,
   'ear-training': Ear,
   'chord-changes': Layers3,
-  'scale-sequences': Gauge
+  'scale-sequences': Gauge,
+  'song-viewer': FileMusic
 }
 
 const skillCards: Array<{ module: LearnModuleId; title: string; description: string }> = [
@@ -82,7 +84,19 @@ export function LearnHub(): JSX.Element {
   const status = useSystemStatus()
   const progress = useLearnProgressStore((state) => state.progress)
   const completedSteps = useLearnProgressStore((state) => state.completedSteps)
+  const markStepComplete = useLearnProgressStore((state) => state.markStepComplete)
   const visibleGenres = useMemo(() => getVisibleGenres(), [])
+
+  useEffect(() => {
+    if (!isSetupReady(status)) return
+    for (const path of PRACTICE_PATHS) {
+      for (const step of path.steps) {
+        if (step.completionRule.type === 'setup-ready' && !completedSteps[step.id]) {
+          markStepComplete(step.id)
+        }
+      }
+    }
+  }, [status, completedSteps, markStepComplete])
   const [browseMode, setBrowseMode] = useState<'all' | 'genre' | 'skill'>('all')
   const [selectedGenre, setSelectedGenre] = useState<GenreId>(visibleGenres[0]?.id ?? 'blues')
   const [selectedSkill, setSelectedSkill] = useState<LearnSkillId>('chords')

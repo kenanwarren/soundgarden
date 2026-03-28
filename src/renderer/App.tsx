@@ -16,6 +16,7 @@ import { RhythmPanel } from './components/learn/RhythmPanel'
 import { EarTrainingPanel } from './components/learn/EarTrainingPanel'
 import { ChordChangesPanel } from './components/learn/ChordChangesPanel'
 import { ScaleSequencePanel } from './components/learn/ScaleSequencePanel'
+import { SongViewerPanel } from './components/learn/SongViewerPanel'
 import { SettingsPanel } from './components/settings/SettingsPanel'
 import { useAppSettingsStore } from './stores/app-settings-store'
 
@@ -125,6 +126,7 @@ export default function App(): JSX.Element {
               <Route path="/learn/ear-training" element={<EarTrainingPanel />} />
               <Route path="/learn/chord-changes" element={<ChordChangesPanel />} />
               <Route path="/learn/scale-sequences" element={<ScaleSequencePanel />} />
+              <Route path="/learn/songs" element={<SongViewerPanel />} />
               <Route path="/settings" element={<SettingsPanel />} />
             </Routes>
           </ErrorBoundary>

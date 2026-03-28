@@ -11,7 +11,7 @@ async function fetchNamWasmBytes(): Promise<ArrayBuffer | null> {
     namWasmBytesCache = await resp.arrayBuffer()
     return namWasmBytesCache
   } catch (err) {
-    console.warn('Failed to fetch NAM WASM module:', err)
+    if (import.meta.env.DEV) console.warn('Failed to fetch NAM WASM module:', err)
     return null
   }
 }
@@ -21,13 +21,15 @@ export function createWorkletEffect(ctx: AudioContext, config: EffectConfig): Ma
   if (config.type === 'nam') {
     node.port.addEventListener('message', (e: MessageEvent) => {
       if (e.data?.type === 'modelError') {
-        console.error('NAM model runtime error:', e.data.error)
+        if (import.meta.env.DEV) console.error('NAM model runtime error:', e.data.error)
       }
     })
     node.port.start()
-    fetchNamWasmBytes().then((bytes) => {
-      if (bytes) node.port.postMessage({ type: 'initWasm', wasmBytes: bytes })
-    })
+    fetchNamWasmBytes()
+      .then((bytes) => {
+        if (bytes) node.port.postMessage({ type: 'initWasm', wasmBytes: bytes })
+      })
+      .catch(() => {})
   }
   if (config.type === 'looper') {
     node.port.start()

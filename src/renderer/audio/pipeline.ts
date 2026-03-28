@@ -1,3 +1,5 @@
+import { safeDisconnect } from './safe-disconnect'
+
 export interface EffectNode {
   id: string
   enabled: boolean
@@ -29,11 +31,7 @@ export class AudioPipeline {
 
   removeTap(node: AudioNode): void {
     this.taps.delete(node)
-    try {
-      node.disconnect()
-    } catch {
-      /* */
-    }
+    safeDisconnect(node)
   }
 
   connectSource(source: AudioNode): void {
@@ -92,11 +90,7 @@ export class AudioPipeline {
     this.sourceNode.disconnect()
 
     for (const effect of this.effectNodes) {
-      try {
-        effect.getOutput().disconnect()
-      } catch {
-        /* */
-      }
+      safeDisconnect(effect.getOutput())
     }
 
     // Reconnect all parallel taps

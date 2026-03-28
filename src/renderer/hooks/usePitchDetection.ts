@@ -2,6 +2,7 @@ import { useEffect, useRef, useCallback, useState } from 'react'
 import { useAudioStore } from '../stores/audio-store'
 import { frequencyToNote } from '../utils/note-utils'
 import { getEngine } from './useAudioEngine'
+import { safeDisconnect } from '../audio/safe-disconnect'
 
 const MEDIAN_WINDOW = 5
 const BUFFER_SIZE = 4096
@@ -154,11 +155,7 @@ export function usePitchDetection({ id, referenceA4 = 440, onPitch }: UsePitchDe
 
     if (intervalRef.current !== null) clearInterval(intervalRef.current)
     if (analyserRef.current) {
-      try {
-        analyserRef.current.disconnect()
-      } catch {
-        /* */
-      }
+      safeDisconnect(analyserRef.current)
     }
 
     const analyser = ctx.createAnalyser()
@@ -211,11 +208,7 @@ export function usePitchDetection({ id, referenceA4 = 440, onPitch }: UsePitchDe
       intervalRef.current = null
     }
     if (analyserRef.current) {
-      try {
-        analyserRef.current.disconnect()
-      } catch {
-        /* */
-      }
+      safeDisconnect(analyserRef.current)
       analyserRef.current = null
     }
 
