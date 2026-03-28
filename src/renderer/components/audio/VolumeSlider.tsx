@@ -1,8 +1,9 @@
-import { useAudioStore } from '../../stores/audio-store'
+import { useAppSettingsStore } from '../../stores/app-settings-store'
 
 export function VolumeSlider(): JSX.Element {
-  const masterVolume = useAudioStore((s) => s.masterVolume)
-  const setMasterVolume = useAudioStore((s) => s.setMasterVolume)
+  const masterVolume = useAppSettingsStore((s) => s.audio.masterVolume)
+  const monitoringEnabled = useAppSettingsStore((s) => s.audio.monitoringEnabled)
+  const setAudioSetting = useAppSettingsStore((s) => s.setAudioSetting)
 
   return (
     <div className="flex flex-col gap-1 items-center">
@@ -13,10 +14,12 @@ export function VolumeSlider(): JSX.Element {
         max={1}
         step={0.01}
         value={masterVolume}
-        onChange={(e) => setMasterVolume(parseFloat(e.target.value))}
+        onChange={(e) => setAudioSetting('masterVolume', parseFloat(e.target.value))}
         className="w-24 accent-emerald-500"
       />
-      <span className="text-xs text-zinc-500 font-mono">{Math.round(masterVolume * 100)}%</span>
+      <span className="text-xs text-zinc-500 font-mono">
+        {monitoringEnabled ? `${Math.round(masterVolume * 100)}%` : 'Muted'}
+      </span>
     </div>
   )
 }

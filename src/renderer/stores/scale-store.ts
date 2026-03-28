@@ -29,16 +29,23 @@ export const useScaleStore = create<ScaleState>()(
       setRoot: (root) => set({ selectedRoot: root, hitNotes: [] }),
       setScaleIndex: (index) => set({ selectedScaleIndex: index, hitNotes: [] }),
       setPracticing: (practicing) =>
-        set({ isPracticing: practicing, hitNotes: [], currentDetectedNote: null, currentDetectedOctave: null }),
+        set({
+          isPracticing: practicing,
+          hitNotes: [],
+          currentDetectedNote: null,
+          currentDetectedOctave: null
+        }),
       registerHit: (note) =>
         set((state) => ({
           hitNotes: state.hitNotes.includes(note) ? state.hitNotes : [...state.hitNotes, note]
         })),
-      setDetectedNote: (note, octave) => set({ currentDetectedNote: note, currentDetectedOctave: octave }),
-      resetProgress: () => set({ hitNotes: [], currentDetectedNote: null, currentDetectedOctave: null })
+      setDetectedNote: (note, octave) =>
+        set({ currentDetectedNote: note, currentDetectedOctave: octave }),
+      resetProgress: () =>
+        set({ hitNotes: [], currentDetectedNote: null, currentDetectedOctave: null })
     }),
     {
-      name: 'tonefield-scales',
+      name: 'soundgarden-scales',
       partialize: (state) => ({
         selectedRoot: state.selectedRoot,
         selectedScaleIndex: state.selectedScaleIndex

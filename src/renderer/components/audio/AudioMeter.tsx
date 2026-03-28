@@ -1,10 +1,14 @@
 import { useAudioStore } from '../../stores/audio-store'
+import { getSignalBand, getSignalLabel } from '../../utils/system-status'
 
 export function AudioMeter(): JSX.Element {
   const level = useAudioStore((s) => s.inputLevel)
+  const isConnected = useAudioStore((s) => s.isConnected)
 
   const barCount = 20
-  const activeBars = Math.round(level * barCount)
+  const activeBars = isConnected ? Math.round(level * barCount) : 0
+  const signalBand = getSignalBand(level, isConnected)
+  const signalLabel = getSignalLabel(signalBand)
 
   return (
     <div className="flex flex-col gap-1 items-center">
@@ -18,9 +22,16 @@ export function AudioMeter(): JSX.Element {
             else if (i < barCount * 0.85) color = 'bg-yellow-500'
             else color = 'bg-red-500'
           }
-          return <div key={i} className={`w-2 rounded-sm transition-colors ${color}`} style={{ height: `${((i + 1) / barCount) * 100}%` }} />
+          return (
+            <div
+              key={i}
+              className={`w-2 rounded-sm transition-colors ${color}`}
+              style={{ height: `${((i + 1) / barCount) * 100}%` }}
+            />
+          )
         })}
       </div>
+      <span className="text-xs text-zinc-500 font-mono">{signalLabel}</span>
     </div>
   )
 }

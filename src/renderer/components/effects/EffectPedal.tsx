@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { Power, X, GripVertical, Upload } from 'lucide-react'
 import { Knob } from '../common/Knob'
 import type { EffectConfig } from '../../stores/effects-store'
+import { useUiStore } from '../../stores/ui-store'
 
 interface EffectPedalProps {
   effect: EffectConfig
@@ -122,7 +123,13 @@ export function EffectPedal({
       </div>
 
       <div className="flex gap-3 justify-center">
-        <EffectKnobs effect={effect} onParamChange={onParamChange} onLoadNamModel={onLoadNamModel} onLoadCabinetIR={onLoadCabinetIR} onLooperCommand={onLooperCommand} />
+        <EffectKnobs
+          effect={effect}
+          onParamChange={onParamChange}
+          onLoadNamModel={onLoadNamModel}
+          onLoadCabinetIR={onLoadCabinetIR}
+          onLooperCommand={onLooperCommand}
+        />
       </div>
     </div>
   )
@@ -148,166 +155,640 @@ function EffectKnobs({
     case 'gain':
       return (
         <>
-          <Knob label="Gain" value={p.gain ?? 1} min={0} max={4} step={0.1} onChange={(v) => set('gain', v)} />
-          <Knob label="Drive" value={p.drive ?? 0} min={0} max={1} step={0.01} onChange={(v) => set('drive', v)} />
+          <Knob
+            label="Gain"
+            value={p.gain ?? 1}
+            min={0}
+            max={4}
+            step={0.1}
+            onChange={(v) => set('gain', v)}
+          />
+          <Knob
+            label="Drive"
+            value={p.drive ?? 0}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('drive', v)}
+          />
         </>
       )
     case 'eq':
       return (
         <>
-          <Knob label="Low" value={p.low ?? 0} min={-12} max={12} step={0.5} unit="dB" onChange={(v) => set('low', v)} />
-          <Knob label="Mid" value={p.mid ?? 0} min={-12} max={12} step={0.5} unit="dB" onChange={(v) => set('mid', v)} />
-          <Knob label="High" value={p.high ?? 0} min={-12} max={12} step={0.5} unit="dB" onChange={(v) => set('high', v)} />
+          <Knob
+            label="Low"
+            value={p.low ?? 0}
+            min={-12}
+            max={12}
+            step={0.5}
+            unit="dB"
+            onChange={(v) => set('low', v)}
+          />
+          <Knob
+            label="Mid"
+            value={p.mid ?? 0}
+            min={-12}
+            max={12}
+            step={0.5}
+            unit="dB"
+            onChange={(v) => set('mid', v)}
+          />
+          <Knob
+            label="High"
+            value={p.high ?? 0}
+            min={-12}
+            max={12}
+            step={0.5}
+            unit="dB"
+            onChange={(v) => set('high', v)}
+          />
         </>
       )
     case 'reverb':
       return (
-        <Knob label="Mix" value={p.mix ?? 0.3} min={0} max={1} step={0.01} onChange={(v) => set('mix', v)} />
+        <Knob
+          label="Mix"
+          value={p.mix ?? 0.3}
+          min={0}
+          max={1}
+          step={0.01}
+          onChange={(v) => set('mix', v)}
+        />
       )
     case 'delay':
       return (
         <>
-          <Knob label="Time" value={p.time ?? 300} min={50} max={2000} step={10} unit="ms" onChange={(v) => set('time', v)} />
-          <Knob label="Fdbk" value={p.feedback ?? 0.3} min={0} max={0.95} step={0.01} onChange={(v) => set('feedback', v)} />
-          <Knob label="Mix" value={p.mix ?? 0.3} min={0} max={1} step={0.01} onChange={(v) => set('mix', v)} />
+          <Knob
+            label="Time"
+            value={p.time ?? 300}
+            min={50}
+            max={2000}
+            step={10}
+            unit="ms"
+            onChange={(v) => set('time', v)}
+          />
+          <Knob
+            label="Fdbk"
+            value={p.feedback ?? 0.3}
+            min={0}
+            max={0.95}
+            step={0.01}
+            onChange={(v) => set('feedback', v)}
+          />
+          <Knob
+            label="Mix"
+            value={p.mix ?? 0.3}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('mix', v)}
+          />
         </>
       )
     case 'chorus':
       return (
         <>
-          <Knob label="Rate" value={p.rate ?? 1.5} min={0.1} max={10} step={0.1} unit="Hz" onChange={(v) => set('rate', v)} />
-          <Knob label="Depth" value={p.depth ?? 0.5} min={0} max={1} step={0.01} onChange={(v) => set('depth', v)} />
-          <Knob label="Mix" value={p.mix ?? 0.5} min={0} max={1} step={0.01} onChange={(v) => set('mix', v)} />
+          <Knob
+            label="Rate"
+            value={p.rate ?? 1.5}
+            min={0.1}
+            max={10}
+            step={0.1}
+            unit="Hz"
+            onChange={(v) => set('rate', v)}
+          />
+          <Knob
+            label="Depth"
+            value={p.depth ?? 0.5}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('depth', v)}
+          />
+          <Knob
+            label="Mix"
+            value={p.mix ?? 0.5}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('mix', v)}
+          />
         </>
       )
     case 'compressor':
       return (
         <>
-          <Knob label="Thresh" value={p.threshold ?? -20} min={-60} max={0} step={1} unit="dB" onChange={(v) => set('threshold', v)} />
-          <Knob label="Ratio" value={p.ratio ?? 4} min={1} max={20} step={0.5} onChange={(v) => set('ratio', v)} />
-          <Knob label="Atk" value={p.attack ?? 10} min={0.1} max={100} step={0.5} unit="ms" onChange={(v) => set('attack', v)} />
-          <Knob label="Rel" value={p.release ?? 100} min={10} max={1000} step={5} unit="ms" onChange={(v) => set('release', v)} />
-          <Knob label="Makeup" value={p.makeup ?? 0} min={0} max={30} step={0.5} unit="dB" onChange={(v) => set('makeup', v)} />
+          <Knob
+            label="Thresh"
+            value={p.threshold ?? -20}
+            min={-60}
+            max={0}
+            step={1}
+            unit="dB"
+            onChange={(v) => set('threshold', v)}
+          />
+          <Knob
+            label="Ratio"
+            value={p.ratio ?? 4}
+            min={1}
+            max={20}
+            step={0.5}
+            onChange={(v) => set('ratio', v)}
+          />
+          <Knob
+            label="Atk"
+            value={p.attack ?? 10}
+            min={0.1}
+            max={100}
+            step={0.5}
+            unit="ms"
+            onChange={(v) => set('attack', v)}
+          />
+          <Knob
+            label="Rel"
+            value={p.release ?? 100}
+            min={10}
+            max={1000}
+            step={5}
+            unit="ms"
+            onChange={(v) => set('release', v)}
+          />
+          <Knob
+            label="Makeup"
+            value={p.makeup ?? 0}
+            min={0}
+            max={30}
+            step={0.5}
+            unit="dB"
+            onChange={(v) => set('makeup', v)}
+          />
         </>
       )
     case 'noisegate':
       return (
         <>
-          <Knob label="Thresh" value={p.threshold ?? -40} min={-80} max={0} step={1} unit="dB" onChange={(v) => set('threshold', v)} />
-          <Knob label="Atk" value={p.attack ?? 1} min={0.1} max={50} step={0.5} unit="ms" onChange={(v) => set('attack', v)} />
-          <Knob label="Rel" value={p.release ?? 50} min={10} max={500} step={5} unit="ms" onChange={(v) => set('release', v)} />
+          <Knob
+            label="Thresh"
+            value={p.threshold ?? -40}
+            min={-80}
+            max={0}
+            step={1}
+            unit="dB"
+            onChange={(v) => set('threshold', v)}
+          />
+          <Knob
+            label="Atk"
+            value={p.attack ?? 1}
+            min={0.1}
+            max={50}
+            step={0.5}
+            unit="ms"
+            onChange={(v) => set('attack', v)}
+          />
+          <Knob
+            label="Rel"
+            value={p.release ?? 50}
+            min={10}
+            max={500}
+            step={5}
+            unit="ms"
+            onChange={(v) => set('release', v)}
+          />
         </>
       )
     case 'tremolo':
       return (
         <>
-          <Knob label="Rate" value={p.rate ?? 4} min={0.5} max={20} step={0.5} unit="Hz" onChange={(v) => set('rate', v)} />
-          <Knob label="Depth" value={p.depth ?? 0.5} min={0} max={1} step={0.01} onChange={(v) => set('depth', v)} />
-          <Knob label="Wave" value={p.wave ?? 0} min={0} max={1} step={1} onChange={(v) => set('wave', v)} />
+          <Knob
+            label="Rate"
+            value={p.rate ?? 4}
+            min={0.5}
+            max={20}
+            step={0.5}
+            unit="Hz"
+            onChange={(v) => set('rate', v)}
+          />
+          <Knob
+            label="Depth"
+            value={p.depth ?? 0.5}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('depth', v)}
+          />
+          <Knob
+            label="Wave"
+            value={p.wave ?? 0}
+            min={0}
+            max={1}
+            step={1}
+            onChange={(v) => set('wave', v)}
+          />
         </>
       )
     case 'phaser':
       return (
         <>
-          <Knob label="Rate" value={p.rate ?? 0.5} min={0.05} max={5} step={0.05} unit="Hz" onChange={(v) => set('rate', v)} />
-          <Knob label="Depth" value={p.depth ?? 0.7} min={0} max={1} step={0.01} onChange={(v) => set('depth', v)} />
-          <Knob label="Stgs" value={p.stages ?? 4} min={2} max={12} step={2} onChange={(v) => set('stages', v)} />
-          <Knob label="Fdbk" value={p.feedback ?? 0.5} min={-0.95} max={0.95} step={0.05} onChange={(v) => set('feedback', v)} />
-          <Knob label="Mix" value={p.mix ?? 0.5} min={0} max={1} step={0.01} onChange={(v) => set('mix', v)} />
+          <Knob
+            label="Rate"
+            value={p.rate ?? 0.5}
+            min={0.05}
+            max={5}
+            step={0.05}
+            unit="Hz"
+            onChange={(v) => set('rate', v)}
+          />
+          <Knob
+            label="Depth"
+            value={p.depth ?? 0.7}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('depth', v)}
+          />
+          <Knob
+            label="Stgs"
+            value={p.stages ?? 4}
+            min={2}
+            max={12}
+            step={2}
+            onChange={(v) => set('stages', v)}
+          />
+          <Knob
+            label="Fdbk"
+            value={p.feedback ?? 0.5}
+            min={-0.95}
+            max={0.95}
+            step={0.05}
+            onChange={(v) => set('feedback', v)}
+          />
+          <Knob
+            label="Mix"
+            value={p.mix ?? 0.5}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('mix', v)}
+          />
         </>
       )
     case 'flanger':
       return (
         <>
-          <Knob label="Rate" value={p.rate ?? 0.5} min={0.05} max={5} step={0.05} unit="Hz" onChange={(v) => set('rate', v)} />
-          <Knob label="Depth" value={p.depth ?? 0.7} min={0} max={1} step={0.01} onChange={(v) => set('depth', v)} />
-          <Knob label="Fdbk" value={p.feedback ?? 0.5} min={-0.95} max={0.95} step={0.05} onChange={(v) => set('feedback', v)} />
-          <Knob label="Mix" value={p.mix ?? 0.5} min={0} max={1} step={0.01} onChange={(v) => set('mix', v)} />
+          <Knob
+            label="Rate"
+            value={p.rate ?? 0.5}
+            min={0.05}
+            max={5}
+            step={0.05}
+            unit="Hz"
+            onChange={(v) => set('rate', v)}
+          />
+          <Knob
+            label="Depth"
+            value={p.depth ?? 0.7}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('depth', v)}
+          />
+          <Knob
+            label="Fdbk"
+            value={p.feedback ?? 0.5}
+            min={-0.95}
+            max={0.95}
+            step={0.05}
+            onChange={(v) => set('feedback', v)}
+          />
+          <Knob
+            label="Mix"
+            value={p.mix ?? 0.5}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('mix', v)}
+          />
         </>
       )
     case 'distortion':
       return (
         <>
-          <Knob label="Gain" value={p.gain ?? 3} min={0.5} max={10} step={0.1} onChange={(v) => set('gain', v)} />
-          <Knob label="Tone" value={p.tone ?? 0.5} min={0} max={1} step={0.01} onChange={(v) => set('tone', v)} />
-          <Knob label="Mode" value={p.mode ?? 0} min={0} max={2} step={1} onChange={(v) => set('mode', v)} />
-          <Knob label="Mix" value={p.mix ?? 1} min={0} max={1} step={0.01} onChange={(v) => set('mix', v)} />
+          <Knob
+            label="Gain"
+            value={p.gain ?? 3}
+            min={0.5}
+            max={10}
+            step={0.1}
+            onChange={(v) => set('gain', v)}
+          />
+          <Knob
+            label="Tone"
+            value={p.tone ?? 0.5}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('tone', v)}
+          />
+          <Knob
+            label="Mode"
+            value={p.mode ?? 0}
+            min={0}
+            max={2}
+            step={1}
+            onChange={(v) => set('mode', v)}
+          />
+          <Knob
+            label="Mix"
+            value={p.mix ?? 1}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('mix', v)}
+          />
         </>
       )
     case 'wah':
       return (
         <>
-          <Knob label="Sens" value={p.sensitivity ?? 0.5} min={0} max={1} step={0.01} onChange={(v) => set('sensitivity', v)} />
-          <Knob label="Q" value={p.q ?? 5} min={1} max={15} step={0.5} onChange={(v) => set('q', v)} />
-          <Knob label="Mode" value={p.mode ?? 0} min={0} max={1} step={1} onChange={(v) => set('mode', v)} />
+          <Knob
+            label="Sens"
+            value={p.sensitivity ?? 0.5}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('sensitivity', v)}
+          />
+          <Knob
+            label="Q"
+            value={p.q ?? 5}
+            min={1}
+            max={15}
+            step={0.5}
+            onChange={(v) => set('q', v)}
+          />
+          <Knob
+            label="Mode"
+            value={p.mode ?? 0}
+            min={0}
+            max={1}
+            step={1}
+            onChange={(v) => set('mode', v)}
+          />
         </>
       )
     case 'pitchshift':
       return (
         <>
-          <Knob label="Semi" value={p.semitones ?? 0} min={-12} max={12} step={1} onChange={(v) => set('semitones', v)} />
-          <Knob label="Mix" value={p.mix ?? 1} min={0} max={1} step={0.01} onChange={(v) => set('mix', v)} />
+          <Knob
+            label="Semi"
+            value={p.semitones ?? 0}
+            min={-12}
+            max={12}
+            step={1}
+            onChange={(v) => set('semitones', v)}
+          />
+          <Knob
+            label="Mix"
+            value={p.mix ?? 1}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('mix', v)}
+          />
         </>
       )
     case 'cleanboost':
       return (
-        <Knob label="Level" value={p.level ?? 1} min={0} max={4} step={0.1} onChange={(v) => set('level', v)} />
+        <Knob
+          label="Level"
+          value={p.level ?? 1}
+          min={0}
+          max={4}
+          step={0.1}
+          onChange={(v) => set('level', v)}
+        />
       )
     case 'autoswell':
       return (
         <>
-          <Knob label="Attack" value={p.attack ?? 200} min={10} max={2000} step={10} unit="ms" onChange={(v) => set('attack', v)} />
-          <Knob label="Sens" value={p.sensitivity ?? -30} min={-60} max={0} step={1} unit="dB" onChange={(v) => set('sensitivity', v)} />
-          <Knob label="Depth" value={p.depth ?? 1} min={0} max={1} step={0.01} onChange={(v) => set('depth', v)} />
+          <Knob
+            label="Attack"
+            value={p.attack ?? 200}
+            min={10}
+            max={2000}
+            step={10}
+            unit="ms"
+            onChange={(v) => set('attack', v)}
+          />
+          <Knob
+            label="Sens"
+            value={p.sensitivity ?? -30}
+            min={-60}
+            max={0}
+            step={1}
+            unit="dB"
+            onChange={(v) => set('sensitivity', v)}
+          />
+          <Knob
+            label="Depth"
+            value={p.depth ?? 1}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('depth', v)}
+          />
         </>
       )
     case 'limiter':
       return (
         <>
-          <Knob label="Thresh" value={p.threshold ?? -1} min={-20} max={0} step={0.5} unit="dB" onChange={(v) => set('threshold', v)} />
-          <Knob label="Release" value={p.release ?? 100} min={10} max={1000} step={5} unit="ms" onChange={(v) => set('release', v)} />
+          <Knob
+            label="Thresh"
+            value={p.threshold ?? -1}
+            min={-20}
+            max={0}
+            step={0.5}
+            unit="dB"
+            onChange={(v) => set('threshold', v)}
+          />
+          <Knob
+            label="Release"
+            value={p.release ?? 100}
+            min={10}
+            max={1000}
+            step={5}
+            unit="ms"
+            onChange={(v) => set('release', v)}
+          />
         </>
       )
     case 'ringmod':
       return (
         <>
-          <Knob label="Freq" value={p.frequency ?? 200} min={20} max={2000} step={1} unit="Hz" onChange={(v) => set('frequency', v)} />
-          <Knob label="Mix" value={p.mix ?? 1} min={0} max={1} step={0.01} onChange={(v) => set('mix', v)} />
+          <Knob
+            label="Freq"
+            value={p.frequency ?? 200}
+            min={20}
+            max={2000}
+            step={1}
+            unit="Hz"
+            onChange={(v) => set('frequency', v)}
+          />
+          <Knob
+            label="Mix"
+            value={p.mix ?? 1}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('mix', v)}
+          />
         </>
       )
     case 'bitcrusher':
       return (
         <>
-          <Knob label="Bits" value={p.bitDepth ?? 16} min={1} max={16} step={1} onChange={(v) => set('bitDepth', v)} />
-          <Knob label="Down" value={p.downsample ?? 1} min={1} max={50} step={1} onChange={(v) => set('downsample', v)} />
-          <Knob label="Mix" value={p.mix ?? 1} min={0} max={1} step={0.01} onChange={(v) => set('mix', v)} />
+          <Knob
+            label="Bits"
+            value={p.bitDepth ?? 16}
+            min={1}
+            max={16}
+            step={1}
+            onChange={(v) => set('bitDepth', v)}
+          />
+          <Knob
+            label="Down"
+            value={p.downsample ?? 1}
+            min={1}
+            max={50}
+            step={1}
+            onChange={(v) => set('downsample', v)}
+          />
+          <Knob
+            label="Mix"
+            value={p.mix ?? 1}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('mix', v)}
+          />
         </>
       )
     case 'octaver':
       return (
         <>
-          <Knob label="Sub" value={p.subLevel ?? 0.5} min={0} max={1} step={0.01} onChange={(v) => set('subLevel', v)} />
-          <Knob label="Upper" value={p.upperLevel ?? 0} min={0} max={1} step={0.01} onChange={(v) => set('upperLevel', v)} />
-          <Knob label="Dry" value={p.dry ?? 1} min={0} max={1} step={0.01} onChange={(v) => set('dry', v)} />
+          <Knob
+            label="Sub"
+            value={p.subLevel ?? 0.5}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('subLevel', v)}
+          />
+          <Knob
+            label="Upper"
+            value={p.upperLevel ?? 0}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('upperLevel', v)}
+          />
+          <Knob
+            label="Dry"
+            value={p.dry ?? 1}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('dry', v)}
+          />
         </>
       )
     case 'rotary':
       return (
         <>
-          <Knob label="Speed" value={p.speed ?? 0} min={0} max={1} step={0.01} onChange={(v) => set('speed', v)} />
-          <Knob label="Depth" value={p.depth ?? 0.5} min={0} max={1} step={0.01} onChange={(v) => set('depth', v)} />
-          <Knob label="Mix" value={p.mix ?? 0.7} min={0} max={1} step={0.01} onChange={(v) => set('mix', v)} />
+          <Knob
+            label="Speed"
+            value={p.speed ?? 0}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('speed', v)}
+          />
+          <Knob
+            label="Depth"
+            value={p.depth ?? 0.5}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('depth', v)}
+          />
+          <Knob
+            label="Mix"
+            value={p.mix ?? 0.7}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('mix', v)}
+          />
         </>
       )
     case 'graphiceq':
       return (
         <>
-          <Knob label="60" value={p.band60 ?? 0} min={-12} max={12} step={0.5} unit="dB" onChange={(v) => set('band60', v)} />
-          <Knob label="250" value={p.band250 ?? 0} min={-12} max={12} step={0.5} unit="dB" onChange={(v) => set('band250', v)} />
-          <Knob label="1k" value={p.band1k ?? 0} min={-12} max={12} step={0.5} unit="dB" onChange={(v) => set('band1k', v)} />
-          <Knob label="4k" value={p.band4k ?? 0} min={-12} max={12} step={0.5} unit="dB" onChange={(v) => set('band4k', v)} />
-          <Knob label="8k" value={p.band8k ?? 0} min={-12} max={12} step={0.5} unit="dB" onChange={(v) => set('band8k', v)} />
-          <Knob label="12k" value={p.band12k ?? 0} min={-12} max={12} step={0.5} unit="dB" onChange={(v) => set('band12k', v)} />
+          <Knob
+            label="60"
+            value={p.band60 ?? 0}
+            min={-12}
+            max={12}
+            step={0.5}
+            unit="dB"
+            onChange={(v) => set('band60', v)}
+          />
+          <Knob
+            label="250"
+            value={p.band250 ?? 0}
+            min={-12}
+            max={12}
+            step={0.5}
+            unit="dB"
+            onChange={(v) => set('band250', v)}
+          />
+          <Knob
+            label="1k"
+            value={p.band1k ?? 0}
+            min={-12}
+            max={12}
+            step={0.5}
+            unit="dB"
+            onChange={(v) => set('band1k', v)}
+          />
+          <Knob
+            label="4k"
+            value={p.band4k ?? 0}
+            min={-12}
+            max={12}
+            step={0.5}
+            unit="dB"
+            onChange={(v) => set('band4k', v)}
+          />
+          <Knob
+            label="8k"
+            value={p.band8k ?? 0}
+            min={-12}
+            max={12}
+            step={0.5}
+            unit="dB"
+            onChange={(v) => set('band8k', v)}
+          />
+          <Knob
+            label="12k"
+            value={p.band12k ?? 0}
+            min={-12}
+            max={12}
+            step={0.5}
+            unit="dB"
+            onChange={(v) => set('band12k', v)}
+          />
         </>
       )
     case 'parameq':
@@ -315,9 +796,32 @@ function EffectKnobs({
         <div className="flex flex-wrap gap-3 max-w-80">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="flex gap-2 items-end">
-              <Knob label={`F${i}`} value={p[`freq${i}`] ?? 1000} min={20} max={20000} step={10} unit="Hz" onChange={(v) => set(`freq${i}`, v)} />
-              <Knob label={`G${i}`} value={p[`gain${i}`] ?? 0} min={-12} max={12} step={0.5} unit="dB" onChange={(v) => set(`gain${i}`, v)} />
-              <Knob label={`Q${i}`} value={p[`q${i}`] ?? 1} min={0.1} max={18} step={0.1} onChange={(v) => set(`q${i}`, v)} />
+              <Knob
+                label={`F${i}`}
+                value={p[`freq${i}`] ?? 1000}
+                min={20}
+                max={20000}
+                step={10}
+                unit="Hz"
+                onChange={(v) => set(`freq${i}`, v)}
+              />
+              <Knob
+                label={`G${i}`}
+                value={p[`gain${i}`] ?? 0}
+                min={-12}
+                max={12}
+                step={0.5}
+                unit="dB"
+                onChange={(v) => set(`gain${i}`, v)}
+              />
+              <Knob
+                label={`Q${i}`}
+                value={p[`q${i}`] ?? 1}
+                min={0.1}
+                max={18}
+                step={0.1}
+                onChange={(v) => set(`q${i}`, v)}
+              />
             </div>
           ))}
         </div>
@@ -325,19 +829,75 @@ function EffectKnobs({
     case 'shimmer':
       return (
         <>
-          <Knob label="Decay" value={p.decay ?? 0.7} min={0} max={0.95} step={0.01} onChange={(v) => set('decay', v)} />
-          <Knob label="Shimmer" value={p.shimmer ?? 0.5} min={0} max={1} step={0.01} onChange={(v) => set('shimmer', v)} />
-          <Knob label="Damp" value={p.damping ?? 0.5} min={0} max={1} step={0.01} onChange={(v) => set('damping', v)} />
-          <Knob label="Mix" value={p.mix ?? 0.4} min={0} max={1} step={0.01} onChange={(v) => set('mix', v)} />
+          <Knob
+            label="Decay"
+            value={p.decay ?? 0.7}
+            min={0}
+            max={0.95}
+            step={0.01}
+            onChange={(v) => set('decay', v)}
+          />
+          <Knob
+            label="Shimmer"
+            value={p.shimmer ?? 0.5}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('shimmer', v)}
+          />
+          <Knob
+            label="Damp"
+            value={p.damping ?? 0.5}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('damping', v)}
+          />
+          <Knob
+            label="Mix"
+            value={p.mix ?? 0.4}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('mix', v)}
+          />
         </>
       )
     case 'harmonizer':
       return (
         <>
-          <Knob label="Key" value={p.key ?? 0} min={0} max={11} step={1} onChange={(v) => set('key', v)} />
-          <Knob label="Scale" value={p.scale ?? 0} min={0} max={3} step={1} onChange={(v) => set('scale', v)} />
-          <Knob label="Intv" value={p.interval ?? 3} min={-7} max={7} step={1} onChange={(v) => set('interval', v)} />
-          <Knob label="Mix" value={p.mix ?? 0.5} min={0} max={1} step={0.01} onChange={(v) => set('mix', v)} />
+          <Knob
+            label="Key"
+            value={p.key ?? 0}
+            min={0}
+            max={11}
+            step={1}
+            onChange={(v) => set('key', v)}
+          />
+          <Knob
+            label="Scale"
+            value={p.scale ?? 0}
+            min={0}
+            max={3}
+            step={1}
+            onChange={(v) => set('scale', v)}
+          />
+          <Knob
+            label="Intv"
+            value={p.interval ?? 3}
+            min={-7}
+            max={7}
+            step={1}
+            onChange={(v) => set('interval', v)}
+          />
+          <Knob
+            label="Mix"
+            value={p.mix ?? 0.5}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(v) => set('mix', v)}
+          />
         </>
       )
     case 'looper':
@@ -373,22 +933,36 @@ function LooperControls({
 
   const btnClass = (active: boolean, color: string) =>
     `px-2 py-1 text-xs rounded border transition-colors ${
-      active ? `${color} text-white` : 'border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500'
+      active
+        ? `${color} text-white`
+        : 'border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500'
     }`
 
   return (
     <div className="flex flex-col gap-3 items-center">
       <div className="flex gap-1.5 flex-wrap justify-center">
-        <button onClick={() => send('record')} className={btnClass(loopState === 'recording', 'bg-red-600 border-red-600')}>
+        <button
+          onClick={() => send('record')}
+          className={btnClass(loopState === 'recording', 'bg-red-600 border-red-600')}
+        >
           Rec
         </button>
-        <button onClick={() => send('play')} className={btnClass(loopState === 'playing', 'bg-green-600 border-green-600')}>
+        <button
+          onClick={() => send('play')}
+          className={btnClass(loopState === 'playing', 'bg-green-600 border-green-600')}
+        >
           Play
         </button>
-        <button onClick={() => send('overdub')} className={btnClass(loopState === 'overdubbing', 'bg-orange-600 border-orange-600')}>
+        <button
+          onClick={() => send('overdub')}
+          className={btnClass(loopState === 'overdubbing', 'bg-orange-600 border-orange-600')}
+        >
           Ovr
         </button>
-        <button onClick={() => send('stop')} className={btnClass(loopState === 'stopped', 'bg-zinc-600 border-zinc-600')}>
+        <button
+          onClick={() => send('stop')}
+          className={btnClass(loopState === 'stopped', 'bg-zinc-600 border-zinc-600')}
+        >
           Stop
         </button>
         <button onClick={() => send('clear')} className={btnClass(false, '')}>
@@ -399,9 +973,30 @@ function LooperControls({
         </button>
       </div>
       <div className="flex gap-3">
-        <Knob label="In" value={params.inputLevel ?? 1} min={0} max={2} step={0.1} onChange={(v) => onParamChange('inputLevel', v)} />
-        <Knob label="Loop" value={params.loopLevel ?? 1} min={0} max={1} step={0.01} onChange={(v) => onParamChange('loopLevel', v)} />
-        <Knob label="Ovr" value={params.overdubLevel ?? 0.8} min={0} max={1} step={0.01} onChange={(v) => onParamChange('overdubLevel', v)} />
+        <Knob
+          label="In"
+          value={params.inputLevel ?? 1}
+          min={0}
+          max={2}
+          step={0.1}
+          onChange={(v) => onParamChange('inputLevel', v)}
+        />
+        <Knob
+          label="Loop"
+          value={params.loopLevel ?? 1}
+          min={0}
+          max={1}
+          step={0.01}
+          onChange={(v) => onParamChange('loopLevel', v)}
+        />
+        <Knob
+          label="Ovr"
+          value={params.overdubLevel ?? 0.8}
+          min={0}
+          max={1}
+          step={0.01}
+          onChange={(v) => onParamChange('overdubLevel', v)}
+        />
       </div>
     </div>
   )
@@ -420,6 +1015,7 @@ function CabinetControls({
   const [irName, setIrName] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const pushNotice = useUiStore((s) => s.pushNotice)
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -432,13 +1028,28 @@ function CabinetControls({
       const result = await onLoadIR(data)
       if (result.success) {
         setIrName(file.name.replace(/\.(wav|ir)$/i, ''))
+        pushNotice({
+          tone: 'success',
+          title: 'Cabinet IR loaded',
+          description: file.name
+        })
       } else {
         setError(result.error || 'Failed to load IR')
         setIrName(null)
+        pushNotice({
+          tone: 'error',
+          title: 'Cabinet IR failed',
+          description: result.error || 'Failed to load IR'
+        })
       }
     } catch (err) {
       setError(String(err))
       setIrName(null)
+      pushNotice({
+        tone: 'error',
+        title: 'Cabinet IR failed',
+        description: String(err)
+      })
     }
     setLoading(false)
     if (fileRef.current) fileRef.current.value = ''
@@ -459,10 +1070,17 @@ function CabinetControls({
         className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-zinc-800 rounded border border-zinc-700 hover:border-stone-400 text-zinc-300 hover:text-white transition-colors"
       >
         <Upload size={12} />
-        {loading ? 'Loading...' : irName ?? 'Load IR'}
+        {loading ? 'Loading...' : (irName ?? 'Load IR')}
       </button>
       {error && <span className="text-xs text-red-400 max-w-48 text-center">{error}</span>}
-      <Knob label="Mix" value={params.mix ?? 0.8} min={0} max={1} step={0.01} onChange={(v) => onParamChange('mix', v)} />
+      <Knob
+        label="Mix"
+        value={params.mix ?? 0.8}
+        min={0}
+        max={1}
+        step={0.01}
+        onChange={(v) => onParamChange('mix', v)}
+      />
     </div>
   )
 }
@@ -480,6 +1098,7 @@ function NamControls({
   const [modelName, setModelName] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const pushNotice = useUiStore((s) => s.pushNotice)
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -493,13 +1112,28 @@ function NamControls({
       const result = await onLoadModel(data)
       if (result.success) {
         setModelName(data.metadata?.name || data.name || file.name.replace('.nam', ''))
+        pushNotice({
+          tone: 'success',
+          title: 'NAM model loaded',
+          description: file.name
+        })
       } else {
         setError(result.error || 'Failed to load model')
         setModelName(null)
+        pushNotice({
+          tone: 'error',
+          title: 'NAM model failed',
+          description: result.error || 'Failed to load model'
+        })
       }
     } catch (err) {
       setError(String(err))
       setModelName(null)
+      pushNotice({
+        tone: 'error',
+        title: 'NAM model failed',
+        description: String(err)
+      })
     }
     setLoading(false)
     if (fileRef.current) fileRef.current.value = ''
@@ -520,12 +1154,26 @@ function NamControls({
         className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-zinc-800 rounded border border-zinc-700 hover:border-amber-500 text-zinc-300 hover:text-white transition-colors"
       >
         <Upload size={12} />
-        {loading ? 'Loading...' : modelName ?? 'Load .nam'}
+        {loading ? 'Loading...' : (modelName ?? 'Load .nam')}
       </button>
       {error && <span className="text-xs text-red-400 max-w-48 text-center">{error}</span>}
       <div className="flex gap-3">
-        <Knob label="Input" value={params.inputGain ?? 1} min={0} max={16} step={0.1} onChange={(v) => onParamChange('inputGain', v)} />
-        <Knob label="Output" value={params.outputGain ?? 1} min={0} max={4} step={0.1} onChange={(v) => onParamChange('outputGain', v)} />
+        <Knob
+          label="Input"
+          value={params.inputGain ?? 1}
+          min={0}
+          max={16}
+          step={0.1}
+          onChange={(v) => onParamChange('inputGain', v)}
+        />
+        <Knob
+          label="Output"
+          value={params.outputGain ?? 1}
+          min={0}
+          max={4}
+          step={0.1}
+          onChange={(v) => onParamChange('outputGain', v)}
+        />
       </div>
     </div>
   )

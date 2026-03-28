@@ -1,5 +1,5 @@
 {
-  "name": "tonefield",
+  "name": "soundgarden",
   "version": "0.1.0",
   "description": "Guitar learning application",
   "main": "./out/main/index.js",
@@ -19,8 +19,8 @@
     "dist": "electron-builder"
   },
   "build": {
-    "appId": "com.tonefield.app",
-    "productName": "ToneField",
+    "appId": "com.soundgarden.app",
+    "productName": "Soundgarden",
     "directories": {
       "buildResources": "build"
     },
@@ -36,7 +36,7 @@
       ],
       "entitlements": "build/entitlements.mac.plist",
       "extendInfo": {
-        "NSMicrophoneUsageDescription": "ToneField needs microphone access to process your guitar input."
+        "NSMicrophoneUsageDescription": "Soundgarden needs microphone access to process your guitar input."
       }
     },
     "win": {

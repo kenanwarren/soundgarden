@@ -1,96 +1,110 @@
-import { Link } from 'react-router-dom'
-import { ArrowLeft, Play, Ear, RotateCcw } from 'lucide-react'
+import { Ear, Play, RotateCcw } from 'lucide-react'
 import { useEarTrainingStore } from '../../stores/ear-training-store'
 import { useEarTraining } from '../../hooks/useEarTraining'
+import { PageHeader } from '../layout/PageHeader'
+import { AudioRequiredState } from '../common/AudioRequiredState'
 
 const MODES = [
-  { value: 'note' as const, label: 'Note', description: 'Hear a note, play it back' },
-  { value: 'interval' as const, label: 'Interval', description: 'Hear two notes, play the second' }
+  {
+    value: 'note' as const,
+    label: 'Note',
+    description: 'Hear one pitch, then match it back on the guitar.'
+  },
+  {
+    value: 'interval' as const,
+    label: 'Interval',
+    description: 'Hear two tones, then play back the second note.'
+  }
 ]
+
+function SummaryCard({ label, value }: { label: string; value: string }): JSX.Element {
+  return (
+    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/80 px-4 py-3">
+      <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">{label}</div>
+      <div className="mt-2 text-lg font-medium text-white">{value}</div>
+    </div>
+  )
+}
 
 export function EarTrainingPanel(): JSX.Element {
   const { mode, currentChallenge, isListening, score, streak, total, lastResult, setMode, reset } =
     useEarTrainingStore()
   const { newRound, playChallenge, listen, stopListening, isConnected } = useEarTraining()
 
+  const accuracy = total > 0 ? Math.round((score / total) * 100) : null
+
+  if (!isConnected) {
+    return <AudioRequiredState featureName="Ear training" />
+  }
+
   return (
-    <div className="flex flex-col h-full p-8 gap-6">
-      <div className="flex items-center gap-4">
-        <Link to="/learn" className="text-zinc-400 hover:text-white transition-colors">
-          <ArrowLeft size={20} />
-        </Link>
-        <h2 className="text-2xl font-bold text-white">Ear Training</h2>
+    <div className="flex h-full flex-col gap-6 p-6">
+      <PageHeader
+        title="Ear Training"
+        description="Replay the prompt as often as you need, then switch into listening mode and let Soundgarden judge the response."
+        backTo="/learn"
+        actions={
+          <button
+            onClick={reset}
+            className="inline-flex items-center gap-2 rounded-xl border border-zinc-800 px-3 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
+          >
+            <RotateCcw size={14} />
+            Reset Score
+          </button>
+        }
+      />
+
+      <div className="grid gap-4 md:grid-cols-4">
+        <SummaryCard label="Correct" value={String(score)} />
+        <SummaryCard label="Total" value={String(total)} />
+        <SummaryCard label="Accuracy" value={accuracy === null ? 'Waiting' : `${accuracy}%`} />
+        <SummaryCard label="Streak" value={String(streak)} />
       </div>
 
-      {/* Mode selector */}
-      <div className="flex gap-3">
-        {MODES.map((m) => (
+      <div className="flex flex-wrap gap-3">
+        {MODES.map((modeOption) => (
           <button
-            key={m.value}
-            onClick={() => setMode(m.value)}
-            className={`flex flex-col gap-1 px-5 py-3 rounded-lg transition-colors ${
-              mode === m.value
+            key={modeOption.value}
+            onClick={() => setMode(modeOption.value)}
+            className={`flex flex-col gap-1 rounded-2xl px-5 py-3 text-left transition-colors ${
+              mode === modeOption.value
                 ? 'bg-emerald-600 text-white'
                 : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
             }`}
           >
-            <span className="text-sm font-medium">{m.label}</span>
-            <span className="text-xs opacity-70">{m.description}</span>
+            <span className="text-sm font-medium">{modeOption.label}</span>
+            <span className="text-xs opacity-75">{modeOption.description}</span>
           </button>
         ))}
       </div>
 
-      {/* Score */}
-      <div className="flex gap-6">
-        <div className="flex flex-col items-center">
-          <span className="text-3xl font-mono font-bold text-white">{score}</span>
-          <span className="text-xs text-zinc-500 uppercase">Correct</span>
-        </div>
-        <div className="flex flex-col items-center">
-          <span className="text-3xl font-mono font-bold text-white">{total}</span>
-          <span className="text-xs text-zinc-500 uppercase">Total</span>
-        </div>
-        <div className="flex flex-col items-center">
-          <span className="text-3xl font-mono font-bold text-emerald-400">{streak}</span>
-          <span className="text-xs text-zinc-500 uppercase">Streak</span>
-        </div>
-        {total > 0 && (
-          <button
-            onClick={reset}
-            className="ml-auto text-zinc-500 hover:text-white transition-colors"
-            title="Reset score"
-          >
-            <RotateCcw size={18} />
-          </button>
-        )}
-      </div>
-
-      {/* Challenge area */}
-      <div className="bg-zinc-900 rounded-xl p-8 border border-zinc-800 flex flex-col items-center gap-6">
+      <div className="rounded-3xl border border-zinc-800 bg-zinc-900/80 p-8">
         {!currentChallenge ? (
-          <div className="flex flex-col items-center gap-4">
-            <p className="text-zinc-400">
+          <div className="flex flex-col items-center gap-4 text-center">
+            <p className="max-w-xl text-zinc-400">
               {mode === 'note'
-                ? "You'll hear a note — play it back on your guitar"
-                : "You'll hear two notes — play the second one back"}
+                ? 'Start a round to hear one target note, then play it back cleanly on the guitar.'
+                : 'Start a round to hear an interval, then play back the target note at the end of the prompt.'}
             </p>
             <button
-              onClick={newRound}
-              className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+              onClick={() => void newRound()}
+              className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 font-medium text-white transition-colors hover:bg-emerald-500"
             >
-              <Play size={18} /> Start
+              <Play size={18} />
+              Start Round
             </button>
           </div>
         ) : (
-          <>
-            {/* Challenge info */}
-            {mode === 'interval' && lastResult && (
-              <p className="text-zinc-400 text-sm">
-                Interval: <span className="text-white font-medium">{currentChallenge.intervalName}</span>
+          <div className="flex flex-col items-center gap-6 text-center">
+            <div>
+              <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">Current task</div>
+              <p className="mt-2 text-sm text-zinc-300">
+                {mode === 'note'
+                  ? 'Replay the reference note, then listen for your answer.'
+                  : `Replay the interval, then play back the target tone (${currentChallenge.intervalName}).`}
               </p>
-            )}
+            </div>
 
-            {/* Result feedback */}
             {lastResult && (
               <div
                 className={`text-2xl font-bold ${
@@ -101,43 +115,43 @@ export function EarTrainingPanel(): JSX.Element {
               </div>
             )}
 
-            {/* Action buttons */}
-            <div className="flex gap-3">
+            <div className="flex flex-wrap justify-center gap-3">
               <button
-                onClick={() => playChallenge()}
-                className="px-5 py-2 bg-zinc-700 hover:bg-zinc-600 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+                onClick={() => void playChallenge()}
+                className="inline-flex items-center gap-2 rounded-xl bg-zinc-700 px-5 py-2 font-medium text-white transition-colors hover:bg-zinc-600"
               >
-                <Play size={16} /> Replay
+                <Play size={16} />
+                Replay Prompt
               </button>
 
-              {!isConnected ? (
-                <p className="text-zinc-400 text-sm self-center">Connect audio to respond</p>
-              ) : isListening ? (
+              {isListening ? (
                 <button
                   onClick={stopListening}
-                  className="px-5 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 animate-pulse"
+                  className="inline-flex items-center gap-2 rounded-xl bg-yellow-600 px-5 py-2 font-medium text-white transition-colors hover:bg-yellow-500"
                 >
-                  <Ear size={16} /> Listening...
+                  <Ear size={16} />
+                  Stop Listening
                 </button>
               ) : (
                 <button
-                  onClick={listen}
-                  className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+                  onClick={() => void listen()}
+                  className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2 font-medium text-white transition-colors hover:bg-emerald-500"
                 >
-                  <Ear size={16} /> Listen for Answer
+                  <Ear size={16} />
+                  Listen for Answer
                 </button>
               )}
 
               {lastResult && (
                 <button
-                  onClick={newRound}
-                  className="px-5 py-2 bg-zinc-700 hover:bg-zinc-600 text-white rounded-lg font-medium transition-colors"
+                  onClick={() => void newRound()}
+                  className="rounded-xl bg-zinc-700 px-5 py-2 font-medium text-white transition-colors hover:bg-zinc-600"
                 >
-                  Next
+                  Next Round
                 </button>
               )}
             </div>
-          </>
+          </div>
         )}
       </div>
     </div>

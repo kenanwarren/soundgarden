@@ -1,12 +1,9 @@
-const MAX_DELAY_SAMPLES = 960 // 20ms at 48kHz
+const MAX_DELAY_SAMPLES = 1024
 
 class FlangerProcessor extends AudioWorkletProcessor {
   constructor() {
     super()
-    this.buffers = [
-      new Float32Array(MAX_DELAY_SAMPLES),
-      new Float32Array(MAX_DELAY_SAMPLES)
-    ]
+    this.buffers = [new Float32Array(MAX_DELAY_SAMPLES), new Float32Array(MAX_DELAY_SAMPLES)]
     this.writeIndex = 0
     this.phase = 0
   }
@@ -15,7 +12,13 @@ class FlangerProcessor extends AudioWorkletProcessor {
     return [
       { name: 'rate', defaultValue: 0.5, minValue: 0.05, maxValue: 5, automationRate: 'k-rate' },
       { name: 'depth', defaultValue: 0.7, minValue: 0, maxValue: 1.0, automationRate: 'k-rate' },
-      { name: 'feedback', defaultValue: 0.5, minValue: -0.95, maxValue: 0.95, automationRate: 'k-rate' },
+      {
+        name: 'feedback',
+        defaultValue: 0.5,
+        minValue: -0.95,
+        maxValue: 0.95,
+        automationRate: 'k-rate'
+      },
       { name: 'mix', defaultValue: 0.5, minValue: 0, maxValue: 1.0, automationRate: 'k-rate' }
     ]
   }
@@ -24,52 +27,54 @@ class FlangerProcessor extends AudioWorkletProcessor {
     const input = inputs[0]
     const output = outputs[0]
 
-    if (!input || !input[0]) return true
+    if (!output || output.length === 0) return true
+    if (!input || !input[0]) {
+      for (let ch = 0; ch < output.length; ch++) {
+        output[ch].fill(0)
+      }
+      return true
+    }
 
     const rate = parameters.rate[0]
     const depth = parameters.depth[0]
     const feedback = parameters.feedback[0]
-    const mix = parameters.mix[0]
+    const mix = Math.max(0, Math.min(1, parameters.mix[0]))
     const dry = 1 - mix
     const phaseInc = (2 * Math.PI * rate) / sampleRate
     const n = input[0].length
 
-    const minDelay = sampleRate * 0.0001
-    const delayRange = sampleRate * 0.007 * depth
-
-    // Incremental sin/cos
-    let sinP = Math.sin(this.phase)
-    let cosP = Math.cos(this.phase)
-    const sinInc = Math.sin(phaseInc)
-    const cosInc = Math.cos(phaseInc)
+    const baseDelay = sampleRate * 0.0015
+    const modRange = sampleRate * 0.0035 * depth
+    let phase = this.phase
 
     for (let i = 0; i < n; i++) {
-      const lfo = (sinP + 1) * 0.5
-      const delaySamples = minDelay + delayRange * lfo
-
-      const readPos = this.writeIndex - delaySamples + MAX_DELAY_SAMPLES
-      const readIdx = readPos | 0
-      const frac = readPos - readIdx
-      const ri = readIdx % MAX_DELAY_SAMPLES
-      const ni = (ri + 1) % MAX_DELAY_SAMPLES
-
       for (let ch = 0; ch < output.length; ch++) {
-        if (!input[ch]) continue
+        const channel = input[ch] || input[0]
         const buffer = this.buffers[ch] || this.buffers[0]
+        const source = channel ? channel[i] : 0
 
-        const delayed = buffer[ri] + (buffer[ni] - buffer[ri]) * frac
-        buffer[this.writeIndex] = input[ch][i] + delayed * feedback
-        output[ch][i] = input[ch][i] * dry + delayed * mix
+        const lfo = (Math.sin(phase + ch * 0.35) + 1) * 0.5
+        const delaySamples = baseDelay + modRange * lfo
+        let readPos = this.writeIndex - delaySamples
+        while (readPos < 0) readPos += MAX_DELAY_SAMPLES
+        const readIdx = Math.floor(readPos)
+        const frac = readPos - readIdx
+        const nextIdx = (readIdx + 1) % MAX_DELAY_SAMPLES
+
+        const delayed = buffer[readIdx] * (1 - frac) + buffer[nextIdx] * frac
+        const writeSample = source + delayed * feedback
+        buffer[this.writeIndex] = Number.isFinite(writeSample) ? writeSample : 0
+
+        const wetSample = source * dry + delayed * mix
+        output[ch][i] = Number.isFinite(wetSample) ? wetSample : source
       }
 
-      const newS = sinP * cosInc + cosP * sinInc
-      cosP = cosP * cosInc - sinP * sinInc
-      sinP = newS
       this.writeIndex = (this.writeIndex + 1) % MAX_DELAY_SAMPLES
+      phase += phaseInc
+      if (phase > 2 * Math.PI) phase -= 2 * Math.PI
     }
 
-    this.phase += phaseInc * n
-    if (this.phase > 2 * Math.PI) this.phase -= 2 * Math.PI
+    this.phase = phase
 
     return true
   }

@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
-import { Music2, BookOpen, Drum, Ear } from 'lucide-react'
+import { BookOpen, Cable, Drum, Ear, Music2 } from 'lucide-react'
+import { PageHeader } from '../layout/PageHeader'
+import { useSystemStatus } from '../../hooks/useSystemStatus'
 
 const features = [
   {
@@ -29,20 +31,42 @@ const features = [
 ]
 
 export function LearnHub(): JSX.Element {
+  const status = useSystemStatus()
+
   return (
-    <div className="flex flex-col items-center justify-center h-full gap-8 p-8">
-      <h2 className="text-2xl font-bold text-white">Learn</h2>
-      <div className="grid grid-cols-2 gap-4 max-w-2xl w-full">
+    <div className="flex flex-col gap-6 p-6">
+      <PageHeader
+        title="Learn"
+        description="Pick a focused practice mode, then use the shared setup status at the top of the app to keep input, signal, and latency under control."
+      />
+
+      {!status.isConnected && (
+        <div className="rounded-3xl border border-amber-500/20 bg-amber-500/10 p-5 text-sm text-amber-100">
+          <div className="flex items-center gap-2 font-medium">
+            <Cable size={16} />
+            Live practice tools work best once your input is connected.
+          </div>
+          <p className="mt-2 text-amber-50/80">
+            You can still browse scales and chord shapes now, but rhythm tracking, ear-response
+            listening, and pitch-based practice need a live input.
+          </p>
+        </div>
+      )}
+
+      <div className="grid gap-4 lg:grid-cols-2">
         {features.map(({ to, icon: Icon, title, description }) => (
           <Link
             key={to}
             to={to}
-            className="flex flex-col gap-3 p-6 bg-zinc-900 rounded-xl border border-zinc-800 hover:border-emerald-600 transition-colors group"
+            className="group flex flex-col gap-3 rounded-3xl border border-zinc-800 bg-zinc-900/80 p-6 transition-colors hover:border-emerald-600"
           >
-            <Icon size={28} className="text-emerald-500 group-hover:text-emerald-400 transition-colors" />
+            <Icon
+              size={28}
+              className="text-emerald-500 group-hover:text-emerald-400 transition-colors"
+            />
             <div>
               <h3 className="text-lg font-semibold text-white">{title}</h3>
-              <p className="text-sm text-zinc-400 mt-1">{description}</p>
+              <p className="mt-1 text-sm text-zinc-400">{description}</p>
             </div>
           </Link>
         ))}

@@ -1,6 +1,7 @@
-import { Play, Square, Minus, Plus } from 'lucide-react'
+import { Play, Square } from 'lucide-react'
 import { useMetronome } from '../../hooks/useMetronome'
 import { useMetronomeStore } from '../../stores/metronome-store'
+import { BpmControl } from '../common/BpmControl'
 
 const TIME_SIGNATURES = [2, 3, 4, 5, 6, 7]
 
@@ -12,112 +13,81 @@ export function MetronomePanel(): JSX.Element {
   const setAccentFirst = useMetronomeStore((s) => s.setAccentFirst)
 
   return (
-    <div className="flex flex-col items-center gap-8">
-      {/* BPM display */}
-      <div className="flex items-center gap-4">
-        <button
-          onClick={() => setBpm(bpm - 1)}
-          className="w-10 h-10 flex items-center justify-center rounded-lg bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors"
-        >
-          <Minus size={18} />
-        </button>
+    <div className="flex flex-col gap-6">
+      <BpmControl bpm={bpm} setBpm={setBpm} onTap={tap} min={20} max={240} />
 
-        <div className="flex flex-col items-center">
-          <input
-            type="number"
-            value={bpm}
-            onChange={(e) => setBpm(parseInt(e.target.value) || 120)}
-            className="w-24 text-center text-5xl font-bold bg-transparent text-white outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-          />
-          <span className="text-sm text-zinc-500">BPM</span>
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto]">
+        <div className="rounded-3xl border border-zinc-800 bg-zinc-950/70 p-6">
+          <div className="text-sm font-medium text-white">Beat pulse</div>
+          <p className="mt-1 text-sm text-zinc-400">
+            Watch beat one stand out so the visual pulse matches the shared metronome defaults used
+            across the app.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            {Array.from({ length: beatsPerMeasure }, (_, i) => (
+              <div
+                key={i}
+                className={`h-5 w-5 rounded-full transition-all ${
+                  isPlaying && currentBeat === i
+                    ? i === 0 && accentFirst
+                      ? 'scale-125 bg-emerald-400'
+                      : 'scale-110 bg-white'
+                    : 'bg-zinc-700'
+                }`}
+              />
+            ))}
+          </div>
         </div>
 
-        <button
-          onClick={() => setBpm(bpm + 1)}
-          className="w-10 h-10 flex items-center justify-center rounded-lg bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors"
-        >
-          <Plus size={18} />
-        </button>
-      </div>
-
-      {/* Beat indicators */}
-      <div className="flex gap-3">
-        {Array.from({ length: beatsPerMeasure }, (_, i) => (
-          <div
-            key={i}
-            className={`w-5 h-5 rounded-full transition-all ${
-              isPlaying && currentBeat === i
-                ? i === 0 && accentFirst
-                  ? 'bg-emerald-400 scale-125'
-                  : 'bg-white scale-110'
-                : 'bg-zinc-700'
+        <div className="flex items-center justify-center gap-4 rounded-3xl border border-zinc-800 bg-zinc-950/70 p-6">
+          <button
+            onClick={isPlaying ? stop : start}
+            className={`flex h-16 w-16 items-center justify-center rounded-full transition-all ${
+              isPlaying
+                ? 'bg-rose-600 text-white hover:bg-rose-500'
+                : 'bg-emerald-600 text-white hover:bg-emerald-500'
             }`}
-          />
-        ))}
+          >
+            {isPlaying ? <Square size={22} /> : <Play size={22} className="ml-1" />}
+          </button>
+        </div>
       </div>
 
-      {/* Controls */}
-      <div className="flex items-center gap-4">
-        <button
-          onClick={isPlaying ? stop : start}
-          className={`w-14 h-14 flex items-center justify-center rounded-full transition-all ${
-            isPlaying
-              ? 'bg-red-600 hover:bg-red-700 text-white'
-              : 'bg-emerald-600 hover:bg-emerald-700 text-white'
-          }`}
-        >
-          {isPlaying ? <Square size={20} /> : <Play size={20} className="ml-1" />}
-        </button>
-
-        <button
-          onClick={tap}
-          className="px-5 py-2.5 rounded-lg bg-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-700 transition-colors font-medium text-sm"
-        >
-          Tap
-        </button>
-      </div>
-
-      {/* Settings */}
-      <div className="flex items-center gap-6">
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-zinc-400">Time</span>
-          <div className="flex gap-1">
+      <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto]">
+        <div className="rounded-3xl border border-zinc-800 bg-zinc-950/70 p-5">
+          <div className="text-sm font-medium text-white">Time signature</div>
+          <div className="mt-3 flex flex-wrap gap-2">
             {TIME_SIGNATURES.map((ts) => (
               <button
                 key={ts}
                 onClick={() => setBeatsPerMeasure(ts)}
-                className={`w-8 h-8 flex items-center justify-center rounded text-sm transition-colors ${
+                className={`rounded-xl px-3 py-2 text-sm transition-colors ${
                   beatsPerMeasure === ts
                     ? 'bg-emerald-600 text-white'
-                    : 'bg-zinc-800 text-zinc-400 hover:text-white'
+                    : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white'
                 }`}
               >
-                {ts}
+                {ts}/4
               </button>
             ))}
           </div>
         </div>
 
-        <label className="flex items-center gap-2 cursor-pointer">
+        <label className="flex cursor-pointer items-start gap-3 rounded-3xl border border-zinc-800 bg-zinc-950/70 p-5">
           <input
             type="checkbox"
             checked={accentFirst}
             onChange={(e) => setAccentFirst(e.target.checked)}
-            className="accent-emerald-500"
+            className="mt-1 accent-emerald-500"
           />
-          <span className="text-sm text-zinc-400">Accent first beat</span>
+          <div>
+            <div className="text-sm font-medium text-white">Accent first beat</div>
+            <p className="mt-1 text-sm text-zinc-400">
+              Give beat one a stronger click so count-ins and bar starts stay obvious.
+            </p>
+          </div>
         </label>
       </div>
-
-      {/* BPM slider */}
-      <input
-        type="range"
-        min={20}
-        max={300}
-        value={bpm}
-        onChange={(e) => setBpm(parseInt(e.target.value))}
-        className="w-64 accent-emerald-500"
-      />
     </div>
   )
 }
