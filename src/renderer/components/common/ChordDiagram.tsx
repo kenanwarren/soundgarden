@@ -159,15 +159,7 @@ export function ChordDiagram({
         )
         if (hasBarre) return null
 
-        return (
-          <circle
-            key={`dot-${i}`}
-            cx={x}
-            cy={y}
-            r={s.dotRadius}
-            fill="#10b981"
-          />
-        )
+        return <circle key={`dot-${i}`} cx={x} cy={y} r={s.dotRadius} fill="#10b981" />
       })}
     </svg>
   )

@@ -17,6 +17,7 @@ import { useLessonStep } from '../../hooks/useLessonStep'
 import { getPatternIndexByName } from '../../utils/learn-data'
 import { useLearnProgressStore } from '../../stores/learn-progress-store'
 import { LearnSessionSummary } from './LearnSessionSummary'
+import type { CompletionState } from '../../utils/learn-types'
 
 const GRADE_CONFIG: Record<HitGrade, { label: string; color: string }> = {
   perfect: { label: 'Perfect!', color: 'text-emerald-400' },
@@ -25,7 +26,10 @@ const GRADE_CONFIG: Record<HitGrade, { label: string; color: string }> = {
   miss: { label: 'Miss', color: 'text-red-400' }
 }
 
-function getTimingInsights(results: TimingResult[]): { consistency: number | null; tendency: number | null } {
+function getTimingInsights(results: TimingResult[]): {
+  consistency: number | null
+  tendency: number | null
+} {
   const hits = results.filter(
     (result): result is Extract<TimingResult, { type: 'hit' }> => result.type === 'hit'
   )
@@ -47,20 +51,15 @@ function tendencyLabel(tendency: number | null): string {
   return tendency < 0 ? `Rushing ${Math.abs(tendency)}ms` : `Dragging ${tendency}ms`
 }
 
-function HitFeedback({ grade, time }: { grade: HitGrade | null; time: number }) {
-  const [visible, setVisible] = useState(false)
-  const [current, setCurrent] = useState<HitGrade | null>(null)
+function HitFeedbackMessage({ grade }: { grade: HitGrade }) {
+  const [visible, setVisible] = useState(true)
 
   useEffect(() => {
-    if (!grade || time === 0) return
-    setCurrent(grade)
-    setVisible(true)
-    const id = setTimeout(() => setVisible(false), 600)
+    const id = window.setTimeout(() => setVisible(false), 600)
     return () => clearTimeout(id)
-  }, [grade, time])
+  }, [])
 
-  if (!current) return null
-  const cfg = GRADE_CONFIG[current]
+  const cfg = GRADE_CONFIG[grade]
 
   return (
     <div
@@ -71,6 +70,11 @@ function HitFeedback({ grade, time }: { grade: HitGrade | null; time: number }) 
       {cfg.label}
     </div>
   )
+}
+
+function HitFeedback({ grade, time }: { grade: HitGrade | null; time: number }) {
+  if (!grade || time === 0) return null
+  return <HitFeedbackMessage key={time} grade={grade} />
 }
 
 function DifficultyDots({ level }: { level: 1 | 2 | 3 }) {
@@ -303,7 +307,9 @@ export function RhythmPanel(): JSX.Element {
   const { start, stop, isConnected } = useRhythmTrainer()
   const lessonStep = useLessonStep('rhythm-trainer')
   const recordSession = useLearnProgressStore((state) => state.recordSession)
-  const savedSummary = useLearnProgressStore((state) => state.progress['rhythm-trainer']?.lastSession)
+  const savedSummary = useLearnProgressStore(
+    (state) => state.progress['rhythm-trainer']?.lastSession
+  )
   const sessionStartedAt = useRef<number | null>(null)
 
   const pattern = RHYTHM_PATTERNS[selectedPatternIndex]
@@ -322,6 +328,12 @@ export function RhythmPanel(): JSX.Element {
     if (timing.tendency !== null && Math.abs(timing.tendency) >= 5) {
       weakSpots.push(tendencyLabel(timing.tendency))
     }
+    const completionState: CompletionState =
+      accuracy !== null && accuracy >= 75
+        ? 'completed'
+        : results.length > 0
+          ? 'in-progress'
+          : 'not-started'
 
     return {
       module: 'rhythm-trainer' as const,
@@ -330,8 +342,7 @@ export function RhythmPanel(): JSX.Element {
       route: '/learn/rhythm',
       score: accuracy,
       bestStreak,
-      completionState:
-        accuracy !== null && accuracy >= 75 ? 'completed' : results.length > 0 ? 'in-progress' : 'not-started',
+      completionState,
       weakSpots,
       patternName: pattern.name,
       accuracy,
@@ -564,7 +575,10 @@ export function RhythmPanel(): JSX.Element {
           metrics={[
             {
               label: 'Accuracy',
-              value: displayedSummary.accuracy === null ? 'Waiting' : `${Math.round(displayedSummary.accuracy)}%`,
+              value:
+                displayedSummary.accuracy === null
+                  ? 'Waiting'
+                  : `${Math.round(displayedSummary.accuracy)}%`,
               tone:
                 (displayedSummary.accuracy ?? 0) >= 75
                   ? 'good'
@@ -572,7 +586,10 @@ export function RhythmPanel(): JSX.Element {
                     ? 'warning'
                     : 'default'
             },
-            { label: 'Hits / misses', value: `${displayedSummary.hitCount} / ${displayedSummary.missCount}` },
+            {
+              label: 'Hits / misses',
+              value: `${displayedSummary.hitCount} / ${displayedSummary.missCount}`
+            },
             {
               label: 'Tendency',
               value: displayedSummary.tendencyLabel,

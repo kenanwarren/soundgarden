@@ -48,7 +48,7 @@ const initialState = {
   streak: 0,
   bestStreak: 0,
   lastHitGrade: null as HitGrade | null,
-  lastHitTime: 0,
+  lastHitTime: 0
 }
 
 export const useRhythmStore = create<RhythmState>()((set) => ({
@@ -69,7 +69,9 @@ export const useRhythmStore = create<RhythmState>()((set) => ({
         const bestStreak = Math.max(state.bestStreak, streak)
         const grade = gradeFromDelta(result.deltaMs)
 
-        const hits = results.filter((r): r is Extract<TimingResult, { type: 'hit' }> => r.type === 'hit')
+        const hits = results.filter(
+          (r): r is Extract<TimingResult, { type: 'hit' }> => r.type === 'hit'
+        )
         const totalDelta = hits.reduce((sum, r) => sum + Math.abs(r.deltaMs), 0)
         const avgDelta = totalDelta / hits.length
         const baseAccuracy = timingAccuracy(avgDelta)
@@ -77,8 +79,13 @@ export const useRhythmStore = create<RhythmState>()((set) => ({
         const accuracy = Math.min(100, baseAccuracy * (hitCount / total))
 
         return {
-          results, hitCount, streak, bestStreak, accuracy,
-          lastHitGrade: grade, lastHitTime: Date.now(),
+          results,
+          hitCount,
+          streak,
+          bestStreak,
+          accuracy,
+          lastHitGrade: grade,
+          lastHitTime: Date.now()
         }
       }
 
@@ -87,7 +94,9 @@ export const useRhythmStore = create<RhythmState>()((set) => ({
       const total = state.hitCount + missCount
       let accuracy: number | null = null
       if (state.hitCount > 0) {
-        const hits = results.filter((r): r is Extract<TimingResult, { type: 'hit' }> => r.type === 'hit')
+        const hits = results.filter(
+          (r): r is Extract<TimingResult, { type: 'hit' }> => r.type === 'hit'
+        )
         const totalDelta = hits.reduce((sum, r) => sum + Math.abs(r.deltaMs), 0)
         const avgDelta = totalDelta / hits.length
         const baseAccuracy = timingAccuracy(avgDelta)
@@ -97,12 +106,14 @@ export const useRhythmStore = create<RhythmState>()((set) => ({
       }
 
       return {
-        results, missCount, accuracy,
+        results,
+        missCount,
+        accuracy,
         streak: 0,
         lastHitGrade: 'miss' as HitGrade,
-        lastHitTime: Date.now(),
+        lastHitTime: Date.now()
       }
     }),
   setCurrentSubdivision: (sub) => set({ currentSubdivision: sub }),
-  reset: () => set(initialState),
+  reset: () => set(initialState)
 }))

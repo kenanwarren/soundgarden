@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { RotateCcw } from 'lucide-react'
 import { NOTE_NAMES } from '../../utils/constants'
 import { SCALES, getScaleNotes } from '../../utils/scale-data'
@@ -11,6 +11,7 @@ import { useLessonStep } from '../../hooks/useLessonStep'
 import { getScaleIndexByName } from '../../utils/learn-data'
 import { useLearnProgressStore } from '../../stores/learn-progress-store'
 import { LearnSessionSummary } from './LearnSessionSummary'
+import type { CompletionState } from '../../utils/learn-types'
 
 function SummaryCard({ label, value }: { label: string; value: string }): JSX.Element {
   return (
@@ -35,8 +36,10 @@ export function ScalePanel(): JSX.Element {
   const { startPractice, stopPractice, isPracticing, isConnected } = useScalePractice()
   const lessonStep = useLessonStep('scale-explorer')
   const recordSession = useLearnProgressStore((state) => state.recordSession)
-  const savedSummary = useLearnProgressStore((state) => state.progress['scale-explorer']?.lastSession)
-  const sessionStartedAt = useRef<number | null>(null)
+  const savedSummary = useLearnProgressStore(
+    (state) => state.progress['scale-explorer']?.lastSession
+  )
+  const [sessionStartedAt, setSessionStartedAt] = useState<number | null>(null)
 
   const scale = SCALES[selectedScaleIndex]
   const scaleNotes = getScaleNotes(selectedRoot, scale)
@@ -58,6 +61,12 @@ export function ScalePanel(): JSX.Element {
     (timeSpentMs: number) => {
       const missedNotes = scaleNotes.filter((note) => !hitNotes.includes(note))
       const score = scaleNotes.length ? (hitNotes.length / scaleNotes.length) * 100 : 0
+      const completionState: CompletionState =
+        hitNotes.length === 0
+          ? 'not-started'
+          : hitNotes.length === scaleNotes.length
+            ? 'completed'
+            : 'in-progress'
 
       return {
         module: 'scale-explorer' as const,
@@ -66,12 +75,7 @@ export function ScalePanel(): JSX.Element {
         route: '/learn/scales',
         score,
         bestStreak: hitNotes.length,
-        completionState:
-          hitNotes.length === 0
-            ? 'not-started'
-            : hitNotes.length === scaleNotes.length
-              ? 'completed'
-              : 'in-progress',
+        completionState,
         weakSpots: missedNotes.slice(0, 4),
         notesHit: hitNotes.length,
         totalNotes: scaleNotes.length,
@@ -85,11 +89,11 @@ export function ScalePanel(): JSX.Element {
   )
 
   const finalizeSession = useCallback(() => {
-    if (sessionStartedAt.current === null && hitNotes.length === 0) return
-    const startedAt = sessionStartedAt.current ?? Date.now()
+    if (sessionStartedAt === null && hitNotes.length === 0) return
+    const startedAt = sessionStartedAt ?? Date.now()
     recordSession(buildSummary(Math.max(0, Date.now() - startedAt)), lessonStep?.id)
-    sessionStartedAt.current = null
-  }, [buildSummary, hitNotes.length, lessonStep?.id, recordSession])
+    setSessionStartedAt(null)
+  }, [buildSummary, hitNotes.length, lessonStep?.id, recordSession, sessionStartedAt])
 
   useEffect(() => {
     return () => {
@@ -98,10 +102,9 @@ export function ScalePanel(): JSX.Element {
   }, [finalizeSession])
 
   const liveSummary = useMemo(() => {
-    if (sessionStartedAt.current === null && hitNotes.length === 0) return null
-    const startedAt = sessionStartedAt.current ?? Date.now()
-    return buildSummary(Math.max(0, Date.now() - startedAt))
-  }, [buildSummary, hitNotes.length])
+    if (sessionStartedAt === null && hitNotes.length === 0) return null
+    return buildSummary(0)
+  }, [buildSummary, hitNotes.length, sessionStartedAt])
 
   const displayedSummary =
     liveSummary ?? (savedSummary?.module === 'scale-explorer' ? savedSummary : null)
@@ -113,7 +116,7 @@ export function ScalePanel(): JSX.Element {
       return
     }
 
-    sessionStartedAt.current = Date.now()
+    setSessionStartedAt(Date.now())
     void startPractice()
   }
 

@@ -55,11 +55,7 @@ describe('audio-pipeline', () => {
     const last = makeEffect('last')
 
     pipeline.addTap(tap as unknown as AudioNode)
-    pipeline.setEffectNodes([
-      first.node,
-      disabled.node,
-      last.node
-    ])
+    pipeline.setEffectNodes([first.node, disabled.node, last.node])
     pipeline.connectSource(source as unknown as AudioNode)
 
     expect(source.connections).toEqual([tap, first.input])

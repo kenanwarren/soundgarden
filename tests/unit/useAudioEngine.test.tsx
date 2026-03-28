@@ -232,9 +232,7 @@ describe('useAudioEngine', () => {
     Object.defineProperty(window.navigator, 'mediaDevices', {
       configurable: true,
       value: {
-        getUserMedia: vi
-          .fn()
-          .mockRejectedValue(new DOMException('Denied', 'NotAllowedError'))
+        getUserMedia: vi.fn().mockRejectedValue(new DOMException('Denied', 'NotAllowedError'))
       }
     })
 

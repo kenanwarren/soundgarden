@@ -6,7 +6,13 @@ class RingModProcessor extends AudioWorkletProcessor {
 
   static get parameterDescriptors() {
     return [
-      { name: 'frequency', defaultValue: 200, minValue: 20, maxValue: 2000, automationRate: 'k-rate' },
+      {
+        name: 'frequency',
+        defaultValue: 200,
+        minValue: 20,
+        maxValue: 2000,
+        automationRate: 'k-rate'
+      },
       { name: 'mix', defaultValue: 1.0, minValue: 0, maxValue: 1.0, automationRate: 'k-rate' }
     ]
   }

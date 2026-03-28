@@ -6,7 +6,7 @@ function fastTanh(x: number): number {
   if (x > 4.97) return 1.0
   if (x < -4.97) return -1.0
   const x2 = x * x
-  return x * (27.0 + x2) / (27.0 + 9.0 * x2)
+  return (x * (27.0 + x2)) / (27.0 + 9.0 * x2)
 }
 
 function fastSigmoid(x: number): number {
@@ -14,44 +14,69 @@ function fastSigmoid(x: number): number {
   if (hx > 4.97) return 1.0
   if (hx < -4.97) return 0.0
   const x2 = hx * hx
-  return 0.5 + 0.5 * hx * (27.0 + x2) / (27.0 + 9.0 * x2)
+  return 0.5 + (0.5 * hx * (27.0 + x2)) / (27.0 + 9.0 * x2)
 }
 
 function nextPow2(v: number): number {
-  v--; v |= v >> 1; v |= v >> 2; v |= v >> 4; v |= v >> 8; v |= v >> 16; return v + 1
+  v--
+  v |= v >> 1
+  v |= v >> 2
+  v |= v >> 4
+  v |= v >> 8
+  v |= v >> 16
+  return v + 1
 }
 
 function jsWaveNetForward(
-  config: any, weights: number[], conditionValue: number,
-  headScale: number, inBuf: Float32Array, numFrames: number,
-  inGain: number, outGain: number
+  config: any,
+  weights: number[],
+  conditionValue: number,
+  headScale: number,
+  inBuf: Float32Array,
+  numFrames: number,
+  inGain: number,
+  outGain: number
 ): Float32Array {
   const outBuf = new Float32Array(numFrames)
   let pos = 0
-  function take(n: number) { const a = new Float32Array(n); for (let i = 0; i < n; i++) a[i] = weights[pos++]; return a }
+  function take(n: number) {
+    const a = new Float32Array(n)
+    for (let i = 0; i < n; i++) a[i] = weights[pos++]
+    return a
+  }
 
   const blockConfigs = config.layers || []
   const blocks: any[] = []
   for (let b = 0; b < blockConfigs.length; b++) {
     const bc = blockConfigs[b]
-    const inSize = bc.input_size || 1, ch = bc.channels || 16, ks = bc.kernel_size || 3
-    const dilations: number[] = bc.dilations || [], headSize = bc.head_size || 1
-    const gated = bc.gated || false, headBias = bc.head_bias || false
-    const condSize = bc.condition_size || 0, co = gated ? 2 * ch : ch
+    const inSize = bc.input_size || 1,
+      ch = bc.channels || 16,
+      ks = bc.kernel_size || 3
+    const dilations: number[] = bc.dilations || [],
+      headSize = bc.head_size || 1
+    const gated = bc.gated || false,
+      headBias = bc.head_bias || false
+    const condSize = bc.condition_size || 0,
+      co = gated ? 2 * ch : ch
 
     const rechannelW = take(inSize * ch)
     const layers: any[] = []
     for (let l = 0; l < dilations.length; l++) {
-      const d = dilations[l], bs = d * (ks - 1) + 1
-      const bsPow2 = nextPow2(bs), bMask = bsPow2 - 1
-      const cW = take(ch * co * ks), cB = take(co)
+      const d = dilations[l],
+        bs = d * (ks - 1) + 1
+      const bsPow2 = nextPow2(bs),
+        bMask = bsPow2 - 1
+      const cW = take(ch * co * ks),
+        cB = take(co)
       const condW = condSize > 0 ? take(condSize * co) : null
-      const mW = take(ch * ch), mB = take(ch)
+      const mW = take(ch * ch),
+        mB = take(ch)
 
       const flatKernel = new Float32Array(ks * co * ch)
       for (let k = 0; k < ks; k++) {
         for (let o = 0; o < co; o++) {
-          const srcBase = o * ch * ks, dstBase = k * co * ch + o * ch
+          const srcBase = o * ch * ks,
+            dstBase = k * co * ch + o * ch
           for (let c = 0; c < ch; c++) flatKernel[dstBase + c] = cW[srcBase + c * ks + k]
         }
       }
@@ -75,30 +100,70 @@ function jsWaveNetForward(
       const tapDilations = new Int32Array(ks)
       for (let k = 0; k < ks; k++) tapDilations[k] = d * (ks - 1 - k)
 
-      layers.push({ bias, mW, mB, buf: new Float32Array(bsPow2 * ch), bi: 0, bMask, ks, ch, co, flatKernel, tapDilations })
+      layers.push({
+        bias,
+        mW,
+        mB,
+        buf: new Float32Array(bsPow2 * ch),
+        bi: 0,
+        bMask,
+        ks,
+        ch,
+        co,
+        flatKernel,
+        tapDilations
+      })
     }
-    const hW = take(ch * headSize), hB = headBias ? take(headSize) : null
-    blocks.push({ inSize, ch, co, ks, gated, hs: headSize, rW: rechannelW, layers, hW, hB, x: new Float32Array(ch), cv: new Float32Array(co) })
+    const hW = take(ch * headSize),
+      hB = headBias ? take(headSize) : null
+    blocks.push({
+      inSize,
+      ch,
+      co,
+      ks,
+      gated,
+      hs: headSize,
+      rW: rechannelW,
+      layers,
+      hW,
+      hB,
+      x: new Float32Array(ch),
+      cv: new Float32Array(co)
+    })
   }
 
   for (let i = 0; i < numFrames; i++) {
     let sample = inBuf[i] * inGain
     let ph: Float32Array | null = null
     for (let b = 0; b < blocks.length; b++) {
-      const bl = blocks[b], ch = bl.ch, co = bl.co, x = bl.x, cv = bl.cv, rW = bl.rW
+      const bl = blocks[b],
+        ch = bl.ch,
+        co = bl.co,
+        x = bl.x,
+        cv = bl.cv,
+        rW = bl.rW
       if (bl.inSize === 1) {
         for (let c = 0; c < ch; c++) x[c] = sample * rW[c]
       } else {
         for (let c = 0; c < ch; c++) {
-          let v = 0; const rwBase = c * bl.inSize
+          let v = 0
+          const rwBase = c * bl.inSize
           for (let j = 0; j < bl.inSize; j++) v += ph![j] * rW[rwBase + j]
           x[c] = v
         }
       }
       for (let l = 0; l < bl.layers.length; l++) {
-        const ly = bl.layers[l], bi = ly.bi, buf = ly.buf, frameBase = bi * ch
-        const bias = ly.bias, mW = ly.mW, mB = ly.mB
-        const lks = ly.ks, lco = ly.co, fk = ly.flatKernel, bMask = ly.bMask
+        const ly = bl.layers[l],
+          bi = ly.bi,
+          buf = ly.buf,
+          frameBase = bi * ch
+        const bias = ly.bias,
+          mW = ly.mW,
+          mB = ly.mB
+        const lks = ly.ks,
+          lco = ly.co,
+          fk = ly.flatKernel,
+          bMask = ly.bMask
 
         for (let c = 0; c < ch; c++) buf[frameBase + c] = x[c]
         for (let o = 0; o < lco; o++) cv[o] = bias[o]
@@ -107,7 +172,8 @@ function jsWaveNetForward(
           const bO = ((bi - ly.tapDilations[k]) & bMask) * ch
           const fkBase = k * lco * ch
           for (let o = 0; o < lco; o++) {
-            let sum = 0; const kwOff = fkBase + o * ch
+            let sum = 0
+            const kwOff = fkBase + o * ch
             for (let c = 0; c < ch; c++) sum += fk[kwOff + c] * buf[bO + c]
             cv[o] += sum
           }
@@ -120,14 +186,19 @@ function jsWaveNetForward(
         }
 
         for (let o = 0; o < ch; o++) {
-          let v = mB[o]; const mBase = o * ch
+          let v = mB[o]
+          const mBase = o * ch
           for (let c = 0; c < ch; c++) v += mW[mBase + c] * cv[c]
           x[o] = v + buf[frameBase + o]
         }
         ly.bi = (bi + 1) & bMask
       }
       ph = x
-      if (bl.hs === 1) { let v = bl.hB ? bl.hB[0] : 0; for (let c = 0; c < ch; c++) v += bl.hW[c] * x[c]; sample = v }
+      if (bl.hs === 1) {
+        let v = bl.hB ? bl.hB[0] : 0
+        for (let c = 0; c < ch; c++) v += bl.hW[c] * x[c]
+        sample = v
+      }
     }
     const s = sample * headScale * outGain
     outBuf[i] = s !== s ? 0 : s
@@ -144,9 +215,11 @@ function generateSyntheticWeights(config: any): number[] {
   }
 
   for (const bc of config.layers) {
-    const ch = bc.channels || 16, ks = bc.kernel_size || 3
+    const ch = bc.channels || 16,
+      ks = bc.kernel_size || 3
     const dilations: number[] = bc.dilations || []
-    const gated = bc.gated || false, headBias = bc.head_bias || false
+    const gated = bc.gated || false,
+      headBias = bc.head_bias || false
     const condSize = bc.condition_size || 0
     const co = gated ? 2 * ch : ch
 
@@ -177,9 +250,14 @@ async function loadWasm() {
 }
 
 async function wasmWaveNetForward(
-  config: any, weights: number[], conditionValue: number,
-  headScale: number, inBuf: Float32Array, numFrames: number,
-  inGain: number, outGain: number
+  config: any,
+  weights: number[],
+  conditionValue: number,
+  headScale: number,
+  inBuf: Float32Array,
+  numFrames: number,
+  inGain: number,
+  outGain: number
 ): Promise<Float32Array> {
   const { exports, memory } = await loadWasm()
 
@@ -195,7 +273,7 @@ async function wasmWaveNetForward(
     blockInfoView[b * 7 + 2] = bc.kernel_size || 3
     blockInfoView[b * 7 + 3] = (bc.dilations || []).length
     blockInfoView[b * 7 + 4] = bc.head_size || 1
-    blockInfoView[b * 7 + 5] = (bc.gated || false) ? 1 : 0
+    blockInfoView[b * 7 + 5] = bc.gated || false ? 1 : 0
     blockInfoView[b * 7 + 6] = bc.head_bias ? 1 : 0
   }
 
@@ -205,7 +283,7 @@ async function wasmWaveNetForward(
   const dilationsView = new Int32Array(memory.buffer, dilationsPtr, dilationsTotal)
   let di = 0
   for (const bc of blockConfigs) {
-    for (const d of (bc.dilations || [])) dilationsView[di++] = d
+    for (const d of bc.dilations || []) dilationsView[di++] = d
   }
 
   const condSizesPtr = exports.malloc(numBlocks * 4)
@@ -216,8 +294,14 @@ async function wasmWaveNetForward(
   new Float32Array(memory.buffer, weightsPtr, weights.length).set(weights)
 
   const modelPtr = exports.init_wavenet(
-    blockInfoPtr, numBlocks, dilationsPtr, condSizesPtr,
-    weightsPtr, weights.length, conditionValue, headScale
+    blockInfoPtr,
+    numBlocks,
+    dilationsPtr,
+    condSizesPtr,
+    weightsPtr,
+    weights.length,
+    conditionValue,
+    headScale
   )
 
   exports.free(blockInfoPtr)
@@ -243,29 +327,33 @@ async function wasmWaveNetForward(
 
 describe('NAM WASM kernel', () => {
   const config = {
-    layers: [{
-      input_size: 1,
-      channels: 4,
-      kernel_size: 3,
-      dilations: [1, 2, 4],
-      head_size: 1,
-      gated: false,
-      head_bias: true,
-      condition_size: 0
-    }]
+    layers: [
+      {
+        input_size: 1,
+        channels: 4,
+        kernel_size: 3,
+        dilations: [1, 2, 4],
+        head_size: 1,
+        gated: false,
+        head_bias: true,
+        condition_size: 0
+      }
+    ]
   }
 
   const gatedConfig = {
-    layers: [{
-      input_size: 1,
-      channels: 4,
-      kernel_size: 3,
-      dilations: [1, 2],
-      head_size: 1,
-      gated: true,
-      head_bias: false,
-      condition_size: 0
-    }]
+    layers: [
+      {
+        input_size: 1,
+        channels: 4,
+        kernel_size: 3,
+        dilations: [1, 2],
+        head_size: 1,
+        gated: true,
+        head_bias: false,
+        condition_size: 0
+      }
+    ]
   }
 
   it('WASM WaveNet matches JS WaveNet for simple config', async () => {
@@ -284,8 +372,12 @@ describe('NAM WASM kernel', () => {
     }
 
     console.log(`Max absolute error: ${maxError.toExponential(3)}`)
-    console.log(`JS output range: [${Math.min(...jsOut).toFixed(6)}, ${Math.max(...jsOut).toFixed(6)}]`)
-    console.log(`WASM output range: [${Math.min(...wasmOut).toFixed(6)}, ${Math.max(...wasmOut).toFixed(6)}]`)
+    console.log(
+      `JS output range: [${Math.min(...jsOut).toFixed(6)}, ${Math.max(...jsOut).toFixed(6)}]`
+    )
+    console.log(
+      `WASM output range: [${Math.min(...wasmOut).toFixed(6)}, ${Math.max(...wasmOut).toFixed(6)}]`
+    )
 
     expect(maxError).toBeLessThan(1e-4)
   })
@@ -297,7 +389,16 @@ describe('NAM WASM kernel', () => {
     for (let i = 0; i < numFrames; i++) inBuf[i] = Math.sin(i * 0.2) * 0.3
 
     const jsOut = jsWaveNetForward(gatedConfig, weights, 0, 1.0, inBuf, numFrames, 1.0, 1.0)
-    const wasmOut = await wasmWaveNetForward(gatedConfig, weights, 0, 1.0, inBuf, numFrames, 1.0, 1.0)
+    const wasmOut = await wasmWaveNetForward(
+      gatedConfig,
+      weights,
+      0,
+      1.0,
+      inBuf,
+      numFrames,
+      1.0,
+      1.0
+    )
 
     let maxError = 0
     for (let i = 0; i < numFrames; i++) {
@@ -334,7 +435,7 @@ describe('NAM WASM kernel', () => {
     for (let i = 0; i < numFrames; i++) inBuf[i] = Math.sin(i * 0.1) * 0.5
 
     const wasmOut = await wasmWaveNetForward(config, weights, 0, 1.0, inBuf, numFrames, 1.0, 1.0)
-    const hasNonZero = wasmOut.some(v => Math.abs(v) > 1e-10)
+    const hasNonZero = wasmOut.some((v) => Math.abs(v) > 1e-10)
     expect(hasNonZero).toBe(true)
   })
 })

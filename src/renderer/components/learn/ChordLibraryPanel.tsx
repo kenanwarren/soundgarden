@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Check, RotateCcw, X } from 'lucide-react'
 import { NOTE_NAMES } from '../../utils/constants'
 import { CHORD_VOICINGS, type ChordVoicing } from '../../utils/chord-voicings'
@@ -11,6 +11,7 @@ import { useLessonStep } from '../../hooks/useLessonStep'
 import { getChordIndexByName } from '../../utils/learn-data'
 import { useLearnProgressStore } from '../../stores/learn-progress-store'
 import { LearnSessionSummary } from './LearnSessionSummary'
+import type { CompletionState } from '../../utils/learn-types'
 
 const CATEGORIES = [
   { value: 'all' as const, label: 'All' },
@@ -28,10 +29,18 @@ function SummaryCard({ label, value }: { label: string; value: string }): JSX.El
   )
 }
 
-function ChordPracticeIndicator({ voicing, lessonStepId }: { voicing: ChordVoicing; lessonStepId?: string }) {
+function ChordPracticeIndicator({
+  voicing,
+  lessonStepId
+}: {
+  voicing: ChordVoicing
+  lessonStepId?: string
+}) {
   const isConnected = useAudioStore((s) => s.isConnected)
   const recordSession = useLearnProgressStore((state) => state.recordSession)
-  const savedSummary = useLearnProgressStore((state) => state.progress['chord-library']?.lastSession)
+  const savedSummary = useLearnProgressStore(
+    (state) => state.progress['chord-library']?.lastSession
+  )
   const {
     start,
     stop,
@@ -42,11 +51,13 @@ function ChordPracticeIndicator({ voicing, lessonStepId }: { voicing: ChordVoici
     mismatchCount,
     mismatches
   } = useChordPractice(voicing.root, voicing.quality)
-  const sessionStartedAt = useRef<number | null>(null)
+  const [sessionStarted, setSessionStarted] = useState(false)
 
   const buildSummary = useCallback(() => {
     const totalDetections = cleanMatchCount + mismatchCount
     const score = totalDetections > 0 ? (cleanMatchCount / totalDetections) * 100 : 0
+    const completionState: CompletionState =
+      cleanMatchCount >= 3 ? 'completed' : totalDetections > 0 ? 'in-progress' : 'not-started'
 
     return {
       module: 'chord-library' as const,
@@ -55,8 +66,7 @@ function ChordPracticeIndicator({ voicing, lessonStepId }: { voicing: ChordVoici
       route: '/learn/chords',
       score,
       bestStreak: cleanMatchCount,
-      completionState:
-        cleanMatchCount >= 3 ? 'completed' : totalDetections > 0 ? 'in-progress' : 'not-started',
+      completionState,
       weakSpots: mismatches.slice(0, 4),
       targetChord: voicing.name,
       cleanMatchCount,
@@ -65,10 +75,10 @@ function ChordPracticeIndicator({ voicing, lessonStepId }: { voicing: ChordVoici
   }, [cleanMatchCount, mismatchCount, mismatches, voicing.name])
 
   const finalizeSession = useCallback(() => {
-    if (sessionStartedAt.current === null && cleanMatchCount === 0 && mismatchCount === 0) return
+    if (!sessionStarted && cleanMatchCount === 0 && mismatchCount === 0) return
     recordSession(buildSummary(), lessonStepId)
-    sessionStartedAt.current = null
-  }, [buildSummary, cleanMatchCount, lessonStepId, mismatchCount, recordSession])
+    setSessionStarted(false)
+  }, [buildSummary, cleanMatchCount, lessonStepId, mismatchCount, recordSession, sessionStarted])
 
   useEffect(() => {
     return () => {
@@ -77,9 +87,9 @@ function ChordPracticeIndicator({ voicing, lessonStepId }: { voicing: ChordVoici
   }, [finalizeSession])
 
   const liveSummary = useMemo(() => {
-    if (sessionStartedAt.current === null && cleanMatchCount === 0 && mismatchCount === 0) return null
+    if (!sessionStarted && cleanMatchCount === 0 && mismatchCount === 0) return null
     return buildSummary()
-  }, [buildSummary, cleanMatchCount, mismatchCount])
+  }, [buildSummary, cleanMatchCount, mismatchCount, sessionStarted])
 
   const displayedSummary =
     liveSummary ??
@@ -99,13 +109,17 @@ function ChordPracticeIndicator({ voicing, lessonStepId }: { voicing: ChordVoici
     <div className="mt-3 space-y-4">
       <div className="flex items-center gap-3">
         <button
-          onClick={isActive ? () => {
-            finalizeSession()
-            stop()
-          } : () => {
-            sessionStartedAt.current = Date.now()
-            start()
-          }}
+          onClick={
+            isActive
+              ? () => {
+                  finalizeSession()
+                  stop()
+                }
+              : () => {
+                  setSessionStarted(true)
+                  start()
+                }
+          }
           className={`rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
             isActive
               ? 'bg-rose-600 text-white hover:bg-rose-500'
@@ -143,7 +157,9 @@ function ChordPracticeIndicator({ voicing, lessonStepId }: { voicing: ChordVoici
             },
             {
               label: 'Mismatches',
-              value: displayedSummary.mismatches.length ? displayedSummary.mismatches.join(', ') : 'None',
+              value: displayedSummary.mismatches.length
+                ? displayedSummary.mismatches.join(', ')
+                : 'None',
               tone: displayedSummary.mismatches.length ? 'warning' : 'good'
             },
             { label: 'Target', value: displayedSummary.targetChord },

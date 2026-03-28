@@ -23,7 +23,7 @@ class LimiterProcessor extends AudioWorkletProcessor {
     const threshold = parameters.threshold[0]
     const releaseMs = parameters.release[0]
     const attackCoeff = Math.exp(-1 / (sampleRate * 0.0001))
-    const releaseCoeff = Math.exp(-1 / (sampleRate * releaseMs / 1000))
+    const releaseCoeff = Math.exp(-1 / ((sampleRate * releaseMs) / 1000))
     const n = input[0].length
 
     for (let i = 0; i < n; i++) {

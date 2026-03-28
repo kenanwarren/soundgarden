@@ -21,24 +21,21 @@ export function useEarTraining() {
   } = useEarTrainingStore()
   const preset = getEarTrainingPreset(challengePresetId)
 
-  const playTone = useCallback(
-    (frequency: number, startTime: number, duration: number) => {
-      const ctx = getPlaybackContext()
-      const osc = ctx.createOscillator()
-      const gain = ctx.createGain()
-      osc.type = 'sine'
-      osc.frequency.value = frequency
-      osc.connect(gain)
-      gain.connect(ctx.destination)
-      gain.gain.setValueAtTime(0, startTime)
-      gain.gain.linearRampToValueAtTime(0.3, startTime + 0.02)
-      gain.gain.setValueAtTime(0.3, startTime + duration - 0.05)
-      gain.gain.linearRampToValueAtTime(0, startTime + duration)
-      osc.start(startTime)
-      osc.stop(startTime + duration)
-    },
-    []
-  )
+  const playTone = useCallback((frequency: number, startTime: number, duration: number) => {
+    const ctx = getPlaybackContext()
+    const osc = ctx.createOscillator()
+    const gain = ctx.createGain()
+    osc.type = 'sine'
+    osc.frequency.value = frequency
+    osc.connect(gain)
+    gain.connect(ctx.destination)
+    gain.gain.setValueAtTime(0, startTime)
+    gain.gain.linearRampToValueAtTime(0.3, startTime + 0.02)
+    gain.gain.setValueAtTime(0.3, startTime + duration - 0.05)
+    gain.gain.linearRampToValueAtTime(0, startTime + duration)
+    osc.start(startTime)
+    osc.stop(startTime + duration)
+  }, [])
 
   const playChallenge = useCallback(
     async (challenge = currentChallenge) => {
@@ -77,7 +74,11 @@ export function useEarTraining() {
     [currentChallenge, isListening, mode, recordResult]
   )
 
-  const { start: startDetection, stop: stopDetection, isConnected } = usePitchDetection({
+  const {
+    start: startDetection,
+    stop: stopDetection,
+    isConnected
+  } = usePitchDetection({
     id: '__ear_training__',
     onPitch
   })

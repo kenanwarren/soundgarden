@@ -18,7 +18,10 @@ function median(arr: number[]): number {
   return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2
 }
 
-function detectPitch(buffer: Float32Array, sampleRate: number): { frequency: number; clarity: number } {
+function detectPitch(
+  buffer: Float32Array,
+  sampleRate: number
+): { frequency: number; clarity: number } {
   let sum = 0
   for (let i = 0; i < buffer.length; i++) {
     sum += buffer[i] * buffer[i]
@@ -134,9 +137,12 @@ export function usePitchDetection({ id, referenceA4 = 440, onPitch }: UsePitchDe
   const smoothedFreqRef = useRef(0)
   const recentFreqs = useRef<number[]>([])
   const onPitchRef = useRef(onPitch)
-  onPitchRef.current = onPitch
   const isConnected = useAudioStore((s) => s.isConnected)
   const [isActive, setIsActive] = useState(false)
+
+  useEffect(() => {
+    onPitchRef.current = onPitch
+  }, [onPitch])
 
   const start = useCallback(async () => {
     const engine = getEngine()
@@ -148,7 +154,11 @@ export function usePitchDetection({ id, referenceA4 = 440, onPitch }: UsePitchDe
 
     if (intervalRef.current !== null) clearInterval(intervalRef.current)
     if (analyserRef.current) {
-      try { analyserRef.current.disconnect() } catch { /* */ }
+      try {
+        analyserRef.current.disconnect()
+      } catch {
+        /* */
+      }
     }
 
     const analyser = ctx.createAnalyser()
@@ -193,7 +203,7 @@ export function usePitchDetection({ id, referenceA4 = 440, onPitch }: UsePitchDe
     }, ANALYSIS_INTERVAL_MS)
 
     setIsActive(true)
-  }, [id, referenceA4])
+  }, [referenceA4])
 
   const stop = useCallback(() => {
     if (intervalRef.current !== null) {
@@ -201,7 +211,11 @@ export function usePitchDetection({ id, referenceA4 = 440, onPitch }: UsePitchDe
       intervalRef.current = null
     }
     if (analyserRef.current) {
-      try { analyserRef.current.disconnect() } catch { /* */ }
+      try {
+        analyserRef.current.disconnect()
+      } catch {
+        /* */
+      }
       analyserRef.current = null
     }
 

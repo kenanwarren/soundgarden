@@ -21,9 +21,9 @@ class ShimmerProcessor extends AudioWorkletProcessor {
     this.grainHopCounter = 0
 
     this.win = new Float32Array(GRAIN_SIZE)
-    const scale = 2 * Math.PI / GRAIN_SIZE
+    const scale = (2 * Math.PI) / GRAIN_SIZE
     for (let i = 0; i < GRAIN_SIZE; i++) {
-      this.win[i] = 0.5 * (1 - Math.cos(scale * i)) / OVERLAP
+      this.win[i] = (0.5 * (1 - Math.cos(scale * i))) / OVERLAP
     }
   }
 

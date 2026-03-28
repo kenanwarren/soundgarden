@@ -14,7 +14,7 @@ function resetStore() {
     streak: 0,
     bestStreak: 0,
     lastHitGrade: null,
-    lastHitTime: 0,
+    lastHitTime: 0
   })
 }
 
@@ -23,7 +23,7 @@ function hit(deltaMs: number, expectedTime = 1.0) {
     type: 'hit',
     expectedTime,
     actualTime: expectedTime + deltaMs / 1000,
-    deltaMs,
+    deltaMs
   })
 }
 

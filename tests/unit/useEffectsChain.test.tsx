@@ -102,9 +102,7 @@ describe('useEffectsChain', () => {
       result.current.setParam('gain-1', 'gain', 1.75)
     })
 
-    await waitFor(() =>
-      expect(context.createdWorklets[0].getParam('gain').value).toBe(1.75)
-    )
+    await waitFor(() => expect(context.createdWorklets[0].getParam('gain').value).toBe(1.75))
 
     expect(context.createdWorklets[1].getParam('gain').value).toBe(1)
   })

@@ -179,7 +179,9 @@ export class MockAudioContext {
   outputLatency = 0.002
   state: AudioContextState = 'running'
 
-  constructor(init?: Partial<Pick<MockAudioContext, 'sampleRate' | 'baseLatency' | 'outputLatency' | 'state'>>) {
+  constructor(
+    init?: Partial<Pick<MockAudioContext, 'sampleRate' | 'baseLatency' | 'outputLatency' | 'state'>>
+  ) {
     if (init?.sampleRate !== undefined) this.sampleRate = init.sampleRate
     if (init?.baseLatency !== undefined) this.baseLatency = init.baseLatency
     if (init?.outputLatency !== undefined) this.outputLatency = init.outputLatency
@@ -237,7 +239,12 @@ export class MockAudioContext {
 }
 
 export class MockPipeline {
-  effectNodes: Array<{ id: string; enabled: boolean; getInput(): MockAudioNode; getOutput(): MockAudioNode }> = []
+  effectNodes: Array<{
+    id: string
+    enabled: boolean
+    getInput(): MockAudioNode
+    getOutput(): MockAudioNode
+  }> = []
   readonly masterGainNode = new MockGainNode('pipeline-master')
   readonly setEffectNodes = vi.fn((nodes: typeof this.effectNodes) => {
     this.effectNodes = nodes

@@ -77,9 +77,9 @@ describe('useDevices', () => {
 
   it('surfaces permission-denied status when devices still enumerate successfully', async () => {
     getEngine.mockReturnValue({
-      enumerateDevices: vi.fn().mockResolvedValue([
-        { id: 'input-1', label: 'Interface', kind: 'audioinput' }
-      ])
+      enumerateDevices: vi
+        .fn()
+        .mockResolvedValue([{ id: 'input-1', label: 'Interface', kind: 'audioinput' }])
     })
     useAudioStore.getState().setPermissionState('denied')
 

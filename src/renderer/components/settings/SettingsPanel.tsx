@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, type ReactNode } from 'react'
 import {
   Activity,
   Cable,
@@ -39,9 +39,9 @@ function Section({
 }: {
   title: string
   description: string
-  icon: JSX.Element
-  action?: JSX.Element
-  children: JSX.Element | JSX.Element[]
+  icon: ReactNode
+  action?: ReactNode
+  children: ReactNode
 }): JSX.Element {
   return (
     <section className="rounded-3xl border border-zinc-800 bg-zinc-900/80 p-6 shadow-xl">

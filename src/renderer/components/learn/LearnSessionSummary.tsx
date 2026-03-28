@@ -43,9 +43,14 @@ export function LearnSessionSummary({
 
       <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         {metrics.map((metric) => (
-          <div key={metric.label} className="rounded-2xl border border-zinc-800 bg-zinc-950/70 px-4 py-3">
+          <div
+            key={metric.label}
+            className="rounded-2xl border border-zinc-800 bg-zinc-950/70 px-4 py-3"
+          >
             <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">{metric.label}</div>
-            <div className={`mt-2 text-lg font-medium ${toneClass(metric.tone)}`}>{metric.value}</div>
+            <div className={`mt-2 text-lg font-medium ${toneClass(metric.tone)}`}>
+              {metric.value}
+            </div>
           </div>
         ))}
       </div>

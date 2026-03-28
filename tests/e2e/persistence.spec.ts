@@ -2,7 +2,9 @@ import type { Locator, Page } from '@playwright/test'
 import { expect, persistedState, test } from './fixtures'
 
 function settingsSection(page: Page, title: string): Locator {
-  return page.locator('section').filter({ has: page.getByRole('heading', { name: title, exact: true }) })
+  return page
+    .locator('section')
+    .filter({ has: page.getByRole('heading', { name: title, exact: true }) })
 }
 
 function chordFilterButton(page: Page, groupLabel: 'Root' | 'Type', buttonName: string): Locator {
@@ -133,7 +135,9 @@ test.describe('Persistence and routing flows', () => {
     await expect(page.getByRole('heading', { name: 'Scale Explorer' })).toBeVisible()
   })
 
-  test('guided lesson deep links override persisted scale and chord filters', async ({ soundgarden }) => {
+  test('guided lesson deep links override persisted scale and chord filters', async ({
+    soundgarden
+  }) => {
     await soundgarden.seedStorage({
       'soundgarden-scales': persistedState({
         selectedRoot: 'C',
@@ -159,7 +163,9 @@ test.describe('Persistence and routing flows', () => {
     await expect(chordFilterButton(page, 'Type', 'Open')).toHaveClass(/bg-emerald-600/)
   })
 
-  test('chord library filters persist across relaunch and clear back to all', async ({ soundgarden }) => {
+  test('chord library filters persist across relaunch and clear back to all', async ({
+    soundgarden
+  }) => {
     let page = await soundgarden.gotoHash('#/learn/chords')
 
     await chordFilterButton(page, 'Root', 'E').click()

@@ -1,7 +1,11 @@
 import { useEffect, useCallback } from 'react'
 import { AudioEngine } from '../audio/engine'
 import { AudioPipeline } from '../audio/pipeline'
-import { FakeAudioEngine, DEFAULT_FAKE_INPUT_DEVICE_ID, DEFAULT_FAKE_OUTPUT_DEVICE_ID } from '../audio/fake-engine'
+import {
+  FakeAudioEngine,
+  DEFAULT_FAKE_INPUT_DEVICE_ID,
+  DEFAULT_FAKE_OUTPUT_DEVICE_ID
+} from '../audio/fake-engine'
 import type { AudioDeviceInfo } from '../audio/types'
 import { useAudioStore } from '../stores/audio-store'
 import { useAppSettingsStore } from '../stores/app-settings-store'
@@ -175,8 +179,12 @@ export function useAudioEngineInit() {
     globalInitialized = true
 
     const runtimeConfig = getE2ERuntimeConfig()
-    const e2eAudioMode = runtimeConfig.enabled ? runtimeConfig.audioMode ?? 'offline-no-input' : null
-    const engine: AudioEngineLike = e2eAudioMode ? new FakeAudioEngine(e2eAudioMode) : new AudioEngine()
+    const e2eAudioMode = runtimeConfig.enabled
+      ? (runtimeConfig.audioMode ?? 'offline-no-input')
+      : null
+    const engine: AudioEngineLike = e2eAudioMode
+      ? new FakeAudioEngine(e2eAudioMode)
+      : new AudioEngine()
     engineRef.current = engine
     let cancelled = false
     let permissionStatus: PermissionStatus | null = null

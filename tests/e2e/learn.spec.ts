@@ -13,7 +13,9 @@ test.describe('Learn flows', () => {
 
     await expect(page.getByText('Fingerstyle Paths')).toBeVisible()
     await expect(
-      page.getByText('Use alternating bass and arpeggio patterns to build steady fingerstyle motion.')
+      page.getByText(
+        'Use alternating bass and arpeggio patterns to build steady fingerstyle motion.'
+      )
     ).toBeVisible()
     await expect(page.getByRole('link', { name: /Chord Library/i })).toBeVisible()
   })
@@ -27,7 +29,9 @@ test.describe('Learn flows', () => {
     await expect(page.getByText('Practice mode')).toBeVisible()
   })
 
-  test('audio-required drill routes show the offline gate instead of crashing', async ({ page }) => {
+  test('audio-required drill routes show the offline gate instead of crashing', async ({
+    page
+  }) => {
     await page.evaluate(() => {
       window.location.hash = '#/learn/scale-sequences?lesson=funk-mixolydian-step'
     })

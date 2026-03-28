@@ -28,7 +28,11 @@ export class AudioPipeline {
 
   removeTap(node: AudioNode): void {
     this.taps.delete(node)
-    try { node.disconnect() } catch { /* */ }
+    try {
+      node.disconnect()
+    } catch {
+      /* */
+    }
   }
 
   connectSource(source: AudioNode): void {
@@ -74,7 +78,11 @@ export class AudioPipeline {
     this.sourceNode.disconnect()
 
     for (const effect of this.effectNodes) {
-      try { effect.getOutput().disconnect() } catch { /* */ }
+      try {
+        effect.getOutput().disconnect()
+      } catch {
+        /* */
+      }
     }
 
     // Reconnect all parallel taps

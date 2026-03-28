@@ -58,15 +58,26 @@ export function makeParams(values: Record<string, number>): Record<string, Float
   return result
 }
 
-export function fillSine(buf: Float32Array, freq: number, amplitude = 0.5, sampleRate = SAMPLE_RATE): void {
+export function fillSine(
+  buf: Float32Array,
+  freq: number,
+  amplitude = 0.5,
+  sampleRate = SAMPLE_RATE
+): void {
   for (let i = 0; i < buf.length; i++) {
-    buf[i] = amplitude * Math.sin(2 * Math.PI * freq * i / sampleRate)
+    buf[i] = amplitude * Math.sin((2 * Math.PI * freq * i) / sampleRate)
   }
 }
 
-export function fillSineBlocks(buf: Float32Array, freq: number, amplitude = 0.5, startSample = 0, sr = SAMPLE_RATE): void {
+export function fillSineBlocks(
+  buf: Float32Array,
+  freq: number,
+  amplitude = 0.5,
+  startSample = 0,
+  sr = SAMPLE_RATE
+): void {
   for (let i = 0; i < buf.length; i++) {
-    buf[i] = amplitude * Math.sin(2 * Math.PI * freq * (startSample + i) / sr)
+    buf[i] = amplitude * Math.sin((2 * Math.PI * freq * (startSample + i)) / sr)
   }
 }
 

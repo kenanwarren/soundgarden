@@ -8,7 +8,7 @@ const SCALES = [
   [0, 2, 4, 5, 7, 9, 11], // major
   [0, 2, 3, 5, 7, 8, 10], // minor
   [0, 2, 3, 5, 7, 9, 10], // dorian
-  [0, 2, 4, 5, 7, 9, 10]  // mixolydian
+  [0, 2, 4, 5, 7, 9, 10] // mixolydian
 ]
 
 class HarmonizerProcessor extends AudioWorkletProcessor {
@@ -26,9 +26,9 @@ class HarmonizerProcessor extends AudioWorkletProcessor {
     this.detectCounter = 0
 
     this.win = new Float32Array(GRAIN_SIZE)
-    const scale = 2 * Math.PI / GRAIN_SIZE
+    const scale = (2 * Math.PI) / GRAIN_SIZE
     for (let i = 0; i < GRAIN_SIZE; i++) {
-      this.win[i] = 0.5 * (1 - Math.cos(scale * i)) / OVERLAP
+      this.win[i] = (0.5 * (1 - Math.cos(scale * i))) / OVERLAP
     }
   }
 
@@ -53,7 +53,7 @@ class HarmonizerProcessor extends AudioWorkletProcessor {
     let bestCorr = 0
     let bestLag = 0
     const minLag = Math.floor(sampleRate / 2000) // ~2000Hz max
-    const maxLag = Math.floor(sampleRate / 60)    // ~60Hz min
+    const maxLag = Math.floor(sampleRate / 60) // ~60Hz min
 
     for (let lag = minLag; lag <= maxLag && lag < n; lag++) {
       let corr = 0
@@ -92,8 +92,14 @@ class HarmonizerProcessor extends AudioWorkletProcessor {
 
     let targetDegree = degree + interval
     let octaveShift = 0
-    while (targetDegree < 0) { targetDegree += scaleNotes.length; octaveShift-- }
-    while (targetDegree >= scaleNotes.length) { targetDegree -= scaleNotes.length; octaveShift++ }
+    while (targetDegree < 0) {
+      targetDegree += scaleNotes.length
+      octaveShift--
+    }
+    while (targetDegree >= scaleNotes.length) {
+      targetDegree -= scaleNotes.length
+      octaveShift++
+    }
 
     const targetNote = key + scaleNotes[targetDegree] + octaveShift * 12
     const currentNote = key + scaleNotes[degree]

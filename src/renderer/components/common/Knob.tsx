@@ -10,7 +10,15 @@ interface KnobProps {
   onChange: (value: number) => void
 }
 
-export function Knob({ value, min, max, step = 0.01, label, unit = '', onChange }: KnobProps): JSX.Element {
+export function Knob({
+  value,
+  min,
+  max,
+  step = 0.01,
+  label,
+  unit = '',
+  onChange
+}: KnobProps): JSX.Element {
   const isDragging = useRef(false)
   const startY = useRef(0)
   const startValue = useRef(0)
@@ -49,15 +57,32 @@ export function Knob({ value, min, max, step = 0.01, label, unit = '', onChange 
   const displayValue = step >= 1 ? Math.round(value) : value.toFixed(1)
 
   return (
-    <div className="flex flex-col items-center gap-1 select-none cursor-ns-resize" onMouseDown={handleMouseDown}>
+    <div
+      className="flex flex-col items-center gap-1 select-none cursor-ns-resize"
+      onMouseDown={handleMouseDown}
+    >
       <svg width="48" height="48" viewBox="0 0 48 48">
         {/* Track */}
-        <circle cx="24" cy="24" r="18" fill="none" stroke="#3f3f46" strokeWidth="3" strokeLinecap="round"
+        <circle
+          cx="24"
+          cy="24"
+          r="18"
+          fill="none"
+          stroke="#3f3f46"
+          strokeWidth="3"
+          strokeLinecap="round"
           strokeDasharray={`${normalized * 85} 100`}
           transform="rotate(-225 24 24)"
         />
         {/* Active arc */}
-        <circle cx="24" cy="24" r="18" fill="none" stroke="#10b981" strokeWidth="3" strokeLinecap="round"
+        <circle
+          cx="24"
+          cy="24"
+          r="18"
+          fill="none"
+          stroke="#10b981"
+          strokeWidth="3"
+          strokeLinecap="round"
           strokeDasharray={`${normalized * 85} 100`}
           transform="rotate(-225 24 24)"
           opacity={0.8}
@@ -66,13 +91,21 @@ export function Knob({ value, min, max, step = 0.01, label, unit = '', onChange 
         <circle cx="24" cy="24" r="12" fill="#27272a" stroke="#52525b" strokeWidth="1" />
         {/* Indicator line */}
         <line
-          x1="24" y1="24" x2="24" y2="14"
-          stroke="#10b981" strokeWidth="2" strokeLinecap="round"
+          x1="24"
+          y1="24"
+          x2="24"
+          y2="14"
+          stroke="#10b981"
+          strokeWidth="2"
+          strokeLinecap="round"
           transform={`rotate(${angle} 24 24)`}
         />
       </svg>
       <span className="text-xs text-zinc-400">{label}</span>
-      <span className="text-xs text-zinc-500 font-mono">{displayValue}{unit}</span>
+      <span className="text-xs text-zinc-500 font-mono">
+        {displayValue}
+        {unit}
+      </span>
     </div>
   )
 }

@@ -8,18 +8,24 @@ function diagnosticsSection(page: Page): Locator {
 }
 
 function settingsStatusValue(page: Page, label: string): Locator {
-  return diagnosticsSection(page).getByText(label, { exact: true }).locator('xpath=following-sibling::div[1]')
+  return diagnosticsSection(page)
+    .getByText(label, { exact: true })
+    .locator('xpath=following-sibling::div[1]')
 }
 
 function statusStripValue(page: Page, value: string): Locator {
-  return page.locator('span.font-medium', { hasText: new RegExp(`^${value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`) })
+  return page.locator('span.font-medium', {
+    hasText: new RegExp(`^${value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`)
+  })
 }
 
-function appSettingsState(overrides: {
-  audio?: Record<string, unknown>
-  practice?: Record<string, unknown>
-  interface?: Record<string, unknown>
-} = {}): string {
+function appSettingsState(
+  overrides: {
+    audio?: Record<string, unknown>
+    practice?: Record<string, unknown>
+    interface?: Record<string, unknown>
+  } = {}
+): string {
   return persistedState({
     audio: {
       inputDeviceId: null,
@@ -51,9 +57,13 @@ test.describe('Audio mode flows', () => {
     let page = await soundgarden.relaunch({ audioMode: 'permission-denied' })
     await soundgarden.gotoHash('#/learn/scale-sequences?lesson=funk-mixolydian-step')
 
-    await expect(page.getByRole('heading', { name: 'Microphone permission is blocked' })).toBeVisible()
     await expect(
-      page.getByText('Soundgarden cannot use live audio until microphone access is granted in system settings.')
+      page.getByRole('heading', { name: 'Microphone permission is blocked' })
+    ).toBeVisible()
+    await expect(
+      page.getByText(
+        'Soundgarden cannot use live audio until microphone access is granted in system settings.'
+      )
     ).toBeVisible()
     await expect(page.getByRole('button', { name: 'Reconnect' })).toHaveCount(0)
 
@@ -106,7 +116,9 @@ test.describe('Audio mode flows', () => {
     await expect(page.getByRole('button', { name: 'Start Detection' })).toBeVisible()
   })
 
-  test('settings diagnostics handle connected success and saved-device warnings', async ({ soundgarden }) => {
+  test('settings diagnostics handle connected success and saved-device warnings', async ({
+    soundgarden
+  }) => {
     let page = await soundgarden.relaunch({ audioMode: 'connected' })
     await soundgarden.gotoHash('#/settings')
 
@@ -116,7 +128,9 @@ test.describe('Audio mode flows', () => {
       diagnosticsSection(page).getByText('Audio check passed. Soundgarden is ready for live input.')
     ).toBeVisible()
     await expect(page.getByText('Audio check passed', { exact: true })).toBeVisible()
-    await expect(diagnosticsSection(page).getByText('Input route: E2E USB Interface.')).toBeVisible()
+    await expect(
+      diagnosticsSection(page).getByText('Input route: E2E USB Interface.')
+    ).toBeVisible()
     await expect(
       diagnosticsSection(page).getByText('Live audio is connected with healthy signal.')
     ).toBeVisible()

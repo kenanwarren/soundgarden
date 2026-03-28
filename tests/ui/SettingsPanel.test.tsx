@@ -239,7 +239,9 @@ describe('SettingsPanel', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Run Audio Check' }))
 
-    expect(await screen.findByText('Audio check passed. Soundgarden is ready for live input.')).toBeInTheDocument()
+    expect(
+      await screen.findByText('Audio check passed. Soundgarden is ready for live input.')
+    ).toBeInTheDocument()
     expect(screen.getByText('Input route: Interface.')).toBeInTheDocument()
     expect(screen.getByText('Live audio is connected with healthy signal.')).toBeInTheDocument()
   })

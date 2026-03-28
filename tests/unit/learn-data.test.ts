@@ -87,7 +87,9 @@ describe('learn-data', () => {
       inputDeviceId: null
     } as const
 
-    expect(getNextIncompleteStep(foundations!, {}, disconnectedStatus)?.id).toBe('foundations-setup')
+    expect(getNextIncompleteStep(foundations!, {}, disconnectedStatus)?.id).toBe(
+      'foundations-setup'
+    )
     expect(getNextIncompleteStep(foundations!, {}, connectedStatus)?.id).toBe('foundations-open-c')
     expect(
       getNextIncompleteStep(

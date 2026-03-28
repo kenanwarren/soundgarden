@@ -61,7 +61,9 @@ describe('EarTrainingPanel', () => {
     })
 
     expect(screen.getByText(/Call & Response Ear/)).toBeInTheDocument()
-    expect(screen.getAllByText(/Listen for blue-third and dominant-color movement/).length).toBeGreaterThan(0)
+    expect(
+      screen.getAllByText(/Listen for blue-third and dominant-color movement/).length
+    ).toBeGreaterThan(0)
     expect(screen.getByText('Interval').closest('button')).toHaveClass('bg-emerald-600')
 
     fireEvent.click(screen.getByRole('button', { name: /Start Round/i }))

@@ -67,9 +67,27 @@ class LooperProcessor extends AudioWorkletProcessor {
 
   static get parameterDescriptors() {
     return [
-      { name: 'inputLevel', defaultValue: 1.0, minValue: 0, maxValue: 2.0, automationRate: 'k-rate' },
-      { name: 'loopLevel', defaultValue: 1.0, minValue: 0, maxValue: 1.0, automationRate: 'k-rate' },
-      { name: 'overdubLevel', defaultValue: 0.8, minValue: 0, maxValue: 1.0, automationRate: 'k-rate' }
+      {
+        name: 'inputLevel',
+        defaultValue: 1.0,
+        minValue: 0,
+        maxValue: 2.0,
+        automationRate: 'k-rate'
+      },
+      {
+        name: 'loopLevel',
+        defaultValue: 1.0,
+        minValue: 0,
+        maxValue: 1.0,
+        automationRate: 'k-rate'
+      },
+      {
+        name: 'overdubLevel',
+        defaultValue: 0.8,
+        minValue: 0,
+        maxValue: 1.0,
+        automationRate: 'k-rate'
+      }
     ]
   }
 

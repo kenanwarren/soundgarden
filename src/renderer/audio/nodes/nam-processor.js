@@ -2,7 +2,7 @@ function fastTanh(x) {
   if (x > 4.97) return 1.0
   if (x < -4.97) return -1.0
   var x2 = x * x
-  return x * (27.0 + x2) / (27.0 + 9.0 * x2)
+  return (x * (27.0 + x2)) / (27.0 + 9.0 * x2)
 }
 
 function fastSigmoid(x) {
@@ -10,11 +10,17 @@ function fastSigmoid(x) {
   if (hx > 4.97) return 1.0
   if (hx < -4.97) return 0.0
   var x2 = hx * hx
-  return 0.5 + 0.5 * hx * (27.0 + x2) / (27.0 + 9.0 * x2)
+  return 0.5 + (0.5 * hx * (27.0 + x2)) / (27.0 + 9.0 * x2)
 }
 
 function nextPow2(v) {
-  v--; v |= v >> 1; v |= v >> 2; v |= v >> 4; v |= v >> 8; v |= v >> 16; return v + 1
+  v--
+  v |= v >> 1
+  v |= v >> 2
+  v |= v >> 4
+  v |= v >> 8
+  v |= v >> 16
+  return v + 1
 }
 
 class NAMProcessor extends AudioWorkletProcessor {
@@ -27,7 +33,7 @@ class NAMProcessor extends AudioWorkletProcessor {
     this.wasm = null
     this.wasmReady = false
     var self = this
-    this.port.onmessage = function(e) {
+    this.port.onmessage = function (e) {
       if (e.data.type === 'loadModel') {
         try {
           self.model = self._buildModel(e.data.modelData)
@@ -53,7 +59,7 @@ class NAMProcessor extends AudioWorkletProcessor {
   async _initWasm(wasmBytes) {
     try {
       var result = await WebAssembly.instantiate(wasmBytes, {
-        env: { emscripten_notify_memory_growth: function() {} }
+        env: { emscripten_notify_memory_growth: function () {} }
       })
       this.wasm = result.instance
       if (this.wasm.exports._initialize) this.wasm.exports._initialize()
@@ -93,9 +99,11 @@ class NAMProcessor extends AudioWorkletProcessor {
       var inputPeak = 0
       var outputPeak = 0
       for (var i = 0; i < numFrames; i++) {
-        var av = mono[i]; if (av < 0) av = -av
+        var av = mono[i]
+        if (av < 0) av = -av
         if (av > inputPeak) inputPeak = av
-        av = outBuf[i]; if (av < 0) av = -av
+        av = outBuf[i]
+        if (av < 0) av = -av
         if (av > outputPeak) outputPeak = av
       }
 
@@ -106,7 +114,10 @@ class NAMProcessor extends AudioWorkletProcessor {
         }
         if (!this.reportedSilentOutput) {
           this.reportedSilentOutput = true
-          this.port.postMessage({ type: 'modelError', error: 'Model produced near-silent output; falling back to dry signal' })
+          this.port.postMessage({
+            type: 'modelError',
+            error: 'Model produced near-silent output; falling back to dry signal'
+          })
         }
       } else {
         this.reportedSilentOutput = false
@@ -133,28 +144,40 @@ class NAMProcessor extends AudioWorkletProcessor {
     var w = data.weights
     var pos = 0
     var conditionValue = this._getConditionValue(data)
-    function take(n) { var a = new Float32Array(n); for (var i = 0; i < n; i++) a[i] = w[pos++]; return a }
+    function take(n) {
+      var a = new Float32Array(n)
+      for (var i = 0; i < n; i++) a[i] = w[pos++]
+      return a
+    }
 
     var blockConfigs = config.layers || []
     var blocks = []
     for (var b = 0; b < blockConfigs.length; b++) {
       var bc = blockConfigs[b]
-      var inSize = bc.input_size || 1, ch = bc.channels || 16, ks = bc.kernel_size || 3
-      var dilations = bc.dilations || [], headSize = bc.head_size || 1
-      var gated = bc.gated || false, headBias = bc.head_bias || false
-      var condSize = bc.condition_size || 0, co = gated ? 2 * ch : ch
+      var inSize = bc.input_size || 1,
+        ch = bc.channels || 16,
+        ks = bc.kernel_size || 3
+      var dilations = bc.dilations || [],
+        headSize = bc.head_size || 1
+      var gated = bc.gated || false,
+        headBias = bc.head_bias || false
+      var condSize = bc.condition_size || 0,
+        co = gated ? 2 * ch : ch
 
       var rechannelW = take(inSize * ch)
       var layers = []
       for (var l = 0; l < dilations.length; l++) {
-        var d = dilations[l], bs = d * (ks - 1) + 1
+        var d = dilations[l],
+          bs = d * (ks - 1) + 1
 
         var bsPow2 = nextPow2(bs)
         var bMask = bsPow2 - 1
 
-        var cW = take(ch * co * ks), cB = take(co)
+        var cW = take(ch * co * ks),
+          cB = take(co)
         var condW = condSize > 0 ? take(condSize * co) : null
-        var mW = take(ch * ch), mB = take(ch)
+        var mW = take(ch * ch),
+          mB = take(ch)
 
         var flatKernel = new Float32Array(ks * co * ch)
         for (var k = 0; k < ks; k++) {
@@ -201,10 +224,24 @@ class NAMProcessor extends AudioWorkletProcessor {
           dilation: d
         })
       }
-      var hW = take(ch * headSize), hB = headBias ? take(headSize) : null
-      blocks.push({ inSize: inSize, ch: ch, co: co, ks: ks, gated: gated, hs: headSize, rW: rechannelW, layers: layers, hW: hW, hB: hB, x: new Float32Array(ch), cv: new Float32Array(co) })
+      var hW = take(ch * headSize),
+        hB = headBias ? take(headSize) : null
+      blocks.push({
+        inSize: inSize,
+        ch: ch,
+        co: co,
+        ks: ks,
+        gated: gated,
+        hs: headSize,
+        rW: rechannelW,
+        layers: layers,
+        hW: hW,
+        hB: hB,
+        x: new Float32Array(ch),
+        cv: new Float32Array(co)
+      })
     }
-    var headScale = w.length > pos ? w[pos] : (config.head_scale || 1.0)
+    var headScale = w.length > pos ? w[pos] : config.head_scale || 1.0
 
     var numBlocks = blocks.length
 
@@ -212,82 +249,108 @@ class NAMProcessor extends AudioWorkletProcessor {
       return this._buildWaveNetWasm(data, blocks, headScale)
     }
 
-    return { forwardBuffer: function(inBuf, outBuf, numFrames, inGain, outGain) {
-      for (var i = 0; i < numFrames; i++) {
-        var sample = inBuf[i] * inGain
-        var ph = null
-        for (var b = 0; b < numBlocks; b++) {
-          var bl = blocks[b], ch = bl.ch, co = bl.co, x = bl.x, cv = bl.cv, rW = bl.rW
-          if (bl.inSize === 1) {
-            for (var c = 0; c < ch; c++) x[c] = sample * rW[c]
-          } else {
-            var inSz = bl.inSize
-            for (var c = 0; c < ch; c++) {
-              var v = 0, rwBase = c * inSz
-              for (var j = 0; j < inSz; j++) v += ph[j] * rW[rwBase + j]
-              x[c] = v
-            }
-          }
-          var numLayers = bl.layers.length
-          for (var l = 0; l < numLayers; l++) {
-            var ly = bl.layers[l], bi = ly.bi, buf = ly.buf, frameBase = bi * ch
-            var bias = ly.bias, mW = ly.mW, mB = ly.mB
-            var lks = ly.ks, lco = ly.co, fk = ly.flatKernel
-            var bMask = ly.bMask
-
-            for (var c = 0; c < ch; c++) buf[frameBase + c] = x[c]
-
-            for (var o = 0; o < lco; o++) cv[o] = bias[o]
-
-            if (lks === 3) {
-              var t0 = ((bi - ly.tapDilations[0]) & bMask) * ch
-              var t1 = ((bi - ly.tapDilations[1]) & bMask) * ch
-              var t2 = ((bi - ly.tapDilations[2]) & bMask) * ch
-              var fk0 = 0, fk1 = lco * ch, fk2 = 2 * lco * ch
-              for (var o = 0; o < lco; o++) {
-                var sum = 0
-                var off0 = fk0 + o * ch, off1 = fk1 + o * ch, off2 = fk2 + o * ch
-                for (var c = 0; c < ch; c++) {
-                  sum += fk[off0 + c] * buf[t0 + c]
-                      + fk[off1 + c] * buf[t1 + c]
-                      + fk[off2 + c] * buf[t2 + c]
-                }
-                cv[o] += sum
-              }
+    return {
+      forwardBuffer: function (inBuf, outBuf, numFrames, inGain, outGain) {
+        for (var i = 0; i < numFrames; i++) {
+          var sample = inBuf[i] * inGain
+          var ph = null
+          for (var b = 0; b < numBlocks; b++) {
+            var bl = blocks[b],
+              ch = bl.ch,
+              co = bl.co,
+              x = bl.x,
+              cv = bl.cv,
+              rW = bl.rW
+            if (bl.inSize === 1) {
+              for (var c = 0; c < ch; c++) x[c] = sample * rW[c]
             } else {
-              for (var k = 0; k < lks; k++) {
-                var bO = ((bi - ly.tapDilations[k]) & bMask) * ch
-                var fkBase = k * lco * ch
+              var inSz = bl.inSize
+              for (var c = 0; c < ch; c++) {
+                var v = 0,
+                  rwBase = c * inSz
+                for (var j = 0; j < inSz; j++) v += ph[j] * rW[rwBase + j]
+                x[c] = v
+              }
+            }
+            var numLayers = bl.layers.length
+            for (var l = 0; l < numLayers; l++) {
+              var ly = bl.layers[l],
+                bi = ly.bi,
+                buf = ly.buf,
+                frameBase = bi * ch
+              var bias = ly.bias,
+                mW = ly.mW,
+                mB = ly.mB
+              var lks = ly.ks,
+                lco = ly.co,
+                fk = ly.flatKernel
+              var bMask = ly.bMask
+
+              for (var c = 0; c < ch; c++) buf[frameBase + c] = x[c]
+
+              for (var o = 0; o < lco; o++) cv[o] = bias[o]
+
+              if (lks === 3) {
+                var t0 = ((bi - ly.tapDilations[0]) & bMask) * ch
+                var t1 = ((bi - ly.tapDilations[1]) & bMask) * ch
+                var t2 = ((bi - ly.tapDilations[2]) & bMask) * ch
+                var fk0 = 0,
+                  fk1 = lco * ch,
+                  fk2 = 2 * lco * ch
                 for (var o = 0; o < lco; o++) {
-                  var kwOff = fkBase + o * ch
                   var sum = 0
-                  for (var c = 0; c < ch; c++) sum += fk[kwOff + c] * buf[bO + c]
+                  var off0 = fk0 + o * ch,
+                    off1 = fk1 + o * ch,
+                    off2 = fk2 + o * ch
+                  for (var c = 0; c < ch; c++) {
+                    sum +=
+                      fk[off0 + c] * buf[t0 + c] +
+                      fk[off1 + c] * buf[t1 + c] +
+                      fk[off2 + c] * buf[t2 + c]
+                  }
                   cv[o] += sum
                 }
+              } else {
+                for (var k = 0; k < lks; k++) {
+                  var bO = ((bi - ly.tapDilations[k]) & bMask) * ch
+                  var fkBase = k * lco * ch
+                  for (var o = 0; o < lco; o++) {
+                    var kwOff = fkBase + o * ch
+                    var sum = 0
+                    for (var c = 0; c < ch; c++) sum += fk[kwOff + c] * buf[bO + c]
+                    cv[o] += sum
+                  }
+                }
               }
-            }
 
-            if (bl.gated) {
-              for (var c = 0; c < ch; c++) cv[c] = fastTanh(cv[c]) * fastSigmoid(cv[c + ch])
-            } else {
-              for (var c = 0; c < lco; c++) cv[c] = fastTanh(cv[c])
-            }
+              if (bl.gated) {
+                for (var c = 0; c < ch; c++) cv[c] = fastTanh(cv[c]) * fastSigmoid(cv[c + ch])
+              } else {
+                for (var c = 0; c < lco; c++) cv[c] = fastTanh(cv[c])
+              }
 
-            for (var o = 0; o < ch; o++) {
-              var v = mB[o], mBase = o * ch
-              for (var c = 0; c < ch; c++) v += mW[mBase + c] * cv[c]
-              x[o] = v + buf[frameBase + o]
-            }
+              for (var o = 0; o < ch; o++) {
+                var v = mB[o],
+                  mBase = o * ch
+                for (var c = 0; c < ch; c++) v += mW[mBase + c] * cv[c]
+                x[o] = v + buf[frameBase + o]
+              }
 
-            ly.bi = (bi + 1) & bMask
+              ly.bi = (bi + 1) & bMask
+            }
+            ph = x
+            if (bl.hs === 1) {
+              var v = bl.hB ? bl.hB[0] : 0
+              for (var c = 0; c < ch; c++) v += bl.hW[c] * x[c]
+              sample = v
+            }
           }
-          ph = x
-          if (bl.hs === 1) { var v = bl.hB ? bl.hB[0] : 0; for (var c = 0; c < ch; c++) v += bl.hW[c] * x[c]; sample = v }
+          var s = sample * headScale * outGain
+          outBuf[i] = s !== s ? 0 : s
         }
-        var s = sample * headScale * outGain
-        outBuf[i] = s !== s ? 0 : s
-      }
-    }, inputScale: this._getInputScale(data) }
+      },
+      inputScale: this._getInputScale(data)
+    }
   }
 
   _buildWaveNetWasm(data, blocks, headScale) {
@@ -310,7 +373,7 @@ class NAMProcessor extends AudioWorkletProcessor {
       blockInfoView[b * 7 + 2] = bc.kernel_size || 3
       blockInfoView[b * 7 + 3] = (bc.dilations || []).length
       blockInfoView[b * 7 + 4] = bc.head_size || 1
-      blockInfoView[b * 7 + 5] = (bc.gated || false) ? 1 : 0
+      blockInfoView[b * 7 + 5] = bc.gated || false ? 1 : 0
       blockInfoView[b * 7 + 6] = bc.head_bias ? 1 : 0
     }
 
@@ -334,8 +397,14 @@ class NAMProcessor extends AudioWorkletProcessor {
     var conditionValue = this._getConditionValue(data)
 
     var modelPtr = exports.init_wavenet(
-      blockInfoPtr, numBlocks, dilationsPtr, condSizesPtr,
-      weightsPtr, w.length, conditionValue, headScale
+      blockInfoPtr,
+      numBlocks,
+      dilationsPtr,
+      condSizesPtr,
+      weightsPtr,
+      w.length,
+      conditionValue,
+      headScale
     )
 
     exports.free(blockInfoPtr)
@@ -347,7 +416,7 @@ class NAMProcessor extends AudioWorkletProcessor {
     var outPtr = exports.malloc(512 * 4)
 
     return {
-      forwardBuffer: function(inBuf, outBuf, numFrames, inGain, outGain) {
+      forwardBuffer: function (inBuf, outBuf, numFrames, inGain, outGain) {
         new Float32Array(memory.buffer, inPtr, numFrames).set(inBuf.subarray(0, numFrames))
         exports.wavenet_forward(modelPtr, inPtr, outPtr, numFrames, inGain, outGain)
         outBuf.set(new Float32Array(memory.buffer, outPtr, numFrames))
@@ -358,19 +427,37 @@ class NAMProcessor extends AudioWorkletProcessor {
   }
 
   _buildLSTM(data) {
-    var cfg = data.config || {}, w = data.weights, pos = 0
-    function take(n) { var a = new Float32Array(n); for (var i = 0; i < n; i++) a[i] = w[pos++]; return a }
-    var hs = cfg.hidden_size || 32, nl = cfg.num_layers || 1, layers = []
+    var cfg = data.config || {},
+      w = data.weights,
+      pos = 0
+    function take(n) {
+      var a = new Float32Array(n)
+      for (var i = 0; i < n; i++) a[i] = w[pos++]
+      return a
+    }
+    var hs = cfg.hidden_size || 32,
+      nl = cfg.num_layers || 1,
+      layers = []
     var hs4 = 4 * hs
     for (var l = 0; l < nl; l++) {
-      var is = l === 0 ? (cfg.input_size || 1) : hs
-      var Wi = take(hs4 * is), Wh = take(hs4 * hs)
-      var biasIH = take(hs4), biasHH = take(hs4)
+      var is = l === 0 ? cfg.input_size || 1 : hs
+      var Wi = take(hs4 * is),
+        Wh = take(hs4 * hs)
+      var biasIH = take(hs4),
+        biasHH = take(hs4)
       var bias = new Float32Array(hs4)
       for (var g = 0; g < hs4; g++) bias[g] = biasIH[g] + biasHH[g]
-      layers.push({ Wi: Wi, Wh: Wh, bias: bias, h: new Float32Array(hs), c: new Float32Array(hs), is: is })
+      layers.push({
+        Wi: Wi,
+        Wh: Wh,
+        bias: bias,
+        h: new Float32Array(hs),
+        c: new Float32Array(hs),
+        is: is
+      })
     }
-    var hW = take(hs), hB = take(1)
+    var hW = take(hs),
+      hB = take(1)
     var gates = new Float32Array(hs4)
     var tmpInp = new Float32Array(hs)
 
@@ -378,46 +465,55 @@ class NAMProcessor extends AudioWorkletProcessor {
       return this._buildLSTMWasm(data, layers, hW, hB, hs, nl)
     }
 
-    return { forwardBuffer: function(inBuf, outBuf, numFrames, inGain, outGain) {
-      for (var i = 0; i < numFrames; i++) {
-        var inpVal = inBuf[i] * inGain
-        var inp = null, inpLen = 1
-        for (var l = 0; l < nl; l++) {
-          var ly = layers[l], lyIs = ly.is, lyWi = ly.Wi, lyWh = ly.Wh, lyBias = ly.bias
-          var lyH = ly.h, lyC = ly.c
+    return {
+      forwardBuffer: function (inBuf, outBuf, numFrames, inGain, outGain) {
+        for (var i = 0; i < numFrames; i++) {
+          var inpVal = inBuf[i] * inGain
+          var inp = null,
+            inpLen = 1
+          for (var l = 0; l < nl; l++) {
+            var ly = layers[l],
+              lyIs = ly.is,
+              lyWi = ly.Wi,
+              lyWh = ly.Wh,
+              lyBias = ly.bias
+            var lyH = ly.h,
+              lyC = ly.c
 
-          for (var g = 0; g < hs4; g++) {
-            var v = lyBias[g]
-            if (inpLen === 1) {
-              v += lyWi[g] * inpVal
-            } else {
-              var wiBase = g * lyIs
-              for (var j = 0; j < lyIs; j++) v += lyWi[wiBase + j] * inp[j]
+            for (var g = 0; g < hs4; g++) {
+              var v = lyBias[g]
+              if (inpLen === 1) {
+                v += lyWi[g] * inpVal
+              } else {
+                var wiBase = g * lyIs
+                for (var j = 0; j < lyIs; j++) v += lyWi[wiBase + j] * inp[j]
+              }
+              var whBase = g * hs
+              for (var j = 0; j < hs; j++) v += lyWh[whBase + j] * lyH[j]
+              gates[g] = v
             }
-            var whBase = g * hs
-            for (var j = 0; j < hs; j++) v += lyWh[whBase + j] * lyH[j]
-            gates[g] = v
-          }
 
-          for (var j = 0; j < hs; j++) {
-            var ig = fastSigmoid(gates[j])
-            var fg = fastSigmoid(gates[hs + j])
-            var gg = fastTanh(gates[2 * hs + j])
-            var og = fastSigmoid(gates[3 * hs + j])
-            lyC[j] = fg * lyC[j] + ig * gg
-            lyH[j] = og * fastTanh(lyC[j])
-          }
+            for (var j = 0; j < hs; j++) {
+              var ig = fastSigmoid(gates[j])
+              var fg = fastSigmoid(gates[hs + j])
+              var gg = fastTanh(gates[2 * hs + j])
+              var og = fastSigmoid(gates[3 * hs + j])
+              lyC[j] = fg * lyC[j] + ig * gg
+              lyH[j] = og * fastTanh(lyC[j])
+            }
 
-          inp = lyH
-          inpLen = hs
-          inpVal = 0
+            inp = lyH
+            inpLen = hs
+            inpVal = 0
+          }
+          var out = hB[0] || 0
+          for (var j = 0; j < hs; j++) out += hW[j] * inp[j]
+          var s = out * outGain
+          outBuf[i] = s !== s ? 0 : s
         }
-        var out = hB[0] || 0
-        for (var j = 0; j < hs; j++) out += hW[j] * inp[j]
-        var s = out * outGain
-        outBuf[i] = s !== s ? 0 : s
-      }
-    }, inputScale: this._getInputScale(data) }
+      },
+      inputScale: this._getInputScale(data)
+    }
   }
 
   _buildLSTMWasm(data, layers, hW, hB, hs, nl) {
@@ -431,9 +527,7 @@ class NAMProcessor extends AudioWorkletProcessor {
     var weightsPtr = exports.malloc(w.length * 4)
     new Float32Array(memory.buffer, weightsPtr, w.length).set(w)
 
-    var modelPtr = exports.init_lstm(
-      cfg.input_size || 1, hs, nl, weightsPtr, w.length
-    )
+    var modelPtr = exports.init_lstm(cfg.input_size || 1, hs, nl, weightsPtr, w.length)
 
     exports.free(weightsPtr)
 
@@ -441,7 +535,7 @@ class NAMProcessor extends AudioWorkletProcessor {
     var outPtr = exports.malloc(512 * 4)
 
     return {
-      forwardBuffer: function(inBuf, outBuf, numFrames, inGain, outGain) {
+      forwardBuffer: function (inBuf, outBuf, numFrames, inGain, outGain) {
         new Float32Array(memory.buffer, inPtr, numFrames).set(inBuf.subarray(0, numFrames))
         exports.lstm_forward(modelPtr, inPtr, outPtr, numFrames, inGain, outGain)
         outBuf.set(new Float32Array(memory.buffer, outPtr, numFrames))

@@ -6,7 +6,8 @@ export async function enumerateAudioDevices(): Promise<AudioDeviceInfo[]> {
     .filter((d) => d.kind === 'audioinput' || d.kind === 'audiooutput')
     .map((d) => ({
       id: d.deviceId,
-      label: d.label || `${d.kind === 'audioinput' ? 'Input' : 'Output'} (${d.deviceId.slice(0, 8)})`,
+      label:
+        d.label || `${d.kind === 'audioinput' ? 'Input' : 'Output'} (${d.deviceId.slice(0, 8)})`,
       kind: d.kind as 'audioinput' | 'audiooutput'
     }))
 }

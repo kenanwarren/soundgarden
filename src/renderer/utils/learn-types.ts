@@ -7,14 +7,7 @@ export type LearnModuleId =
   | 'chord-changes'
   | 'scale-sequences'
 
-export type GenreId =
-  | 'general'
-  | 'blues'
-  | 'rock'
-  | 'pop'
-  | 'funk'
-  | 'country'
-  | 'fingerpicking'
+export type GenreId = 'general' | 'blues' | 'rock' | 'pop' | 'funk' | 'country' | 'fingerpicking'
 
 export type LearnSkillId =
   | 'chords'
@@ -62,7 +55,11 @@ export type LessonCompletionRule =
   | { type: 'rhythm-accuracy'; minAccuracy: number; patternName: string }
   | { type: 'ear-accuracy'; mode: 'note' | 'interval'; minAccuracy: number; minTotal: number }
   | { type: 'chord-changes'; minSwitches: number; presetId?: string }
-  | { type: 'scale-sequence'; minLoops: number; sequenceType?: 'ascending' | 'descending' | 'thirds' }
+  | {
+      type: 'scale-sequence'
+      minLoops: number
+      sequenceType?: 'ascending' | 'descending' | 'thirds'
+    }
 
 export interface LessonStep {
   id: string

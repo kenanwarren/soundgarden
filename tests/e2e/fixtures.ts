@@ -40,7 +40,7 @@ export function persistedState<T>(state: T): string {
 }
 
 export const test = base.extend<ElectronFixtures>({
-  soundgarden: async ({}, use) => {
+  soundgarden: async ({ browserName: _browserName }, use) => {
     const userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'soundgarden-e2e-'))
     let currentOptions: RelaunchOptions = {
       audioMode: 'offline-no-input'

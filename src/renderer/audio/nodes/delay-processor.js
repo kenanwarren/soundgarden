@@ -4,17 +4,20 @@ class DelayProcessor extends AudioWorkletProcessor {
   constructor() {
     super()
     this.maxSamples = Math.ceil(sampleRate * MAX_DELAY_SECONDS)
-    this.buffers = [
-      new Float32Array(this.maxSamples),
-      new Float32Array(this.maxSamples)
-    ]
+    this.buffers = [new Float32Array(this.maxSamples), new Float32Array(this.maxSamples)]
     this.writeIndex = 0
   }
 
   static get parameterDescriptors() {
     return [
       { name: 'time', defaultValue: 300, minValue: 50, maxValue: 2000, automationRate: 'k-rate' },
-      { name: 'feedback', defaultValue: 0.3, minValue: 0, maxValue: 0.95, automationRate: 'k-rate' },
+      {
+        name: 'feedback',
+        defaultValue: 0.3,
+        minValue: 0,
+        maxValue: 0.95,
+        automationRate: 'k-rate'
+      },
       { name: 'mix', defaultValue: 0.3, minValue: 0, maxValue: 1.0, automationRate: 'k-rate' }
     ]
   }

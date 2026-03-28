@@ -122,7 +122,7 @@ describe('audio widgets', () => {
 
     useDevices.mockReturnValue({
       ...baseDevices,
-      devicesLoading: true,
+      devicesLoading: true
     })
     useSystemStatus.mockReturnValue({
       ...baseStatus,
