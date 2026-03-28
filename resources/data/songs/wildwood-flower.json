@@ -1,0 +1,248 @@
+{
+  "id": "wildwood-flower",
+  "title": "Wildwood Flower",
+  "genres": ["country"],
+  "difficulty": "Beginner",
+  "key": "C",
+  "chords": ["C", "G", "F"],
+  "attribution": "Traditional, 1860",
+  "lines": [
+    "[section:Verse 1]",
+    "Oh I'll [C]twine with my mingles and [F]waving black [C]hair",
+    "With the [G]roses so red and the [C]lilies so fair",
+    "And the [C]myrtle so bright with the [F]emerald [C]hue",
+    "The pale [G]and the leader and [C]eyes look like blue",
+    "",
+    "[section:Verse 2]",
+    "I will [C]dance, I will sing and my [F]laugh shall be [C]gay",
+    "I will [G]charm every heart, in his [C]crown I will sway",
+    "When I [C]woke from my dreaming, my [F]idol was [C]clay",
+    "All [G]portions of love had all [C]flown away",
+    "",
+    "[section:Verse 3]",
+    "He [C]taught me to love him and [F]promised to [C]love",
+    "And to [G]cherish me over all [C]others above",
+    "How my [C]heart is now wondering, no [F]misery can [C]tell",
+    "He [G]left me no warning, no [C]words of farewell"
+  ],
+  "notation": {
+    "timeSignature": [4, 4],
+    "tempo": 110,
+    "measures": [
+      {
+        "chord": "C",
+        "lyricFragment": "Oh I'll twine with my",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "eighth",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "eighth",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          }
+        ]
+      },
+      {
+        "chord": "C",
+        "lyricFragment": "mingles and",
+        "notes": [
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "half",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          }
+        ]
+      },
+      {
+        "chord": "F",
+        "lyricFragment": "waving black",
+        "notes": [
+          {
+            "pitch": "F4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "half",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          }
+        ]
+      },
+      {
+        "chord": "C",
+        "lyricFragment": "hair",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "With the roses so",
+        "notes": [
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          }
+        ]
+      },
+      {
+        "chord": "C",
+        "lyricFragment": "red and the lilies",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "C",
+        "lyricFragment": "so fair",
+        "notes": [
+          {
+            "pitch": "C4",
+            "duration": "half",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "rest",
+            "duration": "half"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,349 @@
+{
+  "id": "amazing-grace",
+  "title": "Amazing Grace",
+  "genres": ["rock"],
+  "difficulty": "Beginner",
+  "key": "G",
+  "chords": ["G", "G7", "C", "D7"],
+  "attribution": "John Newton, 1779",
+  "lines": [
+    "[section:Verse 1]",
+    "A[G]mazing grace, how [G7]sweet the [C]sound",
+    "That [G]saved a wretch like [D7]me",
+    "I [G]once was lost but [G7]now am [C]found",
+    "Was [G]blind but [D7]now I [G]see",
+    "",
+    "[section:Verse 2]",
+    "'Twas [G]grace that taught my [G7]heart to [C]fear",
+    "And [G]grace my fears re[D7]lieved",
+    "How [G]precious did that [G7]grace ap[C]pear",
+    "The [G]hour I [D7]first be[G]lieved",
+    "",
+    "[section:Verse 3]",
+    "Through [G]many dangers, [G7]toils and [C]snares",
+    "I [G]have already [D7]come",
+    "'Tis [G]grace hath brought me [G7]safe thus [C]far",
+    "And [G]grace will [D7]lead me [G]home"
+  ],
+  "notation": {
+    "timeSignature": [3, 4],
+    "tempo": 80,
+    "measures": [
+      {
+        "chord": "G",
+        "lyricFragment": "A-",
+        "notes": [
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "mazing",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "B3",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G7",
+        "lyricFragment": "grace, how",
+        "notes": [
+          {
+            "pitch": "B3",
+            "duration": "half",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          }
+        ]
+      },
+      {
+        "chord": "C",
+        "lyricFragment": "sweet the",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "sound, that",
+        "notes": [
+          {
+            "pitch": "D3",
+            "duration": "half",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "saved a",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          }
+        ]
+      },
+      {
+        "chord": "D7",
+        "lyricFragment": "wretch like",
+        "notes": [
+          {
+            "pitch": "F#4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "me. I",
+        "notes": [
+          {
+            "pitch": "D3",
+            "duration": "half",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "once was",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "B3",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G7",
+        "lyricFragment": "lost, but",
+        "notes": [
+          {
+            "pitch": "B3",
+            "duration": "half",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          }
+        ]
+      },
+      {
+        "chord": "C",
+        "lyricFragment": "now am",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "found, was",
+        "notes": [
+          {
+            "pitch": "D3",
+            "duration": "half",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "G3",
+            "duration": "quarter",
+            "tab": {
+              "string": 2,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "blind, but",
+        "notes": [
+          {
+            "pitch": "G3",
+            "duration": "half",
+            "tab": {
+              "string": 2,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "A3",
+            "duration": "quarter",
+            "tab": {
+              "string": 2,
+              "fret": 2
+            }
+          }
+        ]
+      },
+      {
+        "chord": "D7",
+        "lyricFragment": "now I",
+        "notes": [
+          {
+            "pitch": "G3",
+            "duration": "half",
+            "tab": {
+              "string": 2,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "F#3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 4
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "see.",
+        "notes": [
+          {
+            "pitch": "G3",
+            "duration": "half",
+            "dotted": true,
+            "tab": {
+              "string": 2,
+              "fret": 0
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

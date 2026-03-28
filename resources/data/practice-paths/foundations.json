@@ -1,0 +1,100 @@
+{
+  "id": "foundations",
+  "title": "Foundations",
+  "description": "Get connected, lock in a core chord, then add rhythm, ear, and scale basics.",
+  "genre": "general",
+  "difficulty": "Beginner",
+  "focusSkills": ["chords", "rhythm", "ear", "scales"],
+  "recommendedTools": ["chord-library", "rhythm-trainer", "ear-training", "scale-explorer"],
+  "toneSuggestions": ["Neutral clean tone", "Metronome-forward setup", "Low-ambience monitoring"],
+  "starterPresetIds": ["rhythm:quarter-notes", "rhythm:eighth-notes"],
+  "steps": [
+    {
+      "id": "foundations-setup",
+      "title": "Connect Your Input",
+      "description": "Reach a healthy live-input state before starting guided practice.",
+      "module": "setup",
+      "route": "/",
+      "audioRequired": false,
+      "prefill": {
+        "module": "setup"
+      },
+      "completionRule": {
+        "type": "setup-ready"
+      }
+    },
+    {
+      "id": "foundations-open-c",
+      "title": "Open Major Focus",
+      "description": "Practice the open C voicing until you can trigger clean matches reliably.",
+      "module": "chord-library",
+      "route": "/learn/chords",
+      "audioRequired": true,
+      "prefill": {
+        "module": "chord-library",
+        "filterCategory": "open",
+        "chordName": "C",
+        "filterRoot": "C"
+      },
+      "completionRule": {
+        "type": "chord-match-count",
+        "minMatches": 3,
+        "targetChord": "C"
+      }
+    },
+    {
+      "id": "foundations-quarter-notes",
+      "title": "Quarter-Note Pulse",
+      "description": "Build dependable downbeats before adding denser rhythms.",
+      "module": "rhythm-trainer",
+      "route": "/learn/rhythm",
+      "audioRequired": true,
+      "prefill": {
+        "module": "rhythm-trainer",
+        "patternName": "Quarter Notes",
+        "bpm": 80,
+        "sensitivity": "mid"
+      },
+      "completionRule": {
+        "type": "rhythm-accuracy",
+        "minAccuracy": 75,
+        "patternName": "Quarter Notes"
+      }
+    },
+    {
+      "id": "foundations-ear-note",
+      "title": "Single-Note Echo",
+      "description": "Hear one target pitch and play it back cleanly.",
+      "module": "ear-training",
+      "route": "/learn/ear-training",
+      "audioRequired": true,
+      "prefill": {
+        "module": "ear-training",
+        "mode": "note"
+      },
+      "completionRule": {
+        "type": "ear-accuracy",
+        "mode": "note",
+        "minAccuracy": 70,
+        "minTotal": 4
+      }
+    },
+    {
+      "id": "foundations-minor-pentatonic",
+      "title": "Minor Pentatonic Map",
+      "description": "Play through the A minor pentatonic note set with live note tracking.",
+      "module": "scale-explorer",
+      "route": "/learn/scales",
+      "audioRequired": true,
+      "prefill": {
+        "module": "scale-explorer",
+        "root": "A",
+        "scaleName": "Minor Pentatonic"
+      },
+      "completionRule": {
+        "type": "scale-notes-hit",
+        "minNotes": 5
+      }
+    }
+  ]
+}

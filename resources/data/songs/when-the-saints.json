@@ -1,0 +1,332 @@
+{
+  "id": "when-the-saints",
+  "title": "When the Saints Go Marching In",
+  "genres": ["rock"],
+  "difficulty": "Beginner",
+  "key": "G",
+  "chords": ["G", "D7", "C"],
+  "attribution": "Traditional",
+  "lines": [
+    "[section:Verse 1]",
+    "Oh when the [G]saints go marching in",
+    "Oh when the saints go [D7]marching in",
+    "Oh Lord I [G]want to [C]be in that number",
+    "When the [G]saints go [D7]marching [G]in",
+    "",
+    "[section:Verse 2]",
+    "Oh when the [G]sun refuse to shine",
+    "Oh when the sun refuse to [D7]shine",
+    "Oh Lord I [G]want to [C]be in that number",
+    "When the [G]sun re[D7]fuse to [G]shine",
+    "",
+    "[section:Verse 3]",
+    "Oh when the [G]stars have disappeared",
+    "Oh when the stars have [D7]disappeared",
+    "Oh Lord I [G]want to [C]be in that number",
+    "When the [G]stars have [D7]disap[G]peared"
+  ],
+  "notation": {
+    "timeSignature": [4, 4],
+    "tempo": 110,
+    "measures": [
+      {
+        "chord": "G",
+        "lyricFragment": "Oh when the saints",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "B3",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "go marching",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "B3",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "in, Oh when the",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "B3",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "D7",
+        "lyricFragment": "saints go marching",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "in, Oh Lord I",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          }
+        ]
+      },
+      {
+        "chord": "C",
+        "lyricFragment": "want to be in that",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "number, when the",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "D7",
+        "lyricFragment": "saints go marching",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "half",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "in",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "rest",
+            "duration": "half"
+          }
+        ]
+      }
+    ]
+  }
+}

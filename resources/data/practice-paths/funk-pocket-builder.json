@@ -1,0 +1,118 @@
+{
+  "id": "funk-pocket-builder",
+  "title": "Funk Pocket Builder",
+  "description": "Develop clipped syncopation, dominant-pocket changes, and Mixolydian color.",
+  "genre": "funk",
+  "difficulty": "Intermediate",
+  "focusSkills": ["rhythm", "groove", "chords", "timing"],
+  "recommendedTools": ["rhythm-trainer", "chord-changes", "chord-library", "scale-sequences"],
+  "toneSuggestions": [
+    "Very clean compressor-forward tone",
+    "Auto-wah or envelope-style filter used sparingly",
+    "Fast transient response with low reverb"
+  ],
+  "starterPresetIds": [
+    "rhythm:muted-funk-chops",
+    "chord-changes:funk-vamp",
+    "scale-sequences:funk-mixolydian-pocket",
+    "ear:funk-pocket-intervals"
+  ],
+  "steps": [
+    {
+      "id": "funk-seven-focus",
+      "title": "Minor-7 Focus",
+      "description": "Settle a clipped Am7 voicing before adding faster groove movement.",
+      "module": "chord-library",
+      "route": "/learn/chords",
+      "audioRequired": true,
+      "prefill": {
+        "module": "chord-library",
+        "filterCategory": "open",
+        "chordName": "Am7",
+        "filterRoot": "A"
+      },
+      "completionRule": {
+        "type": "chord-match-count",
+        "minMatches": 3,
+        "targetChord": "Am7"
+      }
+    },
+    {
+      "id": "funk-chops-step",
+      "title": "Muted Funk Chops",
+      "description": "Keep sixteenth-note stabs short and accurate.",
+      "module": "rhythm-trainer",
+      "route": "/learn/rhythm",
+      "audioRequired": true,
+      "prefill": {
+        "module": "rhythm-trainer",
+        "patternName": "Muted Funk Chops",
+        "bpm": 84,
+        "sensitivity": "high"
+      },
+      "completionRule": {
+        "type": "rhythm-accuracy",
+        "minAccuracy": 68,
+        "patternName": "Muted Funk Chops"
+      }
+    },
+    {
+      "id": "funk-vamp-step",
+      "title": "Pocket Vamp",
+      "description": "Move through dominant and minor-7 shapes without leaving the pocket.",
+      "module": "chord-changes",
+      "route": "/learn/chord-changes",
+      "audioRequired": true,
+      "prefill": {
+        "module": "chord-changes",
+        "presetId": "funk-vamp",
+        "bpm": 88
+      },
+      "completionRule": {
+        "type": "chord-changes",
+        "minSwitches": 4,
+        "presetId": "funk-vamp"
+      }
+    },
+    {
+      "id": "funk-mixolydian-step",
+      "title": "Mixolydian Pocket",
+      "description": "Hear the dominant color tones inside a groove-friendly sequence.",
+      "module": "scale-sequences",
+      "route": "/learn/scale-sequences",
+      "audioRequired": true,
+      "prefill": {
+        "module": "scale-sequences",
+        "presetId": "funk-mixolydian-pocket",
+        "root": "A",
+        "scaleName": "Mixolydian",
+        "sequenceType": "thirds",
+        "loops": 2
+      },
+      "completionRule": {
+        "type": "scale-sequence",
+        "minLoops": 2,
+        "sequenceType": "thirds"
+      }
+    },
+    {
+      "id": "funk-ear-step",
+      "title": "Pocket Interval Ear",
+      "description": "Hear short interval moves that sit tightly inside the groove.",
+      "module": "ear-training",
+      "route": "/learn/ear-training",
+      "audioRequired": true,
+      "prefill": {
+        "module": "ear-training",
+        "mode": "interval",
+        "presetId": "funk-pocket-intervals"
+      },
+      "completionRule": {
+        "type": "ear-accuracy",
+        "mode": "interval",
+        "minAccuracy": 65,
+        "minTotal": 4
+      }
+    }
+  ]
+}

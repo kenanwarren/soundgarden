@@ -1,0 +1,336 @@
+{
+  "id": "careless-love",
+  "title": "Careless Love",
+  "genres": ["blues"],
+  "difficulty": "Beginner",
+  "key": "G",
+  "chords": ["G", "D7", "C"],
+  "attribution": "Traditional",
+  "lines": [
+    "[section:Verse 1]",
+    "[G]Love, oh love, oh [D7]careless love",
+    "[G]Love, oh love, oh [C]careless love",
+    "[G]Love, oh [C]love, oh [G]careless [D7]love",
+    "You [C]see what [D7]love has [G]done to me",
+    "",
+    "[section:Verse 2]",
+    "[G]I love my mama [D7]and papa too",
+    "[G]I love my mama [C]and papa too",
+    "[G]I love my [C]mama [G]and papa [D7]too",
+    "But I'd [C]leave them [D7]both to go with [G]you",
+    "",
+    "[section:Verse 3]",
+    "[G]What, oh what will [D7]mama say",
+    "[G]What, oh what will [C]mama say",
+    "[G]When she [C]hears I've [G]gone a[D7]stray",
+    "What, oh [C]what will [D7]mama [G]say"
+  ],
+  "notation": {
+    "timeSignature": [4, 4],
+    "tempo": 90,
+    "measures": [
+      {
+        "chord": "G",
+        "lyricFragment": "Love, oh love, oh",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "B3",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          }
+        ]
+      },
+      {
+        "chord": "D7",
+        "lyricFragment": "careless love",
+        "notes": [
+          {
+            "pitch": "F#4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "Love, oh love, oh",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "B3",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          }
+        ]
+      },
+      {
+        "chord": "C",
+        "lyricFragment": "careless love",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "Love, oh",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "B3",
+            "duration": "half",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "C",
+        "lyricFragment": "love, oh",
+        "notes": [
+          {
+            "pitch": "C4",
+            "duration": "half",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "half",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "careless",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "B3",
+            "duration": "half",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "D7",
+        "lyricFragment": "love",
+        "notes": [
+          {
+            "pitch": "C4",
+            "duration": "half",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          }
+        ]
+      },
+      {
+        "chord": "C",
+        "lyricFragment": "You see what",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "half",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          }
+        ]
+      },
+      {
+        "chord": "D7",
+        "lyricFragment": "love has",
+        "notes": [
+          {
+            "pitch": "C4",
+            "duration": "half",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "done to me",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "rest",
+            "duration": "quarter"
+          }
+        ]
+      }
+    ]
+  }
+}

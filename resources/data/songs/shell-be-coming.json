@@ -1,0 +1,329 @@
+{
+  "id": "shell-be-coming",
+  "title": "She'll Be Coming 'Round the Mountain",
+  "genres": ["pop"],
+  "difficulty": "Beginner",
+  "key": "G",
+  "chords": ["G", "D7", "C"],
+  "attribution": "Traditional",
+  "lines": [
+    "[section:Verse 1]",
+    "[G]She'll be coming 'round the mountain when she [D7]comes",
+    "She'll be coming 'round the mountain when she [G]comes",
+    "She'll be [C]coming 'round the mountain",
+    "She'll be [G]coming 'round the mountain",
+    "She'll be [G]coming 'round the [D7]mountain when she [G]comes",
+    "",
+    "[section:Verse 2]",
+    "[G]She'll be driving six white horses when she [D7]comes",
+    "She'll be driving six white horses when she [G]comes",
+    "She'll be [C]driving six white horses",
+    "She'll be [G]driving six white horses",
+    "She'll be [G]driving six white [D7]horses when she [G]comes",
+    "",
+    "[section:Verse 3]",
+    "[G]Oh we'll all come out to meet her when she [D7]comes",
+    "Oh we'll all come out to meet her when she [G]comes",
+    "Oh we'll [C]all come out to meet her",
+    "Oh we'll [G]all come out to meet her",
+    "Oh we'll [G]all come out to [D7]meet her when she [G]comes"
+  ],
+  "notation": {
+    "timeSignature": [4, 4],
+    "tempo": 120,
+    "measures": [
+      {
+        "chord": "G",
+        "lyricFragment": "She'll be coming 'round the",
+        "notes": [
+          {
+            "pitch": "D3",
+            "duration": "eighth",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "eighth",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          }
+        ]
+      },
+      {
+        "chord": "D7",
+        "lyricFragment": "mountain when she comes",
+        "notes": [
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "B3",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          }
+        ]
+      },
+      {
+        "chord": "D7",
+        "lyricFragment": "She'll be coming 'round the",
+        "notes": [
+          {
+            "pitch": "C4",
+            "duration": "eighth",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "eighth",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "B3",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "mountain when she comes",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "B3",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          }
+        ]
+      },
+      {
+        "chord": "C",
+        "lyricFragment": "She'll be coming 'round the",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "eighth",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "eighth",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "mountain, when she",
+        "notes": [
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "D7",
+        "lyricFragment": "mountain when she",
+        "notes": [
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "comes",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "rest",
+            "duration": "half"
+          }
+        ]
+      }
+    ]
+  }
+}

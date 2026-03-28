@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs'
+import { readFileSync, readdirSync } from 'fs'
 import { join } from 'path'
 import { describe, expect, it } from 'vitest'
 import type { SongDefinition, SongNotation } from '../../src/renderer/utils/learn-types'
@@ -10,9 +10,11 @@ import {
 } from '../../src/renderer/utils/songs'
 
 function loadSongs(): SongDefinition[] {
-  return JSON.parse(
-    readFileSync(join(__dirname, '..', '..', 'resources', 'data', 'songs.json'), 'utf-8')
-  ) as SongDefinition[]
+  const dir = join(__dirname, '..', '..', 'resources', 'data', 'songs')
+  return readdirSync(dir)
+    .filter((f) => f.endsWith('.json'))
+    .sort()
+    .map((f) => JSON.parse(readFileSync(join(dir, f), 'utf-8')) as SongDefinition)
 }
 
 function makeNotation(pitch: string): SongNotation {

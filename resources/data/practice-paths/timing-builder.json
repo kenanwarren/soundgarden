@@ -1,0 +1,89 @@
+{
+  "id": "timing-builder",
+  "title": "Timing Builder",
+  "description": "Progress from straight time into syncopation and shuffle feel.",
+  "genre": "general",
+  "difficulty": "Developing",
+  "focusSkills": ["rhythm", "timing", "groove"],
+  "recommendedTools": ["rhythm-trainer"],
+  "toneSuggestions": ["Dry practice tone", "Clear attack with low ambience"],
+  "starterPresetIds": ["rhythm:quarter-notes", "rhythm:shuffle"],
+  "steps": [
+    {
+      "id": "timing-quarter-notes",
+      "title": "Quarter-Note Check-In",
+      "description": "Start with a simple pulse and tighten the hit window.",
+      "module": "rhythm-trainer",
+      "route": "/learn/rhythm",
+      "audioRequired": true,
+      "prefill": {
+        "module": "rhythm-trainer",
+        "patternName": "Quarter Notes",
+        "bpm": 90,
+        "sensitivity": "mid"
+      },
+      "completionRule": {
+        "type": "rhythm-accuracy",
+        "minAccuracy": 80,
+        "patternName": "Quarter Notes"
+      }
+    },
+    {
+      "id": "timing-eighth-notes",
+      "title": "Eighth-Note Engine",
+      "description": "Hold even subdivisions without drifting ahead or behind.",
+      "module": "rhythm-trainer",
+      "route": "/learn/rhythm",
+      "audioRequired": true,
+      "prefill": {
+        "module": "rhythm-trainer",
+        "patternName": "Eighth Notes",
+        "bpm": 92,
+        "sensitivity": "mid"
+      },
+      "completionRule": {
+        "type": "rhythm-accuracy",
+        "minAccuracy": 76,
+        "patternName": "Eighth Notes"
+      }
+    },
+    {
+      "id": "timing-syncopation",
+      "title": "Basic Syncopation",
+      "description": "Land the off-beat pushes without losing the pulse.",
+      "module": "rhythm-trainer",
+      "route": "/learn/rhythm",
+      "audioRequired": true,
+      "prefill": {
+        "module": "rhythm-trainer",
+        "patternName": "Basic Syncopation",
+        "bpm": 90,
+        "sensitivity": "mid"
+      },
+      "completionRule": {
+        "type": "rhythm-accuracy",
+        "minAccuracy": 70,
+        "patternName": "Basic Syncopation"
+      }
+    },
+    {
+      "id": "timing-shuffle",
+      "title": "Shuffle Feel",
+      "description": "Shift into triplet feel and keep the swing consistent.",
+      "module": "rhythm-trainer",
+      "route": "/learn/rhythm",
+      "audioRequired": true,
+      "prefill": {
+        "module": "rhythm-trainer",
+        "patternName": "Shuffle",
+        "bpm": 84,
+        "sensitivity": "high"
+      },
+      "completionRule": {
+        "type": "rhythm-accuracy",
+        "minAccuracy": 66,
+        "patternName": "Shuffle"
+      }
+    }
+  ]
+}

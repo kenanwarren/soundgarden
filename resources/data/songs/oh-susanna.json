@@ -1,0 +1,454 @@
+{
+  "id": "oh-susanna",
+  "title": "Oh! Susanna",
+  "genres": ["pop"],
+  "difficulty": "Beginner",
+  "key": "C",
+  "chords": ["C", "G", "G7", "F"],
+  "attribution": "Stephen Foster, 1848",
+  "lines": [
+    "[section:Verse 1]",
+    "I [C]come from Alabama with my [G]banjo on my [C]knee",
+    "I'm going to Louisiana, my [G7]true love for to [C]see",
+    "It [C]rained all night the day I left, the [G]weather it was [C]dry",
+    "The sun so hot I froze to death, [G7]Susanna don't you [C]cry",
+    "",
+    "[section:Chorus]",
+    "[F]Oh Susanna, [C]oh don't you cry for [G]me",
+    "I [C]come from Alabama with my [G7]banjo on my [C]knee",
+    "",
+    "[section:Verse 2]",
+    "I [C]had a dream the other night when [G]everything was [C]still",
+    "I thought I saw Susanna a-[G7]coming down the [C]hill",
+    "A [C]buckwheat cake was in her mouth, a [G]tear was in her [C]eye",
+    "Says I, I'm coming from the south, [G7]Susanna don't you [C]cry",
+    "",
+    "[section:Chorus]",
+    "[F]Oh Susanna, [C]oh don't you cry for [G]me",
+    "I [C]come from Alabama with my [G7]banjo on my [C]knee"
+  ],
+  "notation": {
+    "timeSignature": [4, 4],
+    "tempo": 120,
+    "measures": [
+      {
+        "chord": "C",
+        "lyricFragment": "I come from Ala-",
+        "notes": [
+          {
+            "pitch": "C4",
+            "duration": "eighth",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "eighth",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "bama with my banjo",
+        "notes": [
+          {
+            "pitch": "C4",
+            "duration": "eighth",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "eighth",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "eighth",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "eighth",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "C",
+        "lyricFragment": "on my knee",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G7",
+        "lyricFragment": "Susanna don't you",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "C",
+        "lyricFragment": "cry",
+        "notes": [
+          {
+            "pitch": "C4",
+            "duration": "half",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "rest",
+            "duration": "half"
+          }
+        ]
+      },
+      {
+        "chord": "F",
+        "lyricFragment": "Oh Susanna, oh",
+        "notes": [
+          {
+            "pitch": "F4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          }
+        ]
+      },
+      {
+        "chord": "C",
+        "lyricFragment": "don't you cry for",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "me, I",
+        "notes": [
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "rest",
+            "duration": "quarter"
+          },
+          {
+            "pitch": "C4",
+            "duration": "eighth",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "eighth",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "C",
+        "lyricFragment": "come from Alabama",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "eighth",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "eighth",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G7",
+        "lyricFragment": "with my banjo on my",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "eighth",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "eighth",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "C",
+        "lyricFragment": "knee",
+        "notes": [
+          {
+            "pitch": "C4",
+            "duration": "whole",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

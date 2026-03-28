@@ -1,0 +1,310 @@
+{
+  "id": "red-river-valley",
+  "title": "Red River Valley",
+  "genres": ["country"],
+  "difficulty": "Beginner",
+  "key": "G",
+  "chords": ["G", "C", "D7"],
+  "attribution": "Traditional",
+  "lines": [
+    "[section:Verse 1]",
+    "From this [G]valley they say you are going",
+    "We will [C]miss your bright eyes and sweet [G]smile",
+    "For they say you are taking the sunshine",
+    "That has [D7]brightened our path for a [G]while",
+    "",
+    "[section:Chorus]",
+    "Come and [G]sit by my side if you love me",
+    "Do not [C]hasten to bid me a[G]dieu",
+    "But remember the Red River Valley",
+    "And the [D7]cowboy who loved you so [G]true",
+    "",
+    "[section:Verse 2]",
+    "Won't you [G]think of the valley you're leaving",
+    "Oh how [C]lonely, how sad it will [G]be",
+    "Oh think of the fond heart you're breaking",
+    "And the [D7]grief you are causing to [G]me"
+  ],
+  "notation": {
+    "timeSignature": [4, 4],
+    "tempo": 95,
+    "measures": [
+      {
+        "chord": "G",
+        "lyricFragment": "From this valley they",
+        "notes": [
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "say you are going",
+        "notes": [
+          {
+            "pitch": "B3",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          }
+        ]
+      },
+      {
+        "chord": "C",
+        "lyricFragment": "We will miss your",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "bright eyes and sweet smile",
+        "notes": [
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "For they say you are",
+        "notes": [
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "taking the sunshine",
+        "notes": [
+          {
+            "pitch": "B3",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          }
+        ]
+      },
+      {
+        "chord": "D7",
+        "lyricFragment": "That has brightened our",
+        "notes": [
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "path for a while",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "rest",
+            "duration": "half"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs'
+import { readFileSync, readdirSync } from 'fs'
 import { join } from 'path'
 import { _initIntervals } from '../src/renderer/utils/interval-data'
 import { _initConstants } from '../src/renderer/utils/constants'
@@ -17,6 +17,14 @@ function loadJson<T>(relativePath: string): T {
   return JSON.parse(readFileSync(fullPath, 'utf-8'))
 }
 
+function loadJsonDir<T>(relativeDir: string): T[] {
+  const dir = join(__dirname, '..', 'resources', 'data', relativeDir)
+  return readdirSync(dir)
+    .filter((f) => f.endsWith('.json'))
+    .sort()
+    .map((f) => JSON.parse(readFileSync(join(dir, f), 'utf-8')) as T)
+}
+
 const intervals = loadJson('intervals.json')
 const constants = loadJson<{ noteNames: string[]; tuningPresets: Record<string, string[]> }>(
   'constants.json'
@@ -29,7 +37,7 @@ const genres = loadJson('genres.json')
 const chordChangePresets = loadJson('presets/chord-changes.json')
 const scaleSequencePresets = loadJson('presets/scale-sequences.json')
 const earTrainingPresets = loadJson('presets/ear-training.json')
-const practicePaths = loadJson('practice-paths.json')
+const practicePaths = loadJsonDir('practice-paths')
 
 _initIntervals(intervals as any)
 _initConstants(constants.noteNames, constants.tuningPresets)

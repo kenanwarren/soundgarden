@@ -1,0 +1,118 @@
+{
+  "id": "fingerpicking-foundations",
+  "title": "Fingerpicking Foundations",
+  "description": "Use alternating bass and arpeggio patterns to build steady fingerstyle motion.",
+  "genre": "fingerpicking",
+  "difficulty": "Beginner",
+  "focusSkills": ["fingerstyle", "rhythm", "technique", "chords"],
+  "recommendedTools": ["rhythm-trainer", "chord-changes", "scale-sequences", "ear-training"],
+  "toneSuggestions": [
+    "Dry clean tone with a little room reverb",
+    "Gentle compression for even plucks",
+    "Lower-gain, lower-noise signal path"
+  ],
+  "starterPresetIds": [
+    "rhythm:alternating-bass",
+    "rhythm:fingerpicked-arpeggio",
+    "chord-changes:fingerpicked-open-roll",
+    "scale-sequences:fingerpicked-arpeggio-map"
+  ],
+  "steps": [
+    {
+      "id": "finger-alternating-bass-step",
+      "title": "Alternating Bass Pulse",
+      "description": "Use any consistent attack to map the bass-note pulse first.",
+      "module": "rhythm-trainer",
+      "route": "/learn/rhythm",
+      "audioRequired": true,
+      "prefill": {
+        "module": "rhythm-trainer",
+        "patternName": "Alternating Bass",
+        "bpm": 72,
+        "sensitivity": "mid"
+      },
+      "completionRule": {
+        "type": "rhythm-accuracy",
+        "minAccuracy": 72,
+        "patternName": "Alternating Bass"
+      }
+    },
+    {
+      "id": "finger-arpeggio-step",
+      "title": "Arpeggio Roll",
+      "description": "Keep the picking hand even through a broken-chord roll.",
+      "module": "rhythm-trainer",
+      "route": "/learn/rhythm",
+      "audioRequired": true,
+      "prefill": {
+        "module": "rhythm-trainer",
+        "patternName": "Fingerpicked Arpeggio",
+        "bpm": 68,
+        "sensitivity": "mid"
+      },
+      "completionRule": {
+        "type": "rhythm-accuracy",
+        "minAccuracy": 70,
+        "patternName": "Fingerpicked Arpeggio"
+      }
+    },
+    {
+      "id": "finger-open-roll-step",
+      "title": "Open-Chord Roll",
+      "description": "Cycle through a fingerpicked open-chord loop without collapsing the pattern.",
+      "module": "chord-changes",
+      "route": "/learn/chord-changes",
+      "audioRequired": true,
+      "prefill": {
+        "module": "chord-changes",
+        "presetId": "fingerpicked-open-roll",
+        "bpm": 70
+      },
+      "completionRule": {
+        "type": "chord-changes",
+        "minSwitches": 4,
+        "presetId": "fingerpicked-open-roll"
+      }
+    },
+    {
+      "id": "finger-map-step",
+      "title": "Arpeggio Map",
+      "description": "Use a simple C major sequence to keep the right hand deliberate.",
+      "module": "scale-sequences",
+      "route": "/learn/scale-sequences",
+      "audioRequired": true,
+      "prefill": {
+        "module": "scale-sequences",
+        "presetId": "fingerpicked-arpeggio-map",
+        "root": "C",
+        "scaleName": "Major",
+        "sequenceType": "descending",
+        "loops": 2
+      },
+      "completionRule": {
+        "type": "scale-sequence",
+        "minLoops": 2,
+        "sequenceType": "descending"
+      }
+    },
+    {
+      "id": "finger-open-strings-step",
+      "title": "Open-String Ear",
+      "description": "Match note centers that feel natural inside fingerpicked harmony.",
+      "module": "ear-training",
+      "route": "/learn/ear-training",
+      "audioRequired": true,
+      "prefill": {
+        "module": "ear-training",
+        "mode": "note",
+        "presetId": "fingerpicked-open-strings"
+      },
+      "completionRule": {
+        "type": "ear-accuracy",
+        "mode": "note",
+        "minAccuracy": 70,
+        "minTotal": 4
+      }
+    }
+  ]
+}

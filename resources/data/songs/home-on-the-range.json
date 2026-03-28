@@ -1,0 +1,384 @@
+{
+  "id": "home-on-the-range",
+  "title": "Home on the Range",
+  "genres": ["pop"],
+  "difficulty": "Developing",
+  "key": "G",
+  "chords": ["G", "C", "D7", "Em", "A7"],
+  "attribution": "Traditional, 1870s",
+  "lines": [
+    "[section:Verse 1]",
+    "Oh [G]give me a home where the [C]buffalo roam",
+    "Where the [G]deer and the [A7]antelope [D7]play",
+    "Where [G]seldom is heard a dis[C]couraging word",
+    "And the [G]skies are not [D7]cloudy all [G]day",
+    "",
+    "[section:Chorus]",
+    "[D7]Home, [G]home on the range",
+    "Where the [C]deer and the [G]ante[Em]lope [A7]play [D7]",
+    "Where [G]seldom is heard a dis[C]couraging word",
+    "And the [G]skies are not [D7]cloudy all [G]day",
+    "",
+    "[section:Verse 2]",
+    "Where the [G]air is so pure, the [C]zephyrs so free",
+    "The [G]breezes so [A7]balmy and [D7]light",
+    "That I [G]would not exchange my [C]home on the range",
+    "For [G]all of the [D7]cities so [G]bright"
+  ],
+  "notation": {
+    "timeSignature": [3, 4],
+    "tempo": 90,
+    "measures": [
+      {
+        "chord": "G",
+        "lyricFragment": "Oh give me a",
+        "notes": [
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "home where the",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "B3",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          }
+        ]
+      },
+      {
+        "chord": "C",
+        "lyricFragment": "buffalo",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "C",
+        "lyricFragment": "roam, where the",
+        "notes": [
+          {
+            "pitch": "C4",
+            "duration": "half",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "deer and the",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "A7",
+        "lyricFragment": "antelope",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "C#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 2
+            }
+          }
+        ]
+      },
+      {
+        "chord": "D7",
+        "lyricFragment": "play",
+        "notes": [
+          {
+            "pitch": "D3",
+            "duration": "half",
+            "dotted": true,
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "Where seldom is",
+        "notes": [
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "heard a dis-",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "B3",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          }
+        ]
+      },
+      {
+        "chord": "C",
+        "lyricFragment": "couraging",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "C",
+        "lyricFragment": "word, and the",
+        "notes": [
+          {
+            "pitch": "C4",
+            "duration": "half",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "skies are not",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          }
+        ]
+      },
+      {
+        "chord": "D7",
+        "lyricFragment": "cloudy all",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "day",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "dotted": true,
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

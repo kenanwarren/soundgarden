@@ -1,0 +1,107 @@
+{
+  "id": "chord-fluency",
+  "title": "Chord Fluency",
+  "description": "Move from open shapes into sevenths, barres, and timed chord changes.",
+  "genre": "general",
+  "difficulty": "Intermediate",
+  "focusSkills": ["chords", "technique", "timing"],
+  "recommendedTools": ["chord-library", "chord-changes"],
+  "toneSuggestions": ["Clean or edge-of-breakup tone", "Low noise floor for clearer detection"],
+  "starterPresetIds": ["chord-changes:pop-four"],
+  "steps": [
+    {
+      "id": "chord-fluency-open-major",
+      "title": "Open Major Control",
+      "description": "Match the open G voicing cleanly and consistently.",
+      "module": "chord-library",
+      "route": "/learn/chords",
+      "audioRequired": true,
+      "prefill": {
+        "module": "chord-library",
+        "filterCategory": "open",
+        "chordName": "G",
+        "filterRoot": "G"
+      },
+      "completionRule": {
+        "type": "chord-match-count",
+        "minMatches": 3,
+        "targetChord": "G"
+      }
+    },
+    {
+      "id": "chord-fluency-open-minor",
+      "title": "Open Minor Control",
+      "description": "Settle on Am without extra strings or muddy attacks.",
+      "module": "chord-library",
+      "route": "/learn/chords",
+      "audioRequired": true,
+      "prefill": {
+        "module": "chord-library",
+        "filterCategory": "open",
+        "chordName": "Am",
+        "filterRoot": "A"
+      },
+      "completionRule": {
+        "type": "chord-match-count",
+        "minMatches": 3,
+        "targetChord": "Am"
+      }
+    },
+    {
+      "id": "chord-fluency-seventh",
+      "title": "Seventh Chord Focus",
+      "description": "Hear and hit the dominant A7 shape cleanly.",
+      "module": "chord-library",
+      "route": "/learn/chords",
+      "audioRequired": true,
+      "prefill": {
+        "module": "chord-library",
+        "filterCategory": "open",
+        "chordName": "A7",
+        "filterRoot": "A"
+      },
+      "completionRule": {
+        "type": "chord-match-count",
+        "minMatches": 3,
+        "targetChord": "A7"
+      }
+    },
+    {
+      "id": "chord-fluency-barre",
+      "title": "Barre Intro",
+      "description": "Stabilise an F barre shape before moving into changes.",
+      "module": "chord-library",
+      "route": "/learn/chords",
+      "audioRequired": true,
+      "prefill": {
+        "module": "chord-library",
+        "filterCategory": "barre",
+        "chordName": "F",
+        "filterRoot": "F"
+      },
+      "completionRule": {
+        "type": "chord-match-count",
+        "minMatches": 2,
+        "targetChord": "F"
+      }
+    },
+    {
+      "id": "chord-fluency-changes",
+      "title": "Timed Chord Changes",
+      "description": "Switch through a four-chord loop without leaving the target set.",
+      "module": "chord-changes",
+      "route": "/learn/chord-changes",
+      "audioRequired": true,
+      "prefill": {
+        "module": "chord-changes",
+        "presetId": "pop-four",
+        "bpm": 84
+      },
+      "completionRule": {
+        "type": "chord-changes",
+        "minSwitches": 4,
+        "presetId": "pop-four"
+      }
+    }
+  ]
+}

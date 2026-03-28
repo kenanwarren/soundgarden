@@ -1,0 +1,118 @@
+{
+  "id": "country-road-groove",
+  "title": "Country Road Groove",
+  "description": "Build bright open-chord rhythm, train-beat timing, and major-pentatonic movement.",
+  "genre": "country",
+  "difficulty": "Developing",
+  "focusSkills": ["chords", "rhythm", "timing", "scales"],
+  "recommendedTools": ["rhythm-trainer", "chord-changes", "scale-sequences", "chord-library"],
+  "toneSuggestions": [
+    "Bright clean tone with slapback delay",
+    "Bridge pickup with restrained compression",
+    "Dry room ambience and quick attack"
+  ],
+  "starterPresetIds": [
+    "rhythm:country-train-beat",
+    "chord-changes:country-open-road",
+    "scale-sequences:country-major-pentatonic-roll",
+    "ear:country-resolve"
+  ],
+  "steps": [
+    {
+      "id": "country-open-focus",
+      "title": "Open G Focus",
+      "description": "Anchor the open G sound before adding driving rhythm.",
+      "module": "chord-library",
+      "route": "/learn/chords",
+      "audioRequired": true,
+      "prefill": {
+        "module": "chord-library",
+        "filterCategory": "open",
+        "chordName": "G",
+        "filterRoot": "G"
+      },
+      "completionRule": {
+        "type": "chord-match-count",
+        "minMatches": 3,
+        "targetChord": "G"
+      }
+    },
+    {
+      "id": "country-train-step",
+      "title": "Train Beat",
+      "description": "Keep the boom-chick motion moving without rushing the upbeat.",
+      "module": "rhythm-trainer",
+      "route": "/learn/rhythm",
+      "audioRequired": true,
+      "prefill": {
+        "module": "rhythm-trainer",
+        "patternName": "Country Train Beat",
+        "bpm": 100,
+        "sensitivity": "mid"
+      },
+      "completionRule": {
+        "type": "rhythm-accuracy",
+        "minAccuracy": 72,
+        "patternName": "Country Train Beat"
+      }
+    },
+    {
+      "id": "country-road-step",
+      "title": "Open Road Changes",
+      "description": "Cycle through a bright open-chord loop with confident landings.",
+      "module": "chord-changes",
+      "route": "/learn/chord-changes",
+      "audioRequired": true,
+      "prefill": {
+        "module": "chord-changes",
+        "presetId": "country-open-road",
+        "bpm": 96
+      },
+      "completionRule": {
+        "type": "chord-changes",
+        "minSwitches": 4,
+        "presetId": "country-open-road"
+      }
+    },
+    {
+      "id": "country-pentatonic-step",
+      "title": "Major Pentatonic Roll",
+      "description": "Run a bright major-pentatonic line with even motion.",
+      "module": "scale-sequences",
+      "route": "/learn/scale-sequences",
+      "audioRequired": true,
+      "prefill": {
+        "module": "scale-sequences",
+        "presetId": "country-major-pentatonic-roll",
+        "root": "G",
+        "scaleName": "Major Pentatonic",
+        "sequenceType": "descending",
+        "loops": 2
+      },
+      "completionRule": {
+        "type": "scale-sequence",
+        "minLoops": 2,
+        "sequenceType": "descending"
+      }
+    },
+    {
+      "id": "country-ear-step",
+      "title": "Resolve by Ear",
+      "description": "Hear bright interval movement that resolves inside open-chord harmony.",
+      "module": "ear-training",
+      "route": "/learn/ear-training",
+      "audioRequired": true,
+      "prefill": {
+        "module": "ear-training",
+        "mode": "interval",
+        "presetId": "country-resolve"
+      },
+      "completionRule": {
+        "type": "ear-accuracy",
+        "mode": "interval",
+        "minAccuracy": 65,
+        "minTotal": 4
+      }
+    }
+  ]
+}

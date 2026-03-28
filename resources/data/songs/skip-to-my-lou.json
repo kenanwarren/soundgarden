@@ -1,0 +1,234 @@
+{
+  "id": "skip-to-my-lou",
+  "title": "Skip to My Lou (Funky)",
+  "genres": ["funk"],
+  "difficulty": "Beginner",
+  "key": "G",
+  "chords": ["G7", "C7", "D7"],
+  "attribution": "Traditional, funk arrangement",
+  "lines": [
+    "[section:Verse 1]",
+    "[G7]Flies in the buttermilk, shoo fly shoo",
+    "[C7]Flies in the buttermilk, shoo fly shoo",
+    "[G7]Flies in the buttermilk, shoo fly shoo",
+    "[D7]Skip to my Lou my [G7]darling",
+    "",
+    "[section:Chorus]",
+    "[G7]Lou, Lou, skip to my Lou",
+    "[C7]Lou, Lou, skip to my Lou",
+    "[G7]Lou, Lou, skip to my Lou",
+    "[D7]Skip to my Lou my [G7]darling",
+    "",
+    "[section:Verse 2]",
+    "[G7]Lost my partner, what'll I do",
+    "[C7]Lost my partner, what'll I do",
+    "[G7]Lost my partner, what'll I do",
+    "[D7]Skip to my Lou my [G7]darling",
+    "",
+    "[section:Chorus]",
+    "[G7]Lou, Lou, skip to my Lou",
+    "[C7]Lou, Lou, skip to my Lou",
+    "[G7]Lou, Lou, skip to my Lou",
+    "[D7]Skip to my Lou my [G7]darling"
+  ],
+  "notation": {
+    "timeSignature": [4, 4],
+    "tempo": 115,
+    "measures": [
+      {
+        "chord": "G7",
+        "lyricFragment": "Flies in the buttermilk",
+        "notes": [
+          {
+            "pitch": "B3",
+            "duration": "eighth",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "B3",
+            "duration": "eighth",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "eighth",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "eighth",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          }
+        ]
+      },
+      {
+        "chord": "C7",
+        "lyricFragment": "shoo fly shoo",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G7",
+        "lyricFragment": "Flies in the buttermilk",
+        "notes": [
+          {
+            "pitch": "B3",
+            "duration": "eighth",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "B3",
+            "duration": "eighth",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "eighth",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "eighth",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          }
+        ]
+      },
+      {
+        "chord": "D7",
+        "lyricFragment": "Skip to my Lou my",
+        "notes": [
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G7",
+        "lyricFragment": "darling",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "rest",
+            "duration": "half"
+          }
+        ]
+      }
+    ]
+  }
+}

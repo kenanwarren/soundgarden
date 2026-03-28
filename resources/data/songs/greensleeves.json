@@ -1,0 +1,204 @@
+{
+  "id": "greensleeves",
+  "title": "Greensleeves",
+  "genres": ["fingerpicking"],
+  "difficulty": "Developing",
+  "key": "Am",
+  "chords": ["Am", "G", "Em", "E7"],
+  "attribution": "Traditional, 16th century",
+  "lines": [
+    "[section:Verse 1]",
+    "[Am]Alas, my love, you [G]do me wrong",
+    "To [Am]cast me off dis[E7]courteously",
+    "For [Am]I have loved you [G]well and long",
+    "De[Am]lighting [E7]in your [Am]company",
+    "",
+    "[section:Chorus]",
+    "[G]Greensleeves was [Em]all my joy",
+    "[Am]Greensleeves was [E7]my delight",
+    "[G]Greensleeves was my [Em]heart of gold",
+    "And [Am]who but my [E7]lady [Am]Greensleeves",
+    "",
+    "[section:Verse 2]",
+    "[Am]Your vows you've broken, [G]like my heart",
+    "Oh, [Am]why did you so en[E7]rapture me",
+    "Now [Am]I remain in a [G]world apart",
+    "But my [Am]heart re[E7]mains in cap[Am]tivity"
+  ],
+  "notation": {
+    "timeSignature": [3, 4],
+    "tempo": 100,
+    "measures": [
+      {
+        "chord": "Am",
+        "lyricFragment": "A-",
+        "notes": [
+          {
+            "pitch": "A3",
+            "duration": "quarter",
+            "tab": {
+              "string": 2,
+              "fret": 2
+            }
+          }
+        ]
+      },
+      {
+        "chord": "Am",
+        "lyricFragment": "las, my",
+        "notes": [
+          {
+            "pitch": "C4",
+            "duration": "half",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "love, you",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "half",
+            "dotted": true,
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "do me",
+        "notes": [
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "Am",
+        "lyricFragment": "wrong, to",
+        "notes": [
+          {
+            "pitch": "C4",
+            "duration": "half",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "A3",
+            "duration": "quarter",
+            "tab": {
+              "string": 2,
+              "fret": 2
+            }
+          }
+        ]
+      },
+      {
+        "chord": "Am",
+        "lyricFragment": "cast me",
+        "notes": [
+          {
+            "pitch": "A3",
+            "duration": "quarter",
+            "tab": {
+              "string": 2,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "G#3",
+            "duration": "quarter",
+            "tab": {
+              "string": 2,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "A3",
+            "duration": "quarter",
+            "tab": {
+              "string": 2,
+              "fret": 2
+            }
+          }
+        ]
+      },
+      {
+        "chord": "E7",
+        "lyricFragment": "off dis-",
+        "notes": [
+          {
+            "pitch": "B3",
+            "duration": "half",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "G#3",
+            "duration": "quarter",
+            "tab": {
+              "string": 2,
+              "fret": 1
+            }
+          }
+        ]
+      },
+      {
+        "chord": "Am",
+        "lyricFragment": "courteously",
+        "notes": [
+          {
+            "pitch": "A3",
+            "duration": "half",
+            "dotted": true,
+            "tab": {
+              "string": 2,
+              "fret": 2
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,344 @@
+{
+  "id": "st-james-infirmary",
+  "title": "St. James Infirmary Blues",
+  "genres": ["blues"],
+  "difficulty": "Beginner",
+  "key": "Am",
+  "chords": ["Am", "E7", "Dm", "F"],
+  "attribution": "Traditional",
+  "lines": [
+    "[section:Verse 1]",
+    "I went [Am]down to [E7]St. James In[Am]firmary",
+    "To see my [Dm]baby [Am]there",
+    "She was [Dm]lying on a [Am]long white [E7]table",
+    "So [F]sweet, so [E7]cool, so [Am]fair",
+    "",
+    "[section:Verse 2]",
+    "Let her [Am]go, let her [E7]go, God [Am]bless her",
+    "Wherever [Dm]she may [Am]be",
+    "She may [Dm]search this [Am]wide world [E7]over",
+    "She'll [F]never find a [E7]man like [Am]me",
+    "",
+    "[section:Verse 3]",
+    "When I [Am]die please [E7]bury me",
+    "In my [Dm]high-top [Am]Stetson hat",
+    "Put a [Dm]twenty-dollar [Am]gold piece [E7]on my",
+    "[F]Watch chain so [E7]they'll know I [Am]died standing pat"
+  ],
+  "notation": {
+    "timeSignature": [4, 4],
+    "tempo": 80,
+    "measures": [
+      {
+        "chord": "Am",
+        "lyricFragment": "I went down to",
+        "notes": [
+          {
+            "pitch": "A3",
+            "duration": "quarter",
+            "tab": {
+              "string": 2,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          }
+        ]
+      },
+      {
+        "chord": "E7",
+        "lyricFragment": "St. James In-",
+        "notes": [
+          {
+            "pitch": "G#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 4
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "Am",
+        "lyricFragment": "firmary",
+        "notes": [
+          {
+            "pitch": "A3",
+            "duration": "half",
+            "tab": {
+              "string": 2,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "rest",
+            "duration": "half"
+          }
+        ]
+      },
+      {
+        "chord": "Dm",
+        "lyricFragment": "To see my",
+        "notes": [
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "F4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "half",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          }
+        ]
+      },
+      {
+        "chord": "Am",
+        "lyricFragment": "baby there",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "half",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          }
+        ]
+      },
+      {
+        "chord": "Dm",
+        "lyricFragment": "She was lying on a",
+        "notes": [
+          {
+            "pitch": "D3",
+            "duration": "eighth",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "eighth",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "F4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          }
+        ]
+      },
+      {
+        "chord": "Am",
+        "lyricFragment": "long white",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "E7",
+        "lyricFragment": "table",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "rest",
+            "duration": "half"
+          }
+        ]
+      },
+      {
+        "chord": "F",
+        "lyricFragment": "So sweet, so",
+        "notes": [
+          {
+            "pitch": "F4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "half",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "E7",
+        "lyricFragment": "cool, so",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "half",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "Am",
+        "lyricFragment": "fair",
+        "notes": [
+          {
+            "pitch": "A3",
+            "duration": "half",
+            "tab": {
+              "string": 2,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "rest",
+            "duration": "half"
+          }
+        ]
+      }
+    ]
+  }
+}

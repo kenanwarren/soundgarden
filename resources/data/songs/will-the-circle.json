@@ -1,0 +1,276 @@
+{
+  "id": "will-the-circle",
+  "title": "Will the Circle Be Unbroken",
+  "genres": ["country"],
+  "difficulty": "Beginner",
+  "key": "G",
+  "chords": ["G", "C", "D7"],
+  "attribution": "Ada Habershon / Charles Gabriel, 1907",
+  "lines": [
+    "[section:Verse 1]",
+    "I was [G]standing by the window",
+    "On one [C]cold and cloudy [G]day",
+    "And I saw the hearse come rolling",
+    "For to [D7]carry my mother a[G]way",
+    "",
+    "[section:Chorus]",
+    "Will the [G]circle be unbroken",
+    "By and [C]by, Lord, by and [G]by",
+    "There's a better home a-waiting",
+    "In the [D7]sky, Lord, in the [G]sky",
+    "",
+    "[section:Verse 2]",
+    "Lord I [G]told the undertaker",
+    "Under[C]taker please drive [G]slow",
+    "For this body you are hauling",
+    "Lord I [D7]hate to see her [G]go",
+    "",
+    "[section:Chorus]",
+    "Will the [G]circle be unbroken",
+    "By and [C]by, Lord, by and [G]by",
+    "There's a better home a-waiting",
+    "In the [D7]sky, Lord, in the [G]sky"
+  ],
+  "notation": {
+    "timeSignature": [4, 4],
+    "tempo": 100,
+    "measures": [
+      {
+        "chord": "G",
+        "lyricFragment": "I was standing",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "B3",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "by the window",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "rest",
+            "duration": "half"
+          }
+        ]
+      },
+      {
+        "chord": "C",
+        "lyricFragment": "On one cold and",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "cloudy day",
+        "notes": [
+          {
+            "pitch": "D3",
+            "duration": "half",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "rest",
+            "duration": "half"
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "And I saw the",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "B3",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "hearse come rolling",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          }
+        ]
+      },
+      {
+        "chord": "D7",
+        "lyricFragment": "For to carry my",
+        "notes": [
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "mother away",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "rest",
+            "duration": "half"
+          }
+        ]
+      }
+    ]
+  }
+}
