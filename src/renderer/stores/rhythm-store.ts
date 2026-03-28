@@ -14,6 +14,10 @@ function gradeFromDelta(deltaMs: number): HitGrade {
   return 'good'
 }
 
+function timingAccuracy(avgDeltaMs: number): number {
+  return 100 * Math.exp(-avgDeltaMs / 45)
+}
+
 interface RhythmState {
   selectedPatternIndex: number
   isRunning: boolean
@@ -68,7 +72,7 @@ export const useRhythmStore = create<RhythmState>()((set) => ({
         const hits = results.filter((r): r is Extract<TimingResult, { type: 'hit' }> => r.type === 'hit')
         const totalDelta = hits.reduce((sum, r) => sum + Math.abs(r.deltaMs), 0)
         const avgDelta = totalDelta / hits.length
-        const baseAccuracy = Math.max(0, 100 - avgDelta * 2)
+        const baseAccuracy = timingAccuracy(avgDelta)
         const total = hitCount + state.missCount
         const accuracy = Math.min(100, baseAccuracy * (hitCount / total))
 
@@ -86,7 +90,7 @@ export const useRhythmStore = create<RhythmState>()((set) => ({
         const hits = results.filter((r): r is Extract<TimingResult, { type: 'hit' }> => r.type === 'hit')
         const totalDelta = hits.reduce((sum, r) => sum + Math.abs(r.deltaMs), 0)
         const avgDelta = totalDelta / hits.length
-        const baseAccuracy = Math.max(0, 100 - avgDelta * 2)
+        const baseAccuracy = timingAccuracy(avgDelta)
         accuracy = Math.min(100, baseAccuracy * (state.hitCount / total))
       } else {
         accuracy = 0

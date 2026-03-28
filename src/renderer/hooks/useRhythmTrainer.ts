@@ -9,11 +9,12 @@ import { getPlaybackContext } from '../utils/playback-context'
 const DEAD_ZONE_MS = 120
 const SCHEDULE_AHEAD = 0.1
 const LOOKAHEAD_MS = 25
+const FFT_SIZE = 512
 
 const SENSITIVITY_THRESHOLDS: Record<string, number> = {
-  low: 0.012,
-  mid: 0.006,
-  high: 0.003,
+  low: 0.008,
+  mid: 0.004,
+  high: 0.002,
 }
 
 export function useRhythmTrainer() {
@@ -72,7 +73,7 @@ export function useRhythmTrainer() {
     if (metCtx.state === 'suspended') await metCtx.resume()
 
     const analyser = audioCtx.createAnalyser()
-    analyser.fftSize = 2048
+    analyser.fftSize = FFT_SIZE
     pipeline.addTap(analyser)
     analyserRef.current = analyser
 
@@ -127,18 +128,7 @@ export function useRhythmTrainer() {
       const now = startMet + (wallNow - startWall)
       const nowMs = wallNow * 1000
 
-      const expired: { time: number }[] = []
-      beatTimesRef.current = beatTimesRef.current.filter((b) => {
-        if (now - b.time > secondsPerSubdivision + 0.2) {
-          if (b.isHit) expired.push(b)
-          return false
-        }
-        return true
-      })
-      for (const b of expired) {
-        addResult({ type: 'miss', expectedTime: b.time })
-      }
-
+      // Match onsets BEFORE expiring beats so edge-case strums aren't lost
       if (isOnset && nowMs - lastOnsetRef.current > DEAD_ZONE_MS) {
         lastOnsetRef.current = nowMs
 
@@ -165,6 +155,19 @@ export function useRhythmTrainer() {
             beatTimesRef.current = beatTimesRef.current.filter((b) => b !== closest)
           }
         }
+      }
+
+      // Expire unmatched beats as misses
+      const expired: { time: number }[] = []
+      beatTimesRef.current = beatTimesRef.current.filter((b) => {
+        if (now - b.time > secondsPerSubdivision + 0.2) {
+          if (b.isHit) expired.push(b)
+          return false
+        }
+        return true
+      })
+      for (const b of expired) {
+        addResult({ type: 'miss', expectedTime: b.time })
       }
     }
 

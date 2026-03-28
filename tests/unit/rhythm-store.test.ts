@@ -50,26 +50,27 @@ describe('rhythm-store', () => {
     hit(10)
     const state = useRhythmStore.getState()
     expect(state.results).toHaveLength(1)
-    // baseAccuracy = 100 - 10*2 = 80, hitRate = 1/1, accuracy = 80
-    expect(state.accuracy).toBe(80)
+    // baseAccuracy = 100 * exp(-10/45) ≈ 80, hitRate = 1/1
+    expect(Math.round(state.accuracy!)).toBe(80)
   })
 
   it('accuracy decreases with worse timing', () => {
     hit(40)
-    // baseAccuracy = 100 - 40*2 = 20
-    expect(useRhythmStore.getState().accuracy).toBe(20)
+    // baseAccuracy = 100 * exp(-40/45) ≈ 41
+    expect(Math.round(useRhythmStore.getState().accuracy!)).toBe(41)
   })
 
-  it('accuracy is clamped to 0', () => {
+  it('very bad timing still gives some accuracy', () => {
     hit(100)
-    expect(useRhythmStore.getState().accuracy).toBe(0)
+    // baseAccuracy = 100 * exp(-100/45) ≈ 11
+    expect(Math.round(useRhythmStore.getState().accuracy!)).toBe(11)
   })
 
   it('accuracy averages across multiple hits', () => {
     hit(10, 1.0)
     hit(20, 2.0)
-    // avgDelta = 15, baseAccuracy = 70, hitRate = 2/2 = 1, accuracy = 70
-    expect(useRhythmStore.getState().accuracy).toBe(70)
+    // avgDelta = 15, baseAccuracy = 100 * exp(-15/45) ≈ 72, hitRate = 1
+    expect(Math.round(useRhythmStore.getState().accuracy!)).toBe(72)
   })
 
   it('setPatternIndex resets all state', () => {
@@ -96,7 +97,7 @@ describe('rhythm-store', () => {
 
   it('handles negative deltaMs (early hits)', () => {
     hit(-10)
-    expect(useRhythmStore.getState().accuracy).toBe(80)
+    expect(Math.round(useRhythmStore.getState().accuracy!)).toBe(80)
   })
 
   it('perfect timing gives 100% accuracy', () => {
@@ -116,9 +117,8 @@ describe('rhythm-store', () => {
       hit(10, 1.0)
       miss(2.0)
       const state = useRhythmStore.getState()
-      // baseAccuracy = 80 (from 10ms avg), hitRate = 1/2 = 0.5
-      // accuracy = 80 * 0.5 = 40
-      expect(state.accuracy).toBe(40)
+      // baseAccuracy ≈ 80, hitRate = 1/2 = 0.5, accuracy ≈ 40
+      expect(Math.round(state.accuracy!)).toBe(40)
       expect(state.hitCount).toBe(1)
       expect(state.missCount).toBe(1)
     })
