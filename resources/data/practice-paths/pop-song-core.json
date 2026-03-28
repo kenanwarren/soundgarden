@@ -1,0 +1,121 @@
+{
+  "id": "pop-song-core",
+  "title": "Pop Song Core",
+  "description": "Build a clean chord loop, a locked pulse, and singable melodic movement.",
+  "genre": "pop",
+  "difficulty": {
+    "tier": "Beginner",
+    "grade": 1
+  },
+  "focusSkills": ["chords", "rhythm", "timing", "ear"],
+  "recommendedTools": ["chord-changes", "rhythm-trainer", "ear-training", "scale-sequences"],
+  "toneSuggestions": [
+    "Clean compressor with subtle chorus",
+    "Bright stereo-style delay kept low in the mix",
+    "Controlled clean tone with soft ambience"
+  ],
+  "starterPresetIds": [
+    "rhythm:pop-pulse",
+    "chord-changes:pop-four",
+    "scale-sequences:pop-major-hooks",
+    "ear:pop-hook-recall"
+  ],
+  "steps": [
+    {
+      "id": "pop-open-focus",
+      "title": "Open Chord Center",
+      "description": "Center your fretting hand on a clean C chord before entering the full loop.",
+      "module": "chord-library",
+      "route": "/learn/chords",
+      "audioRequired": true,
+      "prefill": {
+        "module": "chord-library",
+        "filterCategory": "open",
+        "chordName": "C",
+        "filterRoot": "C"
+      },
+      "completionRule": {
+        "type": "chord-match-count",
+        "minMatches": 3,
+        "targetChord": "C"
+      }
+    },
+    {
+      "id": "pop-pulse-step",
+      "title": "Pop Pulse",
+      "description": "Keep the groove even and forward-driving.",
+      "module": "rhythm-trainer",
+      "route": "/learn/rhythm",
+      "audioRequired": true,
+      "prefill": {
+        "module": "rhythm-trainer",
+        "patternName": "Pop Pulse",
+        "bpm": 96,
+        "sensitivity": "mid"
+      },
+      "completionRule": {
+        "type": "rhythm-accuracy",
+        "minAccuracy": 75,
+        "patternName": "Pop Pulse"
+      }
+    },
+    {
+      "id": "pop-four-loop-step",
+      "title": "Four-Chord Loop",
+      "description": "Move through a familiar pop loop without breaking the pulse.",
+      "module": "chord-changes",
+      "route": "/learn/chord-changes",
+      "audioRequired": true,
+      "prefill": {
+        "module": "chord-changes",
+        "presetId": "pop-four",
+        "bpm": 92
+      },
+      "completionRule": {
+        "type": "chord-changes",
+        "minSwitches": 4,
+        "presetId": "pop-four"
+      }
+    },
+    {
+      "id": "pop-major-hooks-step",
+      "title": "Major Hook Motion",
+      "description": "Trace a clear major line that feels like a chorus hook.",
+      "module": "scale-sequences",
+      "route": "/learn/scale-sequences",
+      "audioRequired": true,
+      "prefill": {
+        "module": "scale-sequences",
+        "presetId": "pop-major-hooks",
+        "root": "C",
+        "scaleName": "Major",
+        "sequenceType": "ascending",
+        "loops": 2
+      },
+      "completionRule": {
+        "type": "scale-sequence",
+        "minLoops": 2,
+        "sequenceType": "ascending"
+      }
+    },
+    {
+      "id": "pop-hook-ear-step",
+      "title": "Hook Recall Ear",
+      "description": "Match the kinds of notes that sit at the center of a pop melody.",
+      "module": "ear-training",
+      "route": "/learn/ear-training",
+      "audioRequired": true,
+      "prefill": {
+        "module": "ear-training",
+        "mode": "note",
+        "presetId": "pop-hook-recall"
+      },
+      "completionRule": {
+        "type": "ear-accuracy",
+        "mode": "note",
+        "minAccuracy": 70,
+        "minTotal": 4
+      }
+    }
+  ]
+}

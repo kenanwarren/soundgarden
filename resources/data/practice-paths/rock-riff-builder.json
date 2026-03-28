@@ -1,0 +1,121 @@
+{
+  "id": "rock-riff-builder",
+  "title": "Rock Riff Builder",
+  "description": "Build power-chord confidence, steady eighths, and pentatonic riff movement.",
+  "genre": "rock",
+  "difficulty": {
+    "tier": "Intermediate",
+    "grade": 1
+  },
+  "focusSkills": ["chords", "rhythm", "scales", "timing", "technique"],
+  "recommendedTools": ["chord-library", "chord-changes", "rhythm-trainer", "scale-sequences"],
+  "toneSuggestions": [
+    "Crunch drive into cabinet sim",
+    "Tighter noise gate before gain",
+    "Small-room reverb with controlled sustain"
+  ],
+  "starterPresetIds": [
+    "rhythm:rock-beat",
+    "chord-changes:rock-power-stack",
+    "scale-sequences:rock-pentatonic-drive",
+    "ear:rock-riff-intervals"
+  ],
+  "steps": [
+    {
+      "id": "rock-power-focus",
+      "title": "Power Chord Focus",
+      "description": "Hit E5 cleanly and keep the low-string attack controlled.",
+      "module": "chord-library",
+      "route": "/learn/chords",
+      "audioRequired": true,
+      "prefill": {
+        "module": "chord-library",
+        "filterCategory": "open",
+        "chordName": "E5",
+        "filterRoot": "E"
+      },
+      "completionRule": {
+        "type": "chord-match-count",
+        "minMatches": 3,
+        "targetChord": "E5"
+      }
+    },
+    {
+      "id": "rock-beat-engine",
+      "title": "Rock Beat Engine",
+      "description": "Keep steady accents through a classic rock groove.",
+      "module": "rhythm-trainer",
+      "route": "/learn/rhythm",
+      "audioRequired": true,
+      "prefill": {
+        "module": "rhythm-trainer",
+        "patternName": "Rock Beat",
+        "bpm": 96,
+        "sensitivity": "mid"
+      },
+      "completionRule": {
+        "type": "rhythm-accuracy",
+        "minAccuracy": 72,
+        "patternName": "Rock Beat"
+      }
+    },
+    {
+      "id": "rock-power-changes",
+      "title": "Power Stack Changes",
+      "description": "Move through a small power-chord loop without overshooting the target.",
+      "module": "chord-changes",
+      "route": "/learn/chord-changes",
+      "audioRequired": true,
+      "prefill": {
+        "module": "chord-changes",
+        "presetId": "rock-power-stack",
+        "bpm": 94
+      },
+      "completionRule": {
+        "type": "chord-changes",
+        "minSwitches": 4,
+        "presetId": "rock-power-stack"
+      }
+    },
+    {
+      "id": "rock-pentatonic-sequence",
+      "title": "Minor Pentatonic Drive",
+      "description": "Run the E minor pentatonic box with even timing and attack.",
+      "module": "scale-sequences",
+      "route": "/learn/scale-sequences",
+      "audioRequired": true,
+      "prefill": {
+        "module": "scale-sequences",
+        "presetId": "rock-pentatonic-drive",
+        "root": "E",
+        "scaleName": "Minor Pentatonic",
+        "sequenceType": "ascending",
+        "loops": 2
+      },
+      "completionRule": {
+        "type": "scale-sequence",
+        "minLoops": 2,
+        "sequenceType": "ascending"
+      }
+    },
+    {
+      "id": "rock-riff-ear-step",
+      "title": "Riff Interval Ear",
+      "description": "Hear the interval jumps that make short riffs land.",
+      "module": "ear-training",
+      "route": "/learn/ear-training",
+      "audioRequired": true,
+      "prefill": {
+        "module": "ear-training",
+        "mode": "interval",
+        "presetId": "rock-riff-intervals"
+      },
+      "completionRule": {
+        "type": "ear-accuracy",
+        "mode": "interval",
+        "minAccuracy": 65,
+        "minTotal": 4
+      }
+    }
+  ]
+}

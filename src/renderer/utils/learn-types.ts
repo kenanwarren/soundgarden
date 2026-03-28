@@ -21,7 +21,14 @@ export type LearnSkillId =
   | 'fingerstyle'
 
 export type CompletionState = 'not-started' | 'in-progress' | 'completed'
-export type PracticeDifficulty = 'Beginner' | 'Developing' | 'Intermediate'
+
+export type DifficultyTier = 'Beginner' | 'Intermediate' | 'Advanced'
+export type DifficultyGrade = 1 | 2 | 3
+
+export interface PracticeDifficulty {
+  tier: DifficultyTier
+  grade: DifficultyGrade
+}
 
 export type LessonPrefill =
   | { module: 'setup' }
@@ -98,7 +105,22 @@ export interface PracticePath {
   steps: LessonStep[]
 }
 
-export type NoteDuration = 'whole' | 'half' | 'quarter' | 'eighth' | 'sixteenth'
+export type NoteDuration = 'whole' | 'half' | 'quarter' | 'eighth' | 'sixteenth' | 'thirtySecond'
+
+export type NoteTechnique =
+  | 'hammer-on'
+  | 'pull-off'
+  | 'slide-up'
+  | 'slide-down'
+  | 'bend'
+  | 'vibrato'
+  | 'harmonic'
+  | 'palm-mute'
+  | 'mute'
+  | 'accent'
+  | 'tap'
+  | 'slap'
+  | 'pop'
 
 export interface NotationNote {
   pitch: string
@@ -106,12 +128,15 @@ export interface NotationNote {
   dotted?: boolean
   tied?: boolean
   tab?: { string: number; fret: number }
+  technique?: NoteTechnique[]
+  simultaneous?: Array<{ pitch: string; tab?: { string: number; fret: number } }>
 }
 
 export interface NotationMeasure {
   notes: NotationNote[]
   chord?: string
   lyricFragment?: string
+  tempo?: number
 }
 
 export interface SongNotation {
@@ -130,6 +155,8 @@ export interface SongArrangement {
   attribution: string
   lines: string[]
   notation?: SongNotation
+  tuning?: string
+  capo?: number
 }
 
 export interface SongDefinition {
@@ -142,6 +169,8 @@ export interface SongDefinition {
   attribution: string
   lines: string[]
   notation?: SongNotation
+  tuning?: string
+  capo?: number
   variantOf?: string
   variantLabel?: string
   arrangements?: SongArrangement[]

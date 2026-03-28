@@ -1,13 +1,22 @@
-import type { PracticeDifficulty, SongArrangement, SongDefinition } from './learn-types'
+import type {
+  DifficultyTier,
+  PracticeDifficulty,
+  SongArrangement,
+  SongDefinition
+} from './learn-types'
 import { normalizeSongDefinition } from './notation'
 
 export let SONGS: SongDefinition[] = []
 
-const DIFFICULTY_ORDER: PracticeDifficulty[] = ['Beginner', 'Developing', 'Intermediate']
+const TIER_ORDER: DifficultyTier[] = ['Beginner', 'Intermediate', 'Advanced']
 
-function getDifficultyRank(difficulty: PracticeDifficulty): number {
-  const index = DIFFICULTY_ORDER.indexOf(difficulty)
-  return index === -1 ? DIFFICULTY_ORDER.length : index
+export function getDifficultyRank(difficulty: PracticeDifficulty): number {
+  const tierIndex = TIER_ORDER.indexOf(difficulty.tier)
+  return (tierIndex === -1 ? TIER_ORDER.length : tierIndex) * 3 + (difficulty.grade - 1)
+}
+
+export function formatDifficulty(difficulty: PracticeDifficulty): string {
+  return `${difficulty.tier} ${difficulty.grade}`
 }
 
 function toSongArrangement(song: SongDefinition, isDefault = true): SongArrangement {
@@ -20,7 +29,9 @@ function toSongArrangement(song: SongDefinition, isDefault = true): SongArrangem
     chords: song.chords,
     attribution: song.attribution,
     lines: song.lines,
-    notation: song.notation
+    notation: song.notation,
+    tuning: song.tuning,
+    capo: song.capo
   }
 }
 
@@ -75,24 +86,25 @@ export function getSongArrangements(song: SongDefinition): SongArrangement[] {
 
 export function songMatchesDifficulty(
   song: SongDefinition,
-  difficulty: PracticeDifficulty | 'all'
+  difficulty: DifficultyTier | 'all'
 ): boolean {
   if (difficulty === 'all') return true
-  return getSongArrangements(song).some((arrangement) => arrangement.difficulty === difficulty)
+  return getSongArrangements(song).some((arrangement) => arrangement.difficulty.tier === difficulty)
 }
 
 export function getSongDifficultyLabel(song: SongDefinition): string {
-  const difficulties = [
-    ...new Set(getSongArrangements(song).map((arrangement) => arrangement.difficulty))
-  ].sort((left, right) => getDifficultyRank(left) - getDifficultyRank(right))
+  const sorted = getSongArrangements(song)
+    .map((a) => a.difficulty)
+    .sort((a, b) => getDifficultyRank(a) - getDifficultyRank(b))
 
-  if (difficulties.length <= 1) return difficulties[0] ?? song.difficulty
-  return `${difficulties[0]} to ${difficulties[difficulties.length - 1]}`
+  const uniqueLabels = [...new Set(sorted.map(formatDifficulty))]
+  if (uniqueLabels.length <= 1) return uniqueLabels[0] ?? formatDifficulty(song.difficulty)
+  return `${uniqueLabels[0]} to ${uniqueLabels[uniqueLabels.length - 1]}`
 }
 
 export function getPreferredSongArrangement(
   song: SongDefinition,
-  difficulty: PracticeDifficulty | 'all' = 'all',
+  difficulty: DifficultyTier | 'all' = 'all',
   arrangementId?: string | null
 ): SongArrangement | null {
   const arrangements = getSongArrangements(song)
@@ -104,7 +116,7 @@ export function getPreferredSongArrangement(
   }
 
   if (difficulty !== 'all') {
-    const match = arrangements.find((arrangement) => arrangement.difficulty === difficulty)
+    const match = arrangements.find((arrangement) => arrangement.difficulty.tier === difficulty)
     if (match) return match
   }
 

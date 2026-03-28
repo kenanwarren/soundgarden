@@ -3,6 +3,7 @@ declare global {
     api: {
       getVersion: () => Promise<string>
       loadData: (relativePath: string) => Promise<unknown>
+      loadDataDir: (relativeDir: string) => Promise<unknown[]>
       runtime: {
         e2e: {
           enabled: boolean

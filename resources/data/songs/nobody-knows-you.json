@@ -1,0 +1,209 @@
+{
+  "id": "nobody-knows-you",
+  "title": "Nobody Knows You When You're Down and Out",
+  "genres": ["blues"],
+  "difficulty": {
+    "tier": "Intermediate",
+    "grade": 1
+  },
+  "key": "C",
+  "chords": ["C", "E7", "A7", "Dm", "F", "D7", "G7"],
+  "attribution": "Jimmie Cox, 1923",
+  "lines": [
+    "[section:Verse 1]",
+    "[C]Once I lived the [E7]life of a [A7]millionaire",
+    "[Dm]Spending my money, [A7]I didn't care",
+    "[Dm]Taking my friends out [A7]for a mighty good time",
+    "[D7]Buying bootleg liquor, [G7]champagne and wine",
+    "",
+    "[section:Verse 2]",
+    "[C]Then I began to [E7]fall so [A7]low",
+    "[Dm]Lost all my good friends, [A7]had nowhere to go",
+    "[Dm]If I ever get my [A7]hands on a dollar again",
+    "I'm gonna [D7]hold on to it till that [G7]eagle grins",
+    "",
+    "[section:Chorus]",
+    "[C]Nobody [E7]knows you [A7]when you're down and [Dm]out",
+    "[A7]In your pocket, [Dm]not one [A7]penny",
+    "[Dm]And as for friends, [A7]you don't have any",
+    "[D7]When you get back on your [G7]feet again",
+    "[C]Everybody [E7]wants to [A7]be your long-lost [Dm]friend",
+    "It's [D7]mighty strange, with[G7]out a [C]doubt"
+  ],
+  "notation": {
+    "timeSignature": [4, 4],
+    "tempo": 90,
+    "measures": [
+      {
+        "chord": "C",
+        "lyricFragment": "Once I lived the",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "eighth",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "eighth",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          }
+        ]
+      },
+      {
+        "chord": "E7",
+        "lyricFragment": "life of a",
+        "notes": [
+          {
+            "pitch": "G#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 4
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "half",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "A7",
+        "lyricFragment": "millionaire",
+        "notes": [
+          {
+            "pitch": "C#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "A3",
+            "duration": "half",
+            "tab": {
+              "string": 2,
+              "fret": 2
+            }
+          }
+        ]
+      },
+      {
+        "chord": "Dm",
+        "lyricFragment": "Spending my money",
+        "notes": [
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "F4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "A7",
+        "lyricFragment": "I didn't care",
+        "notes": [
+          {
+            "pitch": "C#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "A3",
+            "duration": "quarter",
+            "tab": {
+              "string": 2,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "rest",
+            "duration": "half"
+          }
+        ]
+      }
+    ]
+  }
+}

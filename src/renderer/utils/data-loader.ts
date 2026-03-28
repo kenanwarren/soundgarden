@@ -23,6 +23,10 @@ async function load<T>(relativePath: string): Promise<T> {
   return window.api.loadData(relativePath) as Promise<T>
 }
 
+async function loadDir<T>(relativeDir: string): Promise<T[]> {
+  return window.api.loadDataDir(relativeDir) as Promise<T[]>
+}
+
 export async function initAppData(): Promise<void> {
   const [
     intervals,
@@ -48,8 +52,8 @@ export async function initAppData(): Promise<void> {
     load<ChordChangePreset[]>('presets/chord-changes.json'),
     load<ScaleSequencePreset[]>('presets/scale-sequences.json'),
     load<EarTrainingPreset[]>('presets/ear-training.json'),
-    load<PracticePath[]>('practice-paths.json'),
-    load<SongDefinition[]>('songs.json')
+    loadDir<PracticePath>('practice-paths'),
+    loadDir<SongDefinition>('songs')
   ])
 
   _initIntervals(intervals)

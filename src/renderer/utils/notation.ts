@@ -11,7 +11,8 @@ const NOTE_DURATION_UNITS: Record<NoteDuration, number> = {
   half: 16,
   quarter: 8,
   eighth: 4,
-  sixteenth: 2
+  sixteenth: 2,
+  thirtySecond: 1
 }
 
 const REST_FILL_SPECS: Array<{ duration: NoteDuration; dotted?: boolean; units: number }> = [
@@ -24,7 +25,8 @@ const REST_FILL_SPECS: Array<{ duration: NoteDuration; dotted?: boolean; units: 
   { duration: 'eighth', dotted: true, units: 6 },
   { duration: 'eighth', units: 4 },
   { duration: 'sixteenth', dotted: true, units: 3 },
-  { duration: 'sixteenth', units: 2 }
+  { duration: 'sixteenth', units: 2 },
+  { duration: 'thirtySecond', units: 1 }
 ]
 
 export function getNoteDurationUnits(note: Pick<NotationNote, 'duration' | 'dotted'>): number {

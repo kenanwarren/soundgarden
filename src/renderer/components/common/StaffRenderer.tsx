@@ -45,7 +45,8 @@ const DURATION_MAP: Record<NoteDuration, string> = {
   half: 'h',
   quarter: 'q',
   eighth: '8',
-  sixteenth: '16'
+  sixteenth: '16',
+  thirtySecond: '32'
 }
 
 const GHOST_DURATION_MAP: Record<NoteDuration, string> = {
@@ -53,7 +54,8 @@ const GHOST_DURATION_MAP: Record<NoteDuration, string> = {
   half: '2',
   quarter: '4',
   eighth: '8',
-  sixteenth: '16'
+  sixteenth: '16',
+  thirtySecond: '32'
 }
 
 function pitchToVex(pitch: string): string {

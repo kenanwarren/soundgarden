@@ -1,0 +1,267 @@
+{
+  "id": "mary-lamb-funk",
+  "title": "Mary Had a Little Lamb (Blues-Funk)",
+  "genres": ["funk"],
+  "difficulty": {
+    "tier": "Beginner",
+    "grade": 1
+  },
+  "key": "E",
+  "chords": ["E7", "A7", "B7"],
+  "attribution": "Traditional, blues-funk arrangement",
+  "lines": [
+    "[section:Verse 1]",
+    "[E7]Mary had a little lamb",
+    "Little lamb, [A7]little lamb",
+    "[E7]Mary had a little lamb its",
+    "[B7]Fleece was white as [E7]snow",
+    "",
+    "[section:Verse 2]",
+    "[E7]Everywhere that Mary went",
+    "Mary went, [A7]Mary went",
+    "[E7]Everywhere that Mary went the",
+    "[B7]Lamb was sure to [E7]go",
+    "",
+    "[section:Verse 3]",
+    "[E7]It followed her to school one day",
+    "School one day, [A7]school one day",
+    "[E7]It followed her to school one day which",
+    "[B7]Was against the [E7]rules"
+  ],
+  "notation": {
+    "timeSignature": [4, 4],
+    "tempo": 100,
+    "measures": [
+      {
+        "chord": "E7",
+        "lyricFragment": "Mary had a little",
+        "notes": [
+          {
+            "pitch": "G#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 4
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          }
+        ]
+      },
+      {
+        "chord": "E7",
+        "lyricFragment": "lamb, little lamb",
+        "notes": [
+          {
+            "pitch": "G#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 4
+            }
+          },
+          {
+            "pitch": "G#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 4
+            }
+          },
+          {
+            "pitch": "G#4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 4
+            }
+          }
+        ]
+      },
+      {
+        "chord": "A7",
+        "lyricFragment": "little lamb",
+        "notes": [
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          }
+        ]
+      },
+      {
+        "chord": "E7",
+        "lyricFragment": "Mary had a little",
+        "notes": [
+          {
+            "pitch": "G#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 4
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          }
+        ]
+      },
+      {
+        "chord": "E7",
+        "lyricFragment": "lamb its",
+        "notes": [
+          {
+            "pitch": "G#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 4
+            }
+          },
+          {
+            "pitch": "G#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 4
+            }
+          },
+          {
+            "pitch": "G#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 4
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          }
+        ]
+      },
+      {
+        "chord": "B7",
+        "lyricFragment": "fleece was white as",
+        "notes": [
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "G#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 4
+            }
+          }
+        ]
+      },
+      {
+        "chord": "E7",
+        "lyricFragment": "snow",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "rest",
+            "duration": "half"
+          }
+        ]
+      }
+    ]
+  }
+}

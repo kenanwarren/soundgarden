@@ -1,0 +1,121 @@
+{
+  "id": "blues-foundations",
+  "title": "Blues Foundations",
+  "description": "Build shuffle feel, dominant changes, blues-box motion, and ear-led response.",
+  "genre": "blues",
+  "difficulty": {
+    "tier": "Beginner",
+    "grade": 1
+  },
+  "focusSkills": ["chords", "rhythm", "scales", "ear", "groove"],
+  "recommendedTools": ["rhythm-trainer", "chord-changes", "scale-sequences", "ear-training"],
+  "toneSuggestions": [
+    "Edge-of-breakup amp with spring-style reverb",
+    "Neck pickup with light compression",
+    "Short slapback delay for leads"
+  ],
+  "starterPresetIds": [
+    "rhythm:shuffle",
+    "chord-changes:blues-turnaround",
+    "scale-sequences:blues-box-run",
+    "ear:blues-call-response"
+  ],
+  "steps": [
+    {
+      "id": "blues-dominant-focus",
+      "title": "Dominant 7 Focus",
+      "description": "Settle the A7 voicing before moving through a full blues turnaround.",
+      "module": "chord-library",
+      "route": "/learn/chords",
+      "audioRequired": true,
+      "prefill": {
+        "module": "chord-library",
+        "filterCategory": "open",
+        "chordName": "A7",
+        "filterRoot": "A"
+      },
+      "completionRule": {
+        "type": "chord-match-count",
+        "minMatches": 3,
+        "targetChord": "A7"
+      }
+    },
+    {
+      "id": "blues-shuffle-pocket",
+      "title": "Shuffle Pocket",
+      "description": "Lock your attacks into a swung triplet feel.",
+      "module": "rhythm-trainer",
+      "route": "/learn/rhythm",
+      "audioRequired": true,
+      "prefill": {
+        "module": "rhythm-trainer",
+        "patternName": "Shuffle",
+        "bpm": 76,
+        "sensitivity": "high"
+      },
+      "completionRule": {
+        "type": "rhythm-accuracy",
+        "minAccuracy": 68,
+        "patternName": "Shuffle"
+      }
+    },
+    {
+      "id": "blues-turnaround-changes",
+      "title": "Turnaround Changes",
+      "description": "Cycle dominant chords without losing the form.",
+      "module": "chord-changes",
+      "route": "/learn/chord-changes",
+      "audioRequired": true,
+      "prefill": {
+        "module": "chord-changes",
+        "presetId": "blues-turnaround",
+        "bpm": 76
+      },
+      "completionRule": {
+        "type": "chord-changes",
+        "minSwitches": 4,
+        "presetId": "blues-turnaround"
+      }
+    },
+    {
+      "id": "blues-box-sequence",
+      "title": "Blues Box Run",
+      "description": "Run the blues scale in order without skipping the blue note.",
+      "module": "scale-sequences",
+      "route": "/learn/scale-sequences",
+      "audioRequired": true,
+      "prefill": {
+        "module": "scale-sequences",
+        "presetId": "blues-box-run",
+        "root": "A",
+        "scaleName": "Blues",
+        "sequenceType": "ascending",
+        "loops": 2
+      },
+      "completionRule": {
+        "type": "scale-sequence",
+        "minLoops": 2,
+        "sequenceType": "ascending"
+      }
+    },
+    {
+      "id": "blues-call-response",
+      "title": "Call & Response Ear",
+      "description": "Hear the blues color tones before you answer on guitar.",
+      "module": "ear-training",
+      "route": "/learn/ear-training",
+      "audioRequired": true,
+      "prefill": {
+        "module": "ear-training",
+        "mode": "interval",
+        "presetId": "blues-call-response"
+      },
+      "completionRule": {
+        "type": "ear-accuracy",
+        "mode": "interval",
+        "minAccuracy": 65,
+        "minTotal": 4
+      }
+    }
+  ]
+}

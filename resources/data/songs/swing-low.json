@@ -1,0 +1,195 @@
+{
+  "id": "swing-low",
+  "title": "Swing Low, Sweet Chariot",
+  "genres": ["rock"],
+  "difficulty": {
+    "tier": "Beginner",
+    "grade": 1
+  },
+  "key": "G",
+  "chords": ["G", "C", "D7", "Em"],
+  "attribution": "Traditional",
+  "lines": [
+    "[section:Chorus]",
+    "[G]Swing low, sweet [C]chari[G]ot",
+    "Coming for to carry me [D7]home",
+    "[G]Swing low, sweet [C]chari[G]ot",
+    "Coming for to [D7]carry me [G]home",
+    "",
+    "[section:Verse 1]",
+    "I [G]looked over Jordan and [C]what did I [G]see",
+    "Coming for to carry me [D7]home",
+    "A [G]band of angels [C]coming after [G]me",
+    "Coming for to [D7]carry me [G]home",
+    "",
+    "[section:Chorus]",
+    "[G]Swing low, sweet [C]chari[G]ot",
+    "Coming for to carry me [D7]home",
+    "[G]Swing low, sweet [C]chari[G]ot",
+    "Coming for to [D7]carry me [G]home",
+    "",
+    "[section:Verse 2]",
+    "If you [G]get there be[C]fore I [G]do",
+    "Coming for to carry me [D7]home",
+    "[G]Tell all my friends I'm [C]coming [G]too",
+    "Coming for to [D7]carry me [G]home"
+  ],
+  "notation": {
+    "timeSignature": [4, 4],
+    "tempo": 85,
+    "measures": [
+      {
+        "chord": "G",
+        "lyricFragment": "Swing low, sweet",
+        "notes": [
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          }
+        ]
+      },
+      {
+        "chord": "C",
+        "lyricFragment": "chari-",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "C4",
+            "duration": "half",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "ot",
+        "notes": [
+          {
+            "pitch": "D3",
+            "duration": "whole",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "Coming for to",
+        "notes": [
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "E4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          }
+        ]
+      },
+      {
+        "chord": "D7",
+        "lyricFragment": "carry me home",
+        "notes": [
+          {
+            "pitch": "C4",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "G4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "F#4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 2
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "",
+        "notes": [
+          {
+            "pitch": "G4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 3
+            }
+          },
+          {
+            "pitch": "rest",
+            "duration": "half"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,199 @@
+{
+  "id": "scarborough-fair",
+  "title": "Scarborough Fair",
+  "genres": ["fingerpicking"],
+  "difficulty": {
+    "tier": "Intermediate",
+    "grade": 1
+  },
+  "key": "Am",
+  "chords": ["Am", "G", "C", "D"],
+  "attribution": "Traditional",
+  "lines": [
+    "[section:Verse 1]",
+    "Are you [Am]going to [G]Scarborough [Am]Fair",
+    "[C]Parsley, [Am]sage, rose[D]mary and [Am]thyme",
+    "Re[Am]member [C]me to [G]one who lives [Am]there",
+    "She [Am]once [G]was a true love of [Am]mine",
+    "",
+    "[section:Verse 2]",
+    "Tell her to [Am]make me a [G]cambric [Am]shirt",
+    "[C]Parsley, [Am]sage, rose[D]mary and [Am]thyme",
+    "With[Am]out no [C]seams nor [G]needle[Am]work",
+    "Then [Am]she'll [G]be a true love of [Am]mine",
+    "",
+    "[section:Verse 3]",
+    "Tell her to [Am]find me an [G]acre of [Am]land",
+    "[C]Parsley, [Am]sage, rose[D]mary and [Am]thyme",
+    "Be[Am]tween the [C]salt [G]water and the sea [Am]strand",
+    "Then [Am]she'll [G]be a true love of [Am]mine"
+  ],
+  "notation": {
+    "timeSignature": [3, 4],
+    "tempo": 95,
+    "measures": [
+      {
+        "chord": "Am",
+        "lyricFragment": "Are you",
+        "notes": [
+          {
+            "pitch": "A3",
+            "duration": "half",
+            "tab": {
+              "string": 2,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "A3",
+            "duration": "quarter",
+            "tab": {
+              "string": 2,
+              "fret": 2
+            }
+          }
+        ]
+      },
+      {
+        "chord": "Am",
+        "lyricFragment": "going to",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "G",
+        "lyricFragment": "Scarborough",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "half",
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          },
+          {
+            "pitch": "F4",
+            "duration": "quarter",
+            "tab": {
+              "string": 0,
+              "fret": 1
+            }
+          }
+        ]
+      },
+      {
+        "chord": "Am",
+        "lyricFragment": "Fair",
+        "notes": [
+          {
+            "pitch": "E4",
+            "duration": "half",
+            "dotted": true,
+            "tab": {
+              "string": 0,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "C",
+        "lyricFragment": "Parsley,",
+        "notes": [
+          {
+            "pitch": "C4",
+            "duration": "half",
+            "tab": {
+              "string": 1,
+              "fret": 1
+            }
+          },
+          {
+            "pitch": "D3",
+            "duration": "quarter",
+            "tab": {
+              "string": 3,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "Am",
+        "lyricFragment": "sage, rose-",
+        "notes": [
+          {
+            "pitch": "A3",
+            "duration": "half",
+            "tab": {
+              "string": 2,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "B3",
+            "duration": "quarter",
+            "tab": {
+              "string": 1,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "D",
+        "lyricFragment": "mary and",
+        "notes": [
+          {
+            "pitch": "A3",
+            "duration": "half",
+            "tab": {
+              "string": 2,
+              "fret": 2
+            }
+          },
+          {
+            "pitch": "G3",
+            "duration": "quarter",
+            "tab": {
+              "string": 2,
+              "fret": 0
+            }
+          }
+        ]
+      },
+      {
+        "chord": "Am",
+        "lyricFragment": "thyme",
+        "notes": [
+          {
+            "pitch": "A3",
+            "duration": "half",
+            "dotted": true,
+            "tab": {
+              "string": 2,
+              "fret": 2
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
