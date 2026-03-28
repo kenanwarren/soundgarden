@@ -1,0 +1,77 @@
+import type { GenreId } from '../learn-types'
+
+export interface ChordChangePreset {
+  id: string
+  name: string
+  description: string
+  chordNames: string[]
+  genreTags: GenreId[]
+  toneSuggestions?: string[]
+}
+
+export const CHORD_CHANGE_PRESETS: ChordChangePreset[] = [
+  {
+    id: 'open-two',
+    name: 'Open Two-Chord Loop',
+    description: 'Lock in a clean C to G switch every measure.',
+    chordNames: ['C', 'G'],
+    genreTags: ['general', 'pop', 'country'],
+    toneSuggestions: ['Straight clean tone', 'Moderate tempo with light ambience']
+  },
+  {
+    id: 'pop-four',
+    name: 'Pop Four-Chord Loop',
+    description: 'Cycle through C, G, Am, and F with steady changes.',
+    chordNames: ['C', 'G', 'Am', 'F'],
+    genreTags: ['pop'],
+    toneSuggestions: ['Compressed clean tone', 'Chorus or stereo delay kept subtle']
+  },
+  {
+    id: 'dominant-ladder',
+    name: 'Dominant Ladder',
+    description: 'Move across A7, D7, and E7 with confident transitions.',
+    chordNames: ['A7', 'D7', 'E7'],
+    genreTags: ['general', 'blues', 'funk'],
+    toneSuggestions: ['Edge-of-breakup tone', 'Short spring-style ambience']
+  },
+  {
+    id: 'blues-turnaround',
+    name: 'Blues Turnaround',
+    description: 'Cycle through E7, A7, B7, and back to A7 with a shuffle pulse.',
+    chordNames: ['E7', 'A7', 'B7', 'A7'],
+    genreTags: ['blues'],
+    toneSuggestions: ['Warm breakup with spring reverb', 'Neck pickup lead tone']
+  },
+  {
+    id: 'rock-power-stack',
+    name: 'Rock Power Stack',
+    description: 'Move between E5, G5, A5, and back to G5 for riff-ready changes.',
+    chordNames: ['E5', 'G5', 'A5', 'G5'],
+    genreTags: ['rock'],
+    toneSuggestions: ['Crunch drive with cabinet sim', 'Tighter gate before distortion']
+  },
+  {
+    id: 'funk-vamp',
+    name: 'Funk Pocket Vamp',
+    description: 'Trade clipped dominant and minor-7 shapes without losing the pocket.',
+    chordNames: ['Am7', 'D7', 'E7', 'A7'],
+    genreTags: ['funk'],
+    toneSuggestions: ['Compressor-first clean tone', 'Optional auto-wah kept low']
+  },
+  {
+    id: 'country-open-road',
+    name: 'Country Open Road',
+    description: 'Work through G, D, Em, and C with bright open-chord momentum.',
+    chordNames: ['G', 'D', 'Em', 'C'],
+    genreTags: ['country'],
+    toneSuggestions: ['Bright clean tone', 'Short slapback delay']
+  },
+  {
+    id: 'fingerpicked-open-roll',
+    name: 'Fingerpicked Open Roll',
+    description: 'Cycle C, G, Am, and F while keeping the picking hand even.',
+    chordNames: ['C', 'G', 'Am', 'F'],
+    genreTags: ['fingerpicking'],
+    toneSuggestions: ['Dry clean tone', 'Light compression for even plucks']
+  }
+]

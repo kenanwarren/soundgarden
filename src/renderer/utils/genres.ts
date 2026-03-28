@@ -1,0 +1,100 @@
+import type { GenreDefinition } from './learn-types'
+
+export const GENRE_DEFINITIONS: GenreDefinition[] = [
+  {
+    id: 'general',
+    title: 'General',
+    description: 'Skill-first paths that build broad guitar fundamentals.',
+    shortSummary: 'Foundational practice outside a single genre focus.',
+    focusSkills: ['chords', 'scales', 'rhythm', 'ear'],
+    recommendedTools: ['scale-explorer', 'chord-library', 'rhythm-trainer', 'ear-training'],
+    toneSuggestions: ['Neutral clean tone', 'Simple metronome-backed practice', 'Minimal effects'],
+    hidden: true
+  },
+  {
+    id: 'blues',
+    title: 'Blues',
+    description:
+      'Dominant chords, shuffle feel, call-and-response phrases, and blues box movement.',
+    shortSummary: 'Shuffles, 7th chords, and blues-scale phrasing.',
+    starterPathId: 'blues-foundations',
+    focusSkills: ['chords', 'scales', 'rhythm', 'ear', 'groove'],
+    recommendedTools: ['rhythm-trainer', 'chord-changes', 'scale-sequences', 'ear-training'],
+    toneSuggestions: [
+      'Edge-of-breakup amp with spring-style reverb',
+      'Neck pickup with light compression',
+      'Short slapback delay for leads'
+    ]
+  },
+  {
+    id: 'rock',
+    title: 'Rock',
+    description: 'Power chords, straight subdivisions, and pentatonic lines with more drive.',
+    shortSummary: 'Power-chord control and riff-ready timing.',
+    starterPathId: 'rock-riff-builder',
+    focusSkills: ['chords', 'rhythm', 'scales', 'timing', 'technique'],
+    recommendedTools: ['chord-library', 'chord-changes', 'rhythm-trainer', 'scale-sequences'],
+    toneSuggestions: [
+      'Crunch drive into cabinet sim',
+      'Tighter noise gate before gain',
+      'Small-room reverb with controlled sustain'
+    ]
+  },
+  {
+    id: 'pop',
+    title: 'Pop',
+    description: 'Hook-friendly chord loops, even pulse, and clear major/minor movement.',
+    shortSummary: 'Four-chord fluency and tight, singable groove.',
+    starterPathId: 'pop-song-core',
+    focusSkills: ['chords', 'rhythm', 'timing', 'ear'],
+    recommendedTools: ['chord-changes', 'rhythm-trainer', 'ear-training', 'scale-sequences'],
+    toneSuggestions: [
+      'Clean compressor with subtle chorus',
+      'Bright stereo-style delay kept low in the mix',
+      'Controlled clean tone with soft ambience'
+    ]
+  },
+  {
+    id: 'funk',
+    title: 'Funk',
+    description: 'Sixteenth-note pocket, clipped chord stabs, and Mixolydian groove vocabulary.',
+    shortSummary: 'Syncopation, pocket, and tight dominant chord work.',
+    starterPathId: 'funk-pocket-builder',
+    focusSkills: ['rhythm', 'groove', 'chords', 'timing'],
+    recommendedTools: ['rhythm-trainer', 'chord-changes', 'chord-library', 'scale-sequences'],
+    toneSuggestions: [
+      'Very clean compressor-forward tone',
+      'Auto-wah or envelope-style filter used sparingly',
+      'Fast transient response with low reverb'
+    ]
+  },
+  {
+    id: 'country',
+    title: 'Country',
+    description: 'Open-chord drive, train-beat rhythm, and bright pentatonic or Mixolydian motion.',
+    shortSummary: 'Boom-chick feel, open chords, and bright melodic movement.',
+    starterPathId: 'country-road-groove',
+    focusSkills: ['chords', 'rhythm', 'timing', 'scales'],
+    recommendedTools: ['rhythm-trainer', 'chord-changes', 'scale-sequences', 'chord-library'],
+    toneSuggestions: [
+      'Bright clean tone with slapback delay',
+      'Bridge pickup with restrained compression',
+      'Dry room ambience and quick attack'
+    ]
+  },
+  {
+    id: 'fingerpicking',
+    title: 'Fingerpicking',
+    description:
+      'Alternating bass, broken-chord rolls, and arpeggiated movement without hand-tracking.',
+    shortSummary: 'Pattern-led fingerstyle timing and open-chord control.',
+    starterPathId: 'fingerpicking-foundations',
+    focusSkills: ['fingerstyle', 'rhythm', 'technique', 'chords'],
+    recommendedTools: ['rhythm-trainer', 'chord-changes', 'scale-sequences', 'ear-training'],
+    toneSuggestions: [
+      'Dry clean tone with a little room reverb',
+      'Gentle compression for even plucks',
+      'Lower-gain, lower-noise signal path'
+    ]
+  }
+]

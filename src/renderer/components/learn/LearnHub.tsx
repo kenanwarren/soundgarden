@@ -4,8 +4,6 @@ import {
   ArrowRight,
   BookOpen,
   Cable,
-  CheckCircle2,
-  Circle,
   Clock3,
   Drum,
   Ear,
@@ -21,9 +19,7 @@ import {
   LEARN_SKILLS,
   PRACTICE_PATHS,
   buildLessonHref,
-  getGenreDefinition,
   getGenreProgress,
-  getModuleProgressValue,
   getNextIncompleteStep,
   getPathProgress,
   getPathsForGenre,
@@ -32,14 +28,11 @@ import {
   getVisibleGenres,
   isSetupReady
 } from '../../utils/learn-data'
-import type {
-  GenreDefinition,
-  GenreId,
-  LearnModuleId,
-  LearnProgressEntry,
-  LearnSkillId,
-  PracticePath
-} from '../../utils/learn-types'
+import type { GenreId, LearnModuleId, LearnSkillId } from '../../utils/learn-types'
+import { Tag } from './Tag'
+import { SkillMapCard } from './SkillMapCard'
+import { GenreCard } from './GenreCard'
+import { PathCard } from './PathCard'
 
 const featureIcons: Record<LearnModuleId, typeof Music2> = {
   setup: Cable,
@@ -85,285 +78,6 @@ function formatLastPracticed(timestamp: number | null): string {
   })
 }
 
-function progressTone(value: number): string {
-  if (value >= 100) return 'bg-emerald-500'
-  if (value >= 55) return 'bg-sky-500'
-  if (value > 0) return 'bg-yellow-500'
-  return 'bg-zinc-700'
-}
-
-function Tag({
-  label,
-  tone = 'default'
-}: {
-  label: string
-  tone?: 'default' | 'accent'
-}): JSX.Element {
-  return (
-    <span
-      className={`rounded-full px-3 py-1 text-xs ${
-        tone === 'accent'
-          ? 'border border-emerald-500/30 bg-emerald-500/10 text-emerald-100'
-          : 'border border-zinc-700 bg-zinc-950 text-zinc-300'
-      }`}
-    >
-      {label}
-    </span>
-  )
-}
-
-function StepState({ done, label }: { done: boolean; label: string }): JSX.Element {
-  return (
-    <div className="flex items-center gap-2 text-sm">
-      {done ? (
-        <CheckCircle2 size={15} className="text-emerald-400" />
-      ) : (
-        <Circle size={15} className="text-zinc-600" />
-      )}
-      <span className={done ? 'text-zinc-200' : 'text-zinc-500'}>{label}</span>
-    </div>
-  )
-}
-
-function SkillMapCard({
-  title,
-  description,
-  entry
-}: {
-  title: string
-  description: string
-  entry?: LearnProgressEntry
-}): JSX.Element {
-  const value = getModuleProgressValue(entry)
-
-  return (
-    <div className="rounded-3xl border border-zinc-800 bg-zinc-900/80 p-5">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <div className="text-lg font-semibold text-white">{title}</div>
-          <p className="mt-1 text-sm text-zinc-400">{description}</p>
-        </div>
-        <div className="rounded-full border border-zinc-700 bg-zinc-950 px-3 py-1 text-sm text-zinc-300">
-          {value}%
-        </div>
-      </div>
-
-      <div className="mt-4 h-2 rounded-full bg-zinc-800">
-        <div
-          className={`h-2 rounded-full transition-all ${progressTone(value)}`}
-          style={{ width: `${value}%` }}
-        />
-      </div>
-
-      <div className="mt-4 grid gap-3 md:grid-cols-3">
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 px-4 py-3">
-          <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">Attempts</div>
-          <div className="mt-2 text-lg font-medium text-white">{entry?.attempts ?? 0}</div>
-        </div>
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 px-4 py-3">
-          <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">Best score</div>
-          <div className="mt-2 text-lg font-medium text-white">
-            {entry?.bestScore === null || entry?.bestScore === undefined
-              ? '—'
-              : `${Math.round(entry.bestScore)}%`}
-          </div>
-        </div>
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 px-4 py-3">
-          <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">Best streak</div>
-          <div className="mt-2 text-lg font-medium text-white">{entry?.bestStreak ?? '—'}</div>
-        </div>
-      </div>
-
-      {entry?.weakSpots.length ? (
-        <div className="mt-4 flex flex-wrap gap-2">
-          {entry.weakSpots.slice(0, 3).map((spot) => (
-            <Tag key={spot} label={spot} />
-          ))}
-        </div>
-      ) : (
-        <p className="mt-4 text-sm text-zinc-500">
-          No weak spots logged yet. Start a session to populate this map.
-        </p>
-      )}
-    </div>
-  )
-}
-
-function GenreCard({
-  genre,
-  percent,
-  starterPath,
-  nextStep,
-  isSelected,
-  onSelect
-}: {
-  genre: GenreDefinition
-  percent: number
-  starterPath?: PracticePath
-  nextStep?: ReturnType<typeof getNextIncompleteStep>
-  isSelected: boolean
-  onSelect: () => void
-}): JSX.Element {
-  return (
-    <button
-      onClick={onSelect}
-      className={`rounded-3xl border p-5 text-left transition-colors ${
-        isSelected
-          ? 'border-emerald-400/60 bg-emerald-600/10'
-          : 'border-zinc-800 bg-zinc-900/80 hover:border-zinc-700 hover:bg-zinc-900'
-      }`}
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <div className="text-lg font-semibold text-white">{genre.title}</div>
-          <p className="mt-1 text-sm text-zinc-400">{genre.shortSummary}</p>
-        </div>
-        <div className="rounded-full border border-zinc-700 bg-zinc-950 px-3 py-1 text-sm text-zinc-300">
-          {percent}%
-        </div>
-      </div>
-
-      <div className="mt-4 h-2 rounded-full bg-zinc-800">
-        <div
-          className={`h-2 rounded-full transition-all ${progressTone(percent)}`}
-          style={{ width: `${percent}%` }}
-        />
-      </div>
-
-      <div className="mt-4 flex flex-wrap gap-2">
-        {genre.focusSkills.slice(0, 3).map((skill) => (
-          <Tag key={skill} label={skill} />
-        ))}
-      </div>
-
-      <div className="mt-4 text-sm text-zinc-400">{genre.description}</div>
-
-      {genre.toneSuggestions.length > 0 && (
-        <div className="mt-4">
-          <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">Starter tones</div>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {genre.toneSuggestions.slice(0, 2).map((suggestion) => (
-              <Tag key={suggestion} label={suggestion} tone="accent" />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {starterPath && nextStep && (
-        <div className="mt-4 text-sm text-zinc-300">
-          Start here: <span className="font-medium text-white">{starterPath.title}</span> ·{' '}
-          {nextStep.title}
-        </div>
-      )}
-    </button>
-  )
-}
-
-function PathCard({
-  path,
-  summary,
-  nextStep,
-  completedSteps,
-  status
-}: {
-  path: PracticePath
-  summary: { completedCount: number; totalCount: number; percent: number }
-  nextStep: ReturnType<typeof getNextIncompleteStep>
-  completedSteps: Record<string, number>
-  status: ReturnType<typeof useSystemStatus>
-}): JSX.Element {
-  const genre = getGenreDefinition(path.genre)
-  const toolLabels = path.recommendedTools
-    .map((tool) => LEARN_FEATURES.find((feature) => feature.module === tool)?.title ?? tool)
-    .slice(0, 3)
-
-  return (
-    <div className="rounded-3xl border border-zinc-800 bg-zinc-900/80 p-5">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <div className="text-lg font-semibold text-white">{path.title}</div>
-          <p className="mt-1 text-sm text-zinc-400">{path.description}</p>
-        </div>
-        <div className="flex flex-wrap justify-end gap-2">
-          {genre && (
-            <Tag label={genre.title} tone={path.genre === 'general' ? 'default' : 'accent'} />
-          )}
-          <Tag label={path.difficulty} />
-        </div>
-      </div>
-
-      <div className="mt-4 h-2 rounded-full bg-zinc-800">
-        <div
-          className="h-2 rounded-full bg-emerald-500 transition-all"
-          style={{ width: `${summary.percent}%` }}
-        />
-      </div>
-      <div className="mt-2 text-sm text-zinc-500">
-        {summary.completedCount}/{summary.totalCount} steps completed
-      </div>
-
-      <div className="mt-4 flex flex-wrap gap-2">
-        {path.focusSkills.map((skill) => (
-          <Tag key={`${path.id}-${skill}`} label={skill} />
-        ))}
-      </div>
-
-      {path.toneSuggestions?.length ? (
-        <div className="mt-4">
-          <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">Tone suggestions</div>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {path.toneSuggestions.slice(0, 2).map((suggestion) => (
-              <Tag key={`${path.id}-${suggestion}`} label={suggestion} tone="accent" />
-            ))}
-          </div>
-        </div>
-      ) : null}
-
-      {toolLabels.length ? (
-        <div className="mt-4">
-          <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">Recommended tools</div>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {toolLabels.map((tool) => (
-              <Tag key={`${path.id}-${tool}`} label={tool} />
-            ))}
-          </div>
-        </div>
-      ) : null}
-
-      <div className="mt-4 space-y-2">
-        {path.steps.slice(0, 3).map((step) => (
-          <StepState
-            key={step.id}
-            done={
-              step.completionRule.type === 'setup-ready'
-                ? isSetupReady(status)
-                : !!completedSteps[step.id]
-            }
-            label={step.title}
-          />
-        ))}
-      </div>
-
-      <div className="mt-4">
-        {nextStep ? (
-          <Link
-            to={buildLessonHref(nextStep)}
-            className="inline-flex items-center gap-2 rounded-xl border border-zinc-700 px-3 py-2 text-sm text-zinc-200 transition-colors hover:border-emerald-500/40 hover:text-white"
-          >
-            Next: {nextStep.title}
-            <ArrowRight size={14} />
-          </Link>
-        ) : (
-          <div className="inline-flex items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-100">
-            <CheckCircle2 size={14} />
-            Path complete
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
-
 export function LearnHub(): JSX.Element {
   const status = useSystemStatus()
   const progress = useLearnProgressStore((state) => state.progress)
@@ -396,7 +110,7 @@ export function LearnHub(): JSX.Element {
     browseMode === 'all'
       ? 'All Learning Paths'
       : browseMode === 'genre'
-        ? `${getGenreDefinition(selectedGenre)?.title ?? 'Genre'} Paths`
+        ? `${visibleGenres.find((g) => g.id === selectedGenre)?.title ?? 'Genre'} Paths`
         : `${LEARN_SKILLS.find((skill) => skill.id === selectedSkill)?.title ?? 'Skill'} Paths`
 
   return (
