@@ -11,6 +11,7 @@ export class AudioPipeline {
   private masterGain: GainNode
   private effectNodes: EffectNode[] = []
   private taps: Set<AudioNode> = new Set()
+  private activeChainIds: string[] | null = null
 
   constructor(context: AudioContext) {
     this.context = context
@@ -45,6 +46,7 @@ export class AudioPipeline {
       this.sourceNode.disconnect()
       this.sourceNode = null
     }
+    this.activeChainIds = null
   }
 
   getSourceNode(): AudioNode | null {
@@ -75,6 +77,18 @@ export class AudioPipeline {
   rebuildChain(): void {
     if (!this.sourceNode) return
 
+    const enabledEffects = this.effectNodes.filter((e) => e.enabled)
+    const nextChainIds = enabledEffects.map((e) => e.id)
+
+    // Skip full rebuild if the active chain hasn't changed
+    if (
+      this.activeChainIds !== null &&
+      nextChainIds.length === this.activeChainIds.length &&
+      nextChainIds.every((id, i) => id === this.activeChainIds![i])
+    ) {
+      return
+    }
+
     this.sourceNode.disconnect()
 
     for (const effect of this.effectNodes) {
@@ -90,10 +104,9 @@ export class AudioPipeline {
       this.sourceNode.connect(tap)
     }
 
-    const enabledEffects = this.effectNodes.filter((e) => e.enabled)
-
     if (enabledEffects.length === 0) {
       this.sourceNode.connect(this.masterGain)
+      this.activeChainIds = []
       return
     }
 
@@ -104,5 +117,6 @@ export class AudioPipeline {
     }
 
     enabledEffects[enabledEffects.length - 1].getOutput().connect(this.masterGain)
+    this.activeChainIds = nextChainIds
   }
 }
