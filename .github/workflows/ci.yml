@@ -2,6 +2,8 @@ name: CI
 
 on:
   push:
+    branches:
+      - main
   pull_request:
 
 concurrency:
@@ -28,6 +30,12 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Install Emscripten
+        run: sudo apt-get update && sudo apt-get install -y emscripten
+
+      - name: Build WASM kernel
+        run: npm run build:wasm
 
       - name: Check formatting
         run: npm run format:check
@@ -70,11 +78,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install Emscripten
+        run: sudo apt-get update && sudo apt-get install -y emscripten
+
       - name: Install Playwright dependencies
         run: npx playwright install --with-deps
 
       - name: Run Playwright electron tests
-        run: xvfb-run -a npm run test:e2e
+        run: xvfb-run -a --server-args="-screen 0 1280x720x24" npm run test:e2e
 
       - name: Upload Playwright artifacts
         if: failure()

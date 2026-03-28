@@ -2,9 +2,18 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-EMCC="${EMCC:-/opt/homebrew/opt/emscripten/bin/emcc}"
+if [[ -n "${EMCC:-}" ]]; then
+  EMCC_BIN="$EMCC"
+elif command -v emcc >/dev/null 2>&1; then
+  EMCC_BIN="$(command -v emcc)"
+elif [[ -x "/opt/homebrew/opt/emscripten/bin/emcc" ]]; then
+  EMCC_BIN="/opt/homebrew/opt/emscripten/bin/emcc"
+else
+  echo "Unable to find emcc. Set EMCC or install Emscripten." >&2
+  exit 1
+fi
 
-"$EMCC" "$SCRIPT_DIR/nam-kernel.c" \
+"$EMCC_BIN" "$SCRIPT_DIR/nam-kernel.c" \
   -O3 \
   -msimd128 \
   -s STANDALONE_WASM=1 \
