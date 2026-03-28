@@ -1,24 +1,23 @@
-const BUFFER_SIZE = 8192
-const HOP_SIZE = 256
+const BUFFER_SIZE = 4096
+const GRAIN_SIZE = 1024
+const HOP = 256
+const OVERLAP = GRAIN_SIZE / HOP // 4x overlap
 
 class PitchShiftProcessor extends AudioWorkletProcessor {
   constructor() {
     super()
-    this.inputBuffer = [new Float32Array(BUFFER_SIZE), new Float32Array(BUFFER_SIZE)]
-    this.outputBuffer = [new Float32Array(BUFFER_SIZE), new Float32Array(BUFFER_SIZE)]
+    this.inBuf = [new Float32Array(BUFFER_SIZE), new Float32Array(BUFFER_SIZE)]
+    this.outBuf = [new Float32Array(BUFFER_SIZE), new Float32Array(BUFFER_SIZE)]
     this.writePos = 0
-    this.readPhase = [0, 0]
-    this.outputWritePos = 0
-    this.outputReadPos = 0
-
-    // Hann window
-    this.window = new Float32Array(BUFFER_SIZE)
-    for (let i = 0; i < BUFFER_SIZE; i++) {
-      this.window[i] = 0.5 * (1 - Math.cos(2 * Math.PI * i / BUFFER_SIZE))
-    }
-
-    this.grainSize = 2048
+    this.readPos = 0
     this.hopCounter = 0
+
+    // Pre-compute Hann window for grain size
+    this.win = new Float32Array(GRAIN_SIZE)
+    const scale = 2 * Math.PI / GRAIN_SIZE
+    for (let i = 0; i < GRAIN_SIZE; i++) {
+      this.win[i] = 0.5 * (1 - Math.cos(scale * i)) / OVERLAP
+    }
   }
 
   static get parameterDescriptors() {
@@ -36,7 +35,6 @@ class PitchShiftProcessor extends AudioWorkletProcessor {
 
     const semitones = parameters.semitones[0]
     const mix = parameters.mix[0]
-    const pitchRatio = Math.pow(2, semitones / 12)
 
     if (Math.abs(semitones) < 0.01) {
       for (let ch = 0; ch < output.length; ch++) {
@@ -45,42 +43,47 @@ class PitchShiftProcessor extends AudioWorkletProcessor {
       return true
     }
 
-    const grainSize = this.grainSize
-    const hopOut = HOP_SIZE
+    const pitchRatio = Math.pow(2, semitones / 12)
+    const dry = 1 - mix
+    const n = input[0].length
+    const numCh = Math.min(output.length, 2)
+    const win = this.win
+    const mask = BUFFER_SIZE - 1 // BUFFER_SIZE must be power of 2
 
-    for (let ch = 0; ch < output.length; ch++) {
-      if (!input[ch]) continue
-
-      for (let i = 0; i < input[ch].length; i++) {
-        this.inputBuffer[ch][this.writePos % BUFFER_SIZE] = input[ch][i]
-
-        // Overlap-add granular pitch shifting
-        if (ch === 0) this.hopCounter++
-
-        if (ch === 0 && this.hopCounter >= hopOut) {
-          this.hopCounter = 0
-          for (let c = 0; c < output.length; c++) {
-            for (let g = 0; g < grainSize; g++) {
-              const readIdx = (this.writePos - grainSize + g + BUFFER_SIZE) % BUFFER_SIZE
-              const srcIdx = Math.floor(g * pitchRatio) % grainSize
-              const srcReadIdx = (this.writePos - grainSize + srcIdx + BUFFER_SIZE) % BUFFER_SIZE
-              const win = this.window[Math.floor(g * this.window.length / grainSize)]
-              const outIdx = (this.outputWritePos + g) % BUFFER_SIZE
-              this.outputBuffer[c][outIdx] += this.inputBuffer[c][srcReadIdx] * win * 0.5
-            }
-          }
-          this.outputWritePos = (this.outputWritePos + hopOut) % BUFFER_SIZE
-        }
-
-        const outSample = this.outputBuffer[ch][this.outputReadPos % BUFFER_SIZE]
-        this.outputBuffer[ch][this.outputReadPos % BUFFER_SIZE] = 0
-        output[ch][i] = input[ch][i] * (1 - mix) + outSample * mix
-
-        if (ch === 0) {
-          this.writePos = (this.writePos + 1) % BUFFER_SIZE
-          this.outputReadPos = (this.outputReadPos + 1) % BUFFER_SIZE
-        }
+    for (let i = 0; i < n; i++) {
+      const wp = this.writePos
+      for (let ch = 0; ch < numCh; ch++) {
+        this.inBuf[ch][wp] = input[ch] ? input[ch][i] : 0
       }
+
+      this.hopCounter++
+      if (this.hopCounter >= HOP) {
+        this.hopCounter = 0
+
+        for (let ch = 0; ch < numCh; ch++) {
+          const inB = this.inBuf[ch]
+          const outB = this.outBuf[ch]
+          const grainStart = (wp - GRAIN_SIZE + 1 + BUFFER_SIZE) & mask
+
+          for (let g = 0; g < GRAIN_SIZE; g++) {
+            const srcG = (g * pitchRatio) | 0
+            if (srcG >= GRAIN_SIZE) break
+            const src = inB[(grainStart + srcG) & mask]
+            const outIdx = (this.readPos + g) & mask
+            outB[outIdx] += src * win[g]
+          }
+        }
+        this.readPos = (this.readPos + HOP) & mask
+      }
+
+      const rp = (this.readPos - HOP + this.hopCounter + BUFFER_SIZE) & mask
+      for (let ch = 0; ch < numCh; ch++) {
+        const outSample = this.outBuf[ch][rp]
+        this.outBuf[ch][rp] = 0
+        output[ch][i] = (input[ch] ? input[ch][i] : 0) * dry + outSample * mix
+      }
+
+      this.writePos = (wp + 1) & mask
     }
 
     return true

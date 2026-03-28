@@ -18,27 +18,31 @@ class TremoloProcessor extends AudioWorkletProcessor {
 
     if (!input || !input[0]) return true
 
-    const rate = parameters.rate[0]
-    const depth = parameters.depth[0]
-    const wave = parameters.wave[0]
-    const phaseInc = (2 * Math.PI * rate) / sampleRate
+    const halfDepth = parameters.depth[0] * 0.5
+    const isSquare = parameters.wave[0] >= 0.5
+    const phaseInc = (2 * Math.PI * parameters.rate[0]) / sampleRate
+    const n = input[0].length
 
-    for (let ch = 0; ch < output.length; ch++) {
-      if (!input[ch]) continue
+    let sinP = Math.sin(this.phase)
+    let cosP = Math.cos(this.phase)
+    const sinInc = Math.sin(phaseInc)
+    const cosInc = Math.cos(phaseInc)
 
-      for (let i = 0; i < input[ch].length; i++) {
-        const sinVal = Math.sin(this.phase)
-        const mod = wave < 0.5 ? sinVal : (sinVal >= 0 ? 1 : -1)
-        const gain = 1 - depth * 0.5 * (1 - mod)
+    for (let i = 0; i < n; i++) {
+      const mod = isSquare ? (sinP >= 0 ? 1 : -1) : sinP
+      const gain = 1 - halfDepth * (1 - mod)
 
-        output[ch][i] = input[ch][i] * gain
-
-        if (ch === 0) {
-          this.phase += phaseInc
-          if (this.phase > 2 * Math.PI) this.phase -= 2 * Math.PI
-        }
+      for (let ch = 0; ch < output.length; ch++) {
+        if (input[ch]) output[ch][i] = input[ch][i] * gain
       }
+
+      const newS = sinP * cosInc + cosP * sinInc
+      cosP = cosP * cosInc - sinP * sinInc
+      sinP = newS
     }
+
+    this.phase += phaseInc * n
+    if (this.phase > 2 * Math.PI) this.phase -= 2 * Math.PI
 
     return true
   }

@@ -1,11 +1,10 @@
 class WahProcessor extends AudioWorkletProcessor {
   constructor() {
     super()
-    this.envFollower = [0, 0]
-    this.bpState = [
-      { x1: 0, x2: 0, y1: 0, y2: 0 },
-      { x1: 0, x2: 0, y1: 0, y2: 0 }
-    ]
+    this.envFollower = 0
+    // State-variable filter state (cheaper to modulate than biquad)
+    this.svfLow = 0
+    this.svfBand = 0
     this.phase = 0
   }
 
@@ -25,67 +24,77 @@ class WahProcessor extends AudioWorkletProcessor {
     if (!input || !input[0]) return true
 
     const sensitivity = parameters.sensitivity[0]
-    const baseFreq = parameters.frequency[0]
     const q = parameters.q[0]
     const mode = Math.round(parameters.mode[0])
+    const sr = sampleRate
+    const n = input[0].length
 
     const minFreq = 300
     const maxFreq = 5000
-    const envAttack = Math.exp(-1 / (sampleRate * 0.005))
-    const envRelease = Math.exp(-1 / (sampleRate * 0.05))
+    const freqRange = maxFreq - minFreq
 
-    for (let ch = 0; ch < output.length; ch++) {
-      if (!input[ch]) continue
+    const envAttack = Math.exp(-1 / (sr * 0.005))
+    const envRelease = Math.exp(-1 / (sr * 0.05))
 
-      for (let i = 0; i < input[ch].length; i++) {
-        let sweepFreq
+    // SVF damping from Q
+    const damp = 1 / q
 
-        if (mode === 0) {
-          // Auto-wah: envelope follower
-          const abs = Math.abs(input[ch][i])
-          const coeff = abs > this.envFollower[ch] ? envAttack : envRelease
-          this.envFollower[ch] = coeff * this.envFollower[ch] + (1 - coeff) * abs
-          const env = Math.min(1, this.envFollower[ch] * (5 + sensitivity * 45))
-          sweepFreq = minFreq + (maxFreq - minFreq) * env
-        } else {
-          // LFO mode
-          const lfoRate = 0.5 + sensitivity * 4.5
-          const phaseInc = (2 * Math.PI * lfoRate) / sampleRate
-          const lfo = (Math.sin(this.phase) + 1) * 0.5
-          sweepFreq = minFreq + (maxFreq - minFreq) * lfo
+    let envF = this.envFollower
+    let low = this.svfLow
+    let band = this.svfBand
+    let phase = this.phase
 
-          if (ch === 0) {
-            this.phase += phaseInc
-            if (this.phase > 2 * Math.PI) this.phase -= 2 * Math.PI
-          }
+    const lfoRate = 0.5 + sensitivity * 4.5
+    const phaseInc = (2 * Math.PI * lfoRate) / sr
+
+    // Compute SVF freq coeff once per block for LFO mode,
+    // or update per sample for envelope mode (cheap: just one multiply)
+    if (mode === 1) {
+      // LFO mode: compute freq at block start
+      const lfo = (Math.sin(phase) + 1) * 0.5
+      const sweepFreq = minFreq + freqRange * lfo
+      const f = 2 * Math.sin(Math.PI * sweepFreq / sr)
+
+      for (let ch = 0; ch < output.length; ch++) {
+        if (!input[ch]) continue
+        for (let i = 0; i < n; i++) {
+          const x = input[ch][i]
+          low = low + f * band
+          const high = x - low - damp * band
+          band = f * high + band
+          output[ch][i] = band
         }
+      }
 
-        // 2nd-order bandpass filter
-        const w0 = 2 * Math.PI * sweepFreq / sampleRate
-        const sinW0 = Math.sin(w0)
-        const cosW0 = Math.cos(w0)
-        const alpha = sinW0 / (2 * q)
+      phase += phaseInc * n
+      if (phase > 2 * Math.PI) phase -= 2 * Math.PI
+    } else {
+      // Auto-wah: envelope follower, update SVF freq per sample
+      const envScale = 5 + sensitivity * 45
+      const piOverSr = Math.PI / sr
+      for (let ch = 0; ch < output.length; ch++) {
+        if (!input[ch]) continue
+        for (let i = 0; i < n; i++) {
+          const x = input[ch][i]
+          const abs = x > 0 ? x : -x
+          const coeff = abs > envF ? envAttack : envRelease
+          envF = coeff * envF + (1 - coeff) * abs
+          const env = envF * envScale
+          const sweepFreq = minFreq + freqRange * (env < 1 ? env : 1)
+          const f = 2 * Math.sin(piOverSr * sweepFreq)
 
-        const b0 = alpha
-        const b1 = 0
-        const b2 = -alpha
-        const a0 = 1 + alpha
-        const a1 = -2 * cosW0
-        const a2 = 1 - alpha
-
-        const st = this.bpState[ch]
-        const x = input[ch][i]
-        const y = (b0 / a0) * x + (b1 / a0) * st.x1 + (b2 / a0) * st.x2
-                - (a1 / a0) * st.y1 - (a2 / a0) * st.y2
-
-        st.x2 = st.x1
-        st.x1 = x
-        st.y2 = st.y1
-        st.y1 = y
-
-        output[ch][i] = y
+          low = low + f * band
+          const high = x - low - damp * band
+          band = f * high + band
+          output[ch][i] = band
+        }
       }
     }
+
+    this.envFollower = envF
+    this.svfLow = low
+    this.svfBand = band
+    this.phase = phase
 
     return true
   }

@@ -2,10 +2,7 @@ class PhaserProcessor extends AudioWorkletProcessor {
   constructor() {
     super()
     this.phase = 0
-    this.allpassStates = []
-    for (let s = 0; s < 12; s++) {
-      this.allpassStates.push({ x1: 0, x2: 0, y1: 0, y2: 0 })
-    }
+    this.ap = [new Float32Array(12), new Float32Array(12)]
     this.feedbackSample = 0
   }
 
@@ -30,44 +27,50 @@ class PhaserProcessor extends AudioWorkletProcessor {
     const stages = Math.round(parameters.stages[0])
     const feedback = parameters.feedback[0]
     const mix = parameters.mix[0]
-    const phaseInc = (2 * Math.PI * rate) / sampleRate
+    const dry = 1 - mix
+    const n = input[0].length
+    const sr = sampleRate
+    const phaseInc = (2 * Math.PI * rate) / sr
 
     const minFreq = 200
-    const maxFreq = 4000
+    const freqRange = 3800 * depth
 
-    for (let i = 0; i < input[0].length; i++) {
-      const lfo = (Math.sin(this.phase) + 1) * 0.5
-      const sweepFreq = minFreq + (maxFreq - minFreq) * lfo * depth
-      const w0 = 2 * Math.PI * sweepFreq / sampleRate
-      const alpha = Math.sin(w0) / 2
-      const a1 = -2 * Math.cos(w0) / (1 + alpha)
-      const b0 = (1 - alpha) / (1 + alpha)
+    // Compute allpass coeff at block start/end and interpolate
+    const lfo0 = (Math.sin(this.phase) + 1) * 0.5
+    const lfoEnd = (Math.sin(this.phase + phaseInc * n) + 1) * 0.5
+    const tan0 = Math.tan(Math.PI * (minFreq + freqRange * lfo0) / sr)
+    const tanEnd = Math.tan(Math.PI * (minFreq + freqRange * lfoEnd) / sr)
+    const a0 = (tan0 - 1) / (tan0 + 1)
+    const aEnd = (tanEnd - 1) / (tanEnd + 1)
+    const aInc = (aEnd - a0) / n
 
-      let sample = 0
+    let fbSample = this.feedbackSample
+    let a = a0
+
+    for (let i = 0; i < n; i++) {
+      a += aInc
+
       for (let ch = 0; ch < output.length; ch++) {
         if (!input[ch]) continue
+        const ap = this.ap[ch] || this.ap[0]
 
-        let x = input[ch][i] + this.feedbackSample * feedback
+        let x = input[ch][i] + fbSample * feedback
 
         for (let s = 0; s < stages; s++) {
-          const st = this.allpassStates[s]
-          const y = b0 * x + a1 * st.x1 + st.x2 - a1 * st.y1 - b0 * st.y2
-          st.x2 = st.x1
-          st.x1 = x
-          st.y2 = st.y1
-          st.y1 = y
+          const prev = ap[s]
+          const y = a * x + prev - a * prev
+          ap[s] = x
           x = y
         }
 
-        if (ch === 0) this.feedbackSample = x
-
-        output[ch][i] = input[ch][i] * (1 - mix) + x * mix
-        sample = x
+        if (ch === 0) fbSample = x
+        output[ch][i] = input[ch][i] * dry + x * mix
       }
-
-      this.phase += phaseInc
-      if (this.phase > 2 * Math.PI) this.phase -= 2 * Math.PI
     }
+
+    this.feedbackSample = fbSample
+    this.phase += phaseInc * n
+    if (this.phase > 2 * Math.PI) this.phase -= 2 * Math.PI
 
     return true
   }

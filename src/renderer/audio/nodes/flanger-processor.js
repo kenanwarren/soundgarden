@@ -30,37 +30,46 @@ class FlangerProcessor extends AudioWorkletProcessor {
     const depth = parameters.depth[0]
     const feedback = parameters.feedback[0]
     const mix = parameters.mix[0]
+    const dry = 1 - mix
     const phaseInc = (2 * Math.PI * rate) / sampleRate
+    const n = input[0].length
 
-    // Sweep delay between 0.1ms and 7ms
-    const minDelay = Math.floor(sampleRate * 0.0001)
-    const maxDelay = Math.floor(sampleRate * 0.007)
+    const minDelay = sampleRate * 0.0001
+    const delayRange = sampleRate * 0.007 * depth
 
-    for (let ch = 0; ch < output.length; ch++) {
-      if (!input[ch]) continue
-      const buffer = this.buffers[ch] || this.buffers[0]
+    // Incremental sin/cos
+    let sinP = Math.sin(this.phase)
+    let cosP = Math.cos(this.phase)
+    const sinInc = Math.sin(phaseInc)
+    const cosInc = Math.cos(phaseInc)
 
-      for (let i = 0; i < input[ch].length; i++) {
-        const lfo = (Math.sin(this.phase) + 1) * 0.5
-        const delaySamples = minDelay + (maxDelay - minDelay) * lfo * depth
+    for (let i = 0; i < n; i++) {
+      const lfo = (sinP + 1) * 0.5
+      const delaySamples = minDelay + delayRange * lfo
 
-        const readPos = this.writeIndex - delaySamples + MAX_DELAY_SAMPLES
-        const readIdx = Math.floor(readPos) % MAX_DELAY_SAMPLES
-        const frac = readPos - Math.floor(readPos)
-        const nextIdx = (readIdx + 1) % MAX_DELAY_SAMPLES
+      const readPos = this.writeIndex - delaySamples + MAX_DELAY_SAMPLES
+      const readIdx = readPos | 0
+      const frac = readPos - readIdx
+      const ri = readIdx % MAX_DELAY_SAMPLES
+      const ni = (ri + 1) % MAX_DELAY_SAMPLES
 
-        const delayed = buffer[readIdx] * (1 - frac) + buffer[nextIdx] * frac
+      for (let ch = 0; ch < output.length; ch++) {
+        if (!input[ch]) continue
+        const buffer = this.buffers[ch] || this.buffers[0]
 
+        const delayed = buffer[ri] + (buffer[ni] - buffer[ri]) * frac
         buffer[this.writeIndex] = input[ch][i] + delayed * feedback
-        output[ch][i] = input[ch][i] * (1 - mix) + delayed * mix
-
-        if (ch === 0) {
-          this.phase += phaseInc
-          if (this.phase > 2 * Math.PI) this.phase -= 2 * Math.PI
-          this.writeIndex = (this.writeIndex + 1) % MAX_DELAY_SAMPLES
-        }
+        output[ch][i] = input[ch][i] * dry + delayed * mix
       }
+
+      const newS = sinP * cosInc + cosP * sinInc
+      cosP = cosP * cosInc - sinP * sinInc
+      sinP = newS
+      this.writeIndex = (this.writeIndex + 1) % MAX_DELAY_SAMPLES
     }
+
+    this.phase += phaseInc * n
+    if (this.phase > 2 * Math.PI) this.phase -= 2 * Math.PI
 
     return true
   }

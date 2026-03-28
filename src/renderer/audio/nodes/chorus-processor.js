@@ -28,17 +28,24 @@ class ChorusProcessor extends AudioWorkletProcessor {
     const rate = parameters.rate[0]
     const depth = parameters.depth[0]
     const mix = parameters.mix[0]
+    const dry = 1 - mix
     const phaseInc = (2 * Math.PI * rate) / sampleRate
+    const n = input[0].length
 
-    // Modulated delay between 1ms and 8ms
     const baseDelay = Math.floor(sampleRate * 0.005)
     const modRange = Math.floor(sampleRate * 0.003 * depth)
 
-    for (let ch = 0; ch < output.length; ch++) {
-      if (!input[ch]) continue
-      const buffer = this.buffers[ch] || this.buffers[0]
+    // Incremental sin/cos
+    let sinP = Math.sin(this.phase)
+    let cosP = Math.cos(this.phase)
+    const sinInc = Math.sin(phaseInc)
+    const cosInc = Math.cos(phaseInc)
 
-      for (let i = 0; i < input[ch].length; i++) {
+    for (let i = 0; i < n; i++) {
+      for (let ch = 0; ch < output.length; ch++) {
+        if (!input[ch]) continue
+        const buffer = this.buffers[ch] || this.buffers[0]
+
         buffer[this.writeIndex] = input[ch][i]
 
         const mod = Math.sin(this.phase + ch * 0.5) * modRange
@@ -49,15 +56,15 @@ class ChorusProcessor extends AudioWorkletProcessor {
         const nextIdx = (readIdx + 1) % MAX_DELAY_SAMPLES
 
         const delayed = buffer[readIdx] * (1 - frac) + buffer[nextIdx] * frac
-
-        output[ch][i] = input[ch][i] * (1 - mix) + delayed * mix
-
-        if (ch === 0) {
-          this.phase += phaseInc
-          if (this.phase > 2 * Math.PI) this.phase -= 2 * Math.PI
-          this.writeIndex = (this.writeIndex + 1) % MAX_DELAY_SAMPLES
-        }
+        output[ch][i] = input[ch][i] * dry + delayed * mix
       }
+
+      const newS = sinP * cosInc + cosP * sinInc
+      cosP = cosP * cosInc - sinP * sinInc
+      sinP = newS
+      this.phase += phaseInc
+      if (this.phase > 2 * Math.PI) this.phase -= 2 * Math.PI
+      this.writeIndex = (this.writeIndex + 1) % MAX_DELAY_SAMPLES
     }
 
     return true
