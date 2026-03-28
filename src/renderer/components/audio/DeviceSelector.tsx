@@ -50,7 +50,7 @@ export function DeviceSelector(): JSX.Element {
             className={baseSelectClass}
             value={inputDeviceId ?? ''}
             onChange={(e) => setInputDeviceId(e.target.value || null)}
-            disabled={devicesLoading}
+            disabled={devicesLoading || permissionState === 'denied'}
           >
             <option value="">
               {inputDevices.length > 0 ? 'Select input device…' : 'No inputs detected'}
@@ -74,7 +74,7 @@ export function DeviceSelector(): JSX.Element {
             className={baseSelectClass}
             value={outputDeviceId ?? ''}
             onChange={(e) => setOutputDeviceId(e.target.value || null)}
-            disabled={devicesLoading}
+            disabled={devicesLoading || permissionState === 'denied'}
           >
             <option value="">Default output</option>
             {outputDevices.map((d) => (

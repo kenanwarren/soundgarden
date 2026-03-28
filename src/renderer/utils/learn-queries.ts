@@ -28,7 +28,8 @@ export const MODULE_ROUTES: Record<LearnModuleId, string> = {
   'rhythm-trainer': '/learn/rhythm',
   'ear-training': '/learn/ear-training',
   'chord-changes': '/learn/chord-changes',
-  'scale-sequences': '/learn/scale-sequences'
+  'scale-sequences': '/learn/scale-sequences',
+  'song-viewer': '/learn/songs'
 }
 
 export const LEARN_FEATURES: Array<{
@@ -72,6 +73,12 @@ export const LEARN_FEATURES: Array<{
     module: 'scale-sequences',
     title: 'Scale Sequence Trainer',
     description: 'Play scales in order with ascending, descending, and thirds patterns.'
+  },
+  {
+    to: '/learn/songs',
+    module: 'song-viewer',
+    title: 'Song Viewer',
+    description: 'Browse public domain songs with chord charts and lyrics.'
   }
 ]
 
@@ -194,7 +201,7 @@ export function getPathProgress(
 ): { completedCount: number; totalCount: number; percent: number } {
   const completedCount = path.steps.filter((step) => {
     if (step.completionRule.type === 'setup-ready') {
-      return isSetupReady(status)
+      return !!completedSteps[step.id] || isSetupReady(status)
     }
 
     return !!completedSteps[step.id]
@@ -238,7 +245,9 @@ export function getNextIncompleteStep(
 ): LessonStep | null {
   for (const step of path.steps) {
     const complete =
-      step.completionRule.type === 'setup-ready' ? isSetupReady(status) : !!completedSteps[step.id]
+      step.completionRule.type === 'setup-ready'
+        ? !!completedSteps[step.id] || isSetupReady(status)
+        : !!completedSteps[step.id]
     if (!complete) return step
   }
 

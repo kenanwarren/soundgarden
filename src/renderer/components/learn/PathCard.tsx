@@ -89,7 +89,7 @@ export function PathCard({
             key={step.id}
             done={
               step.completionRule.type === 'setup-ready'
-                ? isSetupReady(status)
+                ? !!completedSteps[step.id] || isSetupReady(status)
                 : !!completedSteps[step.id]
             }
             label={step.title}

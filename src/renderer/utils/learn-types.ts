@@ -6,6 +6,7 @@ export type LearnModuleId =
   | 'ear-training'
   | 'chord-changes'
   | 'scale-sequences'
+  | 'song-viewer'
 
 export type GenreId = 'general' | 'blues' | 'rock' | 'pop' | 'funk' | 'country' | 'fingerpicking'
 
@@ -95,6 +96,40 @@ export interface PracticePath {
   toneSuggestions?: string[]
   starterPresetIds?: string[]
   steps: LessonStep[]
+}
+
+export type NoteDuration = 'whole' | 'half' | 'quarter' | 'eighth' | 'sixteenth'
+
+export interface NotationNote {
+  pitch: string
+  duration: NoteDuration
+  dotted?: boolean
+  tied?: boolean
+  tab?: { string: number; fret: number }
+}
+
+export interface NotationMeasure {
+  notes: NotationNote[]
+  chord?: string
+  lyricFragment?: string
+}
+
+export interface SongNotation {
+  timeSignature: [number, number]
+  tempo?: number
+  measures: NotationMeasure[]
+}
+
+export interface SongDefinition {
+  id: string
+  title: string
+  genres: GenreId[]
+  difficulty: PracticeDifficulty
+  key: string
+  chords: string[]
+  attribution: string
+  lines: string[]
+  notation?: SongNotation
 }
 
 interface BaseSessionSummary {

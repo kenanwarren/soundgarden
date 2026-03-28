@@ -42,7 +42,7 @@ export const useTunerStore = create<TunerState>((set) => {
     isActive: false,
     referenceA4: practice.referenceA4,
     selectedPreset: practice.tuningPreset,
-    targetNotes: TUNING_PRESETS[practice.tuningPreset],
+    targetNotes: TUNING_PRESETS[practice.tuningPreset] ?? [],
 
     setTunerData: (frequency, noteName, octave, cents, clarity) =>
       set({ frequency, noteName, octave, centsOffset: cents, clarity }),

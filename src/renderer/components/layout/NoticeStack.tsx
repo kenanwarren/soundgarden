@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { AlertCircle, CheckCircle2, Info, TriangleAlert, X } from 'lucide-react'
-import { useUiStore, type UiNoticeTone } from '../../stores/ui-store'
+import { useUiStore, type UiNotice, type UiNoticeTone } from '../../stores/ui-store'
 
 function toneStyles(tone: UiNoticeTone): { icon: JSX.Element; className: string } {
   switch (tone) {
@@ -27,52 +27,56 @@ function toneStyles(tone: UiNoticeTone): { icon: JSX.Element; className: string 
   }
 }
 
+function NoticeItem({
+  notice,
+  onDismiss
+}: {
+  notice: UiNotice
+  onDismiss: (id: string) => void
+}): JSX.Element {
+  useEffect(() => {
+    const timer = window.setTimeout(
+      () => onDismiss(notice.id),
+      notice.timeoutMs ?? (notice.tone === 'error' ? 7000 : 4500)
+    )
+    return () => window.clearTimeout(timer)
+  }, [notice.id, notice.timeoutMs, notice.tone, onDismiss])
+
+  const style = toneStyles(notice.tone)
+
+  return (
+    <div
+      className={`pointer-events-auto rounded-2xl border px-4 py-3 shadow-2xl backdrop-blur ${style.className}`}
+    >
+      <div className="flex items-start gap-3">
+        <span className="mt-0.5">{style.icon}</span>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-medium">{notice.title}</p>
+          {notice.description && (
+            <p className="mt-1 text-sm text-white/80">{notice.description}</p>
+          )}
+        </div>
+        <button
+          onClick={() => onDismiss(notice.id)}
+          className="rounded-full p-1 text-white/60 transition-colors hover:bg-black/10 hover:text-white"
+          aria-label="Dismiss notification"
+        >
+          <X size={14} />
+        </button>
+      </div>
+    </div>
+  )
+}
+
 export function NoticeStack(): JSX.Element {
   const notices = useUiStore((s) => s.notices)
   const dismissNotice = useUiStore((s) => s.dismissNotice)
 
-  useEffect(() => {
-    const timers = notices.map((notice) =>
-      window.setTimeout(
-        () => dismissNotice(notice.id),
-        notice.timeoutMs ?? (notice.tone === 'error' ? 7000 : 4500)
-      )
-    )
-
-    return () => {
-      timers.forEach((timer) => window.clearTimeout(timer))
-    }
-  }, [dismissNotice, notices])
-
   return (
     <div className="pointer-events-none fixed right-5 top-5 z-[60] flex w-full max-w-sm flex-col gap-3">
-      {notices.map((notice) => {
-        const style = toneStyles(notice.tone)
-
-        return (
-          <div
-            key={notice.id}
-            className={`pointer-events-auto rounded-2xl border px-4 py-3 shadow-2xl backdrop-blur ${style.className}`}
-          >
-            <div className="flex items-start gap-3">
-              <span className="mt-0.5">{style.icon}</span>
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium">{notice.title}</p>
-                {notice.description && (
-                  <p className="mt-1 text-sm text-white/80">{notice.description}</p>
-                )}
-              </div>
-              <button
-                onClick={() => dismissNotice(notice.id)}
-                className="rounded-full p-1 text-white/60 transition-colors hover:bg-black/10 hover:text-white"
-                aria-label="Dismiss notification"
-              >
-                <X size={14} />
-              </button>
-            </div>
-          </div>
-        )
-      })}
+      {notices.map((notice) => (
+        <NoticeItem key={notice.id} notice={notice} onDismiss={dismissNotice} />
+      ))}
     </div>
   )
 }

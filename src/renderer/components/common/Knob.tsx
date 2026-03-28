@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 interface KnobProps {
   value: number
@@ -22,9 +22,20 @@ export function Knob({
   const isDragging = useRef(false)
   const startY = useRef(0)
   const startValue = useRef(0)
+  const listenersRef = useRef<{ move: (e: MouseEvent) => void; up: () => void } | null>(null)
 
   const normalized = (value - min) / (max - min)
   const angle = -135 + normalized * 270 // -135 to +135 degrees
+
+  useEffect(() => {
+    return () => {
+      if (listenersRef.current) {
+        window.removeEventListener('mousemove', listenersRef.current.move)
+        window.removeEventListener('mouseup', listenersRef.current.up)
+        listenersRef.current = null
+      }
+    }
+  }, [])
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
@@ -32,9 +43,9 @@ export function Knob({
       startY.current = e.clientY
       startValue.current = value
 
-      const handleMouseMove = (e: MouseEvent) => {
+      const handleMouseMove = (ev: MouseEvent) => {
         if (!isDragging.current) return
-        const delta = (startY.current - e.clientY) / 150
+        const delta = (startY.current - ev.clientY) / 150
         const range = max - min
         let newValue = startValue.current + delta * range
         newValue = Math.round(newValue / step) * step
@@ -46,7 +57,14 @@ export function Knob({
         isDragging.current = false
         window.removeEventListener('mousemove', handleMouseMove)
         window.removeEventListener('mouseup', handleMouseUp)
+        listenersRef.current = null
       }
+
+      if (listenersRef.current) {
+        window.removeEventListener('mousemove', listenersRef.current.move)
+        window.removeEventListener('mouseup', listenersRef.current.up)
+      }
+      listenersRef.current = { move: handleMouseMove, up: handleMouseUp }
 
       window.addEventListener('mousemove', handleMouseMove)
       window.addEventListener('mouseup', handleMouseUp)
