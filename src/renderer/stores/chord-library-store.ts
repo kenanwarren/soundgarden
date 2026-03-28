@@ -21,7 +21,7 @@ export const useChordLibraryStore = create<ChordLibraryState>()(
       setFilterCategory: (category) => set({ filterCategory: category })
     }),
     {
-      name: 'tonefield-chord-library',
+      name: 'soundgarden-chord-library',
       partialize: (state) => ({
         filterRoot: state.filterRoot,
         filterCategory: state.filterCategory

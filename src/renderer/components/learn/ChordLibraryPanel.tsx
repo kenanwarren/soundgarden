@@ -1,11 +1,11 @@
-import { Link } from 'react-router-dom'
-import { ArrowLeft, Check, X } from 'lucide-react'
+import { Check, RotateCcw, X } from 'lucide-react'
 import { NOTE_NAMES } from '../../utils/constants'
 import { CHORD_VOICINGS, type ChordVoicing } from '../../utils/chord-voicings'
 import { useChordLibraryStore } from '../../stores/chord-library-store'
 import { useChordPractice } from '../../hooks/useChordPractice'
 import { ChordDiagram } from '../common/ChordDiagram'
 import { useAudioStore } from '../../stores/audio-store'
+import { PageHeader } from '../layout/PageHeader'
 
 const CATEGORIES = [
   { value: 'all' as const, label: 'All' },
@@ -14,6 +14,15 @@ const CATEGORIES = [
   { value: 'extended' as const, label: 'Extended' }
 ]
 
+function SummaryCard({ label, value }: { label: string; value: string }): JSX.Element {
+  return (
+    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/80 px-4 py-3">
+      <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">{label}</div>
+      <div className="mt-2 text-lg font-medium text-white">{value}</div>
+    </div>
+  )
+}
+
 function ChordPracticeIndicator({ voicing }: { voicing: ChordVoicing }) {
   const isConnected = useAudioStore((s) => s.isConnected)
   const { start, stop, isActive, currentChord, isMatch } = useChordPractice(
@@ -21,32 +30,38 @@ function ChordPracticeIndicator({ voicing }: { voicing: ChordVoicing }) {
     voicing.quality
   )
 
-  if (!isConnected) return null
+  if (!isConnected) {
+    return (
+      <p className="mt-3 text-sm text-zinc-500">
+        Connect audio to compare your strum against this voicing.
+      </p>
+    )
+  }
 
   return (
-    <div className="flex items-center gap-3 mt-2">
+    <div className="mt-3 flex items-center gap-3">
       <button
         onClick={isActive ? stop : start}
-        className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+        className={`rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
           isActive
-            ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
-            : 'bg-zinc-700 hover:bg-zinc-600 text-white'
+            ? 'bg-rose-600 text-white hover:bg-rose-500'
+            : 'bg-emerald-600 text-white hover:bg-emerald-500'
         }`}
       >
-        {isActive ? 'Stop' : 'Practice'}
+        {isActive ? 'Stop Practice' : 'Practice This Chord'}
       </button>
       {isActive && (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 text-sm">
           {isMatch ? (
-            <span className="flex items-center gap-1 text-emerald-400 text-sm">
-              <Check size={16} /> Correct!
+            <span className="flex items-center gap-1 text-emerald-400">
+              <Check size={16} /> Correct
             </span>
           ) : currentChord ? (
-            <span className="flex items-center gap-1 text-yellow-400 text-sm">
+            <span className="flex items-center gap-1 text-yellow-400">
               <X size={16} /> Detected: {currentChord.name}
             </span>
           ) : (
-            <span className="text-zinc-500 text-sm">Play the chord...</span>
+            <span className="text-zinc-500">Play the chord cleanly and let it settle.</span>
           )}
         </div>
       )}
@@ -63,90 +78,120 @@ export function ChordLibraryPanel(): JSX.Element {
     setFilterRoot,
     setFilterCategory
   } = useChordLibraryStore()
+  const isConnected = useAudioStore((s) => s.isConnected)
 
-  const filtered = CHORD_VOICINGS.filter((v) => {
-    if (filterRoot && v.root !== filterRoot) return false
-    if (filterCategory !== 'all' && v.category !== filterCategory) return false
+  const filtered = CHORD_VOICINGS.filter((voicing) => {
+    if (filterRoot && voicing.root !== filterRoot) return false
+    if (filterCategory !== 'all' && voicing.category !== filterCategory) return false
     return true
   })
 
-  const selectedVoicing =
-    selectedChordIndex !== null ? CHORD_VOICINGS[selectedChordIndex] : null
+  const selectedVoicing = selectedChordIndex !== null ? CHORD_VOICINGS[selectedChordIndex] : null
+
+  const clearFilters = () => {
+    setFilterRoot(null)
+    setFilterCategory('all')
+    setSelectedChord(null)
+  }
 
   return (
-    <div className="flex flex-col h-full p-8 gap-6">
-      <div className="flex items-center gap-4">
-        <Link to="/learn" className="text-zinc-400 hover:text-white transition-colors">
-          <ArrowLeft size={20} />
-        </Link>
-        <h2 className="text-2xl font-bold text-white">Chord Library</h2>
+    <div className="flex h-full flex-col gap-6 p-6">
+      <PageHeader
+        title="Chord Library"
+        description="Browse voicings by root and shape category, then switch into live practice when you want instant feedback on the chord you strum."
+        backTo="/learn"
+        actions={
+          <button
+            onClick={clearFilters}
+            className="inline-flex items-center gap-2 rounded-xl border border-zinc-800 px-3 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
+          >
+            <RotateCcw size={14} />
+            Clear Filters
+          </button>
+        }
+      />
+
+      <div className="grid gap-4 md:grid-cols-3">
+        <SummaryCard label="Filtered voicings" value={String(filtered.length)} />
+        <SummaryCard label="Selected chord" value={selectedVoicing?.name ?? 'None selected'} />
+        <SummaryCard
+          label="Practice mode"
+          value={isConnected ? 'Live audio ready' : 'Browse-only until input connects'}
+        />
       </div>
 
-      {/* Filters */}
-      <div className="flex gap-6">
-        <div className="flex flex-col gap-2">
-          <span className="text-sm text-zinc-400 uppercase tracking-wider">Root</span>
-          <div className="flex gap-1 flex-wrap">
-            <button
-              onClick={() => setFilterRoot(null)}
-              className={`px-2.5 py-1 rounded text-sm transition-colors ${
-                filterRoot === null
-                  ? 'bg-emerald-600 text-white'
-                  : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
-              }`}
-            >
-              All
-            </button>
-            {NOTE_NAMES.map((note) => (
-              <button
-                key={note}
-                onClick={() => setFilterRoot(note)}
-                className={`px-2.5 py-1 rounded text-sm transition-colors ${
-                  filterRoot === note
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
-                }`}
-              >
-                {note}
-              </button>
-            ))}
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
+        <div className="rounded-3xl border border-zinc-800 bg-zinc-900/80 p-5">
+          <div className="text-sm font-medium text-white">Filters</div>
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <div>
+              <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">Root</div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button
+                  onClick={() => setFilterRoot(null)}
+                  className={`rounded-xl px-3 py-2 text-sm transition-colors ${
+                    filterRoot === null
+                      ? 'bg-emerald-600 text-white'
+                      : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                  }`}
+                >
+                  All
+                </button>
+                {NOTE_NAMES.map((note) => (
+                  <button
+                    key={note}
+                    onClick={() => setFilterRoot(note)}
+                    className={`rounded-xl px-3 py-2 text-sm transition-colors ${
+                      filterRoot === note
+                        ? 'bg-emerald-600 text-white'
+                        : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                    }`}
+                  >
+                    {note}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">Type</div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {CATEGORIES.map(({ value, label }) => (
+                  <button
+                    key={value}
+                    onClick={() => setFilterCategory(value)}
+                    className={`rounded-xl px-3 py-2 text-sm transition-colors ${
+                      filterCategory === value
+                        ? 'bg-emerald-600 text-white'
+                        : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <span className="text-sm text-zinc-400 uppercase tracking-wider">Type</span>
-          <div className="flex gap-1">
-            {CATEGORIES.map(({ value, label }) => (
-              <button
-                key={value}
-                onClick={() => setFilterCategory(value)}
-                className={`px-3 py-1 rounded text-sm transition-colors ${
-                  filterCategory === value
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
+        <div className="rounded-3xl border border-zinc-800 bg-zinc-900/80 p-5 text-sm text-zinc-400">
+          Use the filters to narrow the voicing grid first, then open a chord card to inspect
+          fingering and try live practice when your input is connected.
         </div>
       </div>
 
-      {/* Selected chord detail */}
       {selectedVoicing && (
-        <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 flex items-start gap-6">
+        <div className="flex items-start gap-6 rounded-3xl border border-zinc-800 bg-zinc-900/80 p-6">
           <ChordDiagram voicing={selectedVoicing} size="lg" />
           <div className="flex flex-col gap-2">
-            <h3 className="text-xl font-bold text-white">{selectedVoicing.name}</h3>
+            <h3 className="text-xl font-semibold text-white">{selectedVoicing.name}</h3>
             <p className="text-sm text-zinc-400">
-              Root: {selectedVoicing.root} &middot; Quality: {selectedVoicing.quality} &middot;{' '}
+              Root: {selectedVoicing.root} · Quality: {selectedVoicing.quality} ·{' '}
               {selectedVoicing.category}
             </p>
-            <div className="flex gap-1 mt-1">
-              {selectedVoicing.frets.map((f, i) => (
-                <span key={i} className="w-8 text-center text-sm font-mono text-zinc-300">
-                  {f === null ? 'x' : f}
+            <div className="mt-1 flex gap-2">
+              {selectedVoicing.frets.map((fret, index) => (
+                <span key={index} className="w-8 text-center font-mono text-sm text-zinc-300">
+                  {fret === null ? 'x' : fret}
                 </span>
               ))}
             </div>
@@ -154,14 +199,13 @@ export function ChordLibraryPanel(): JSX.Element {
           </div>
           <button
             onClick={() => setSelectedChord(null)}
-            className="ml-auto text-zinc-500 hover:text-white"
+            className="ml-auto rounded-full p-2 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-white"
           >
             <X size={16} />
           </button>
         </div>
       )}
 
-      {/* Chord grid */}
       <div className="flex flex-wrap gap-3 overflow-auto">
         {filtered.map((voicing) => {
           const globalIndex = CHORD_VOICINGS.indexOf(voicing)
@@ -169,10 +213,8 @@ export function ChordLibraryPanel(): JSX.Element {
             <button
               key={`${voicing.name}-${globalIndex}`}
               onClick={() => setSelectedChord(globalIndex)}
-              className={`bg-zinc-900 rounded-lg border p-2 transition-colors hover:border-emerald-600 ${
-                selectedChordIndex === globalIndex
-                  ? 'border-emerald-600'
-                  : 'border-zinc-800'
+              className={`rounded-2xl border bg-zinc-900/80 p-2 transition-colors hover:border-emerald-600 ${
+                selectedChordIndex === globalIndex ? 'border-emerald-600' : 'border-zinc-800'
               }`}
             >
               <ChordDiagram voicing={voicing} size="sm" />
@@ -180,7 +222,7 @@ export function ChordLibraryPanel(): JSX.Element {
           )
         })}
         {filtered.length === 0 && (
-          <p className="text-zinc-500">No chords match the current filters</p>
+          <p className="text-zinc-500">No chords match the current filters.</p>
         )}
       </div>
     </div>

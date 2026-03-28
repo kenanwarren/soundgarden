@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { useAppSettingsStore } from './app-settings-store'
 
 interface MetronomeState {
   bpm: number
@@ -13,30 +13,45 @@ interface MetronomeState {
   setPlaying: (playing: boolean) => void
   setCurrentBeat: (beat: number) => void
   setAccentFirst: (accent: boolean) => void
+  hydrateFromSettings: () => void
 }
 
-export const useMetronomeStore = create<MetronomeState>()(
-  persist(
-    (set) => ({
-      bpm: 120,
-      beatsPerMeasure: 4,
-      isPlaying: false,
-      currentBeat: 0,
-      accentFirst: true,
+function getPracticeSettings() {
+  return useAppSettingsStore.getState().practice
+}
 
-      setBpm: (bpm) => set({ bpm: Math.max(20, Math.min(300, bpm)) }),
-      setBeatsPerMeasure: (beats) => set({ beatsPerMeasure: beats }),
-      setPlaying: (playing) => set({ isPlaying: playing, currentBeat: 0 }),
-      setCurrentBeat: (beat) => set({ currentBeat: beat }),
-      setAccentFirst: (accent) => set({ accentFirst: accent })
-    }),
-    {
-      name: 'tonefield-metronome',
-      partialize: (state) => ({
-        bpm: state.bpm,
-        beatsPerMeasure: state.beatsPerMeasure,
-        accentFirst: state.accentFirst
+export const useMetronomeStore = create<MetronomeState>((set) => {
+  const practice = getPracticeSettings()
+
+  return {
+    bpm: practice.metronomeBpm,
+    beatsPerMeasure: practice.metronomeBeatsPerMeasure,
+    isPlaying: false,
+    currentBeat: 0,
+    accentFirst: practice.metronomeAccentFirst,
+
+    setBpm: (bpm) => {
+      const next = Math.max(20, Math.min(300, bpm))
+      useAppSettingsStore.getState().setPracticeSetting('metronomeBpm', next)
+      set({ bpm: next })
+    },
+    setBeatsPerMeasure: (beats) => {
+      useAppSettingsStore.getState().setPracticeSetting('metronomeBeatsPerMeasure', beats)
+      set({ beatsPerMeasure: beats })
+    },
+    setPlaying: (playing) => set({ isPlaying: playing, currentBeat: 0 }),
+    setCurrentBeat: (beat) => set({ currentBeat: beat }),
+    setAccentFirst: (accent) => {
+      useAppSettingsStore.getState().setPracticeSetting('metronomeAccentFirst', accent)
+      set({ accentFirst: accent })
+    },
+    hydrateFromSettings: () => {
+      const next = getPracticeSettings()
+      set({
+        bpm: next.metronomeBpm,
+        beatsPerMeasure: next.metronomeBeatsPerMeasure,
+        accentFirst: next.metronomeAccentFirst
       })
     }
-  )
-)
+  }
+})

@@ -34,7 +34,20 @@ const DEFAULT_PARAMS: Record<AudioProcessorType, Record<string, number>> = {
   octaver: { subLevel: 0.5, upperLevel: 0, dry: 1.0 },
   rotary: { speed: 0, depth: 0.5, mix: 0.7 },
   graphiceq: { band60: 0, band250: 0, band1k: 0, band4k: 0, band8k: 0, band12k: 0 },
-  parameq: { freq1: 100, gain1: 0, q1: 1, freq2: 500, gain2: 0, q2: 1, freq3: 2000, gain3: 0, q3: 1, freq4: 8000, gain4: 0, q4: 1 },
+  parameq: {
+    freq1: 100,
+    gain1: 0,
+    q1: 1,
+    freq2: 500,
+    gain2: 0,
+    q2: 1,
+    freq3: 2000,
+    gain3: 0,
+    q3: 1,
+    freq4: 8000,
+    gain4: 0,
+    q4: 1
+  },
   shimmer: { decay: 0.7, shimmer: 0.5, damping: 0.5, mix: 0.4 },
   harmonizer: { key: 0, scale: 0, interval: 3, mix: 0.5 },
   looper: { inputLevel: 1.0, loopLevel: 1.0, overdubLevel: 0.8 }
@@ -96,7 +109,7 @@ export const useEffectsStore = create<EffectsState>()(
         })
     }),
     {
-      name: 'tonefield-effects',
+      name: 'soundgarden-effects',
       partialize: (state) => ({ chain: state.chain, nextId: state.nextId })
     }
   )

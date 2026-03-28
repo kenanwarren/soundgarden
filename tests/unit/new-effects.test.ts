@@ -152,7 +152,11 @@ describe('limiter-processor', () => {
 
   it('returns true from process', () => {
     const proc = loadProcessor('limiter-processor.js')
-    const result = proc.process([makeInput(1)], [makeOutput(1)], makeParams({ threshold: -1, release: 100 }))
+    const result = proc.process(
+      [makeInput(1)],
+      [makeOutput(1)],
+      makeParams({ threshold: -1, release: 100 })
+    )
     expect(result).toBe(true)
   })
 })
@@ -203,6 +207,57 @@ describe('ringmod-processor', () => {
     fillSine(input[0], 440, 0.8)
     proc.process([input], [output], makeParams({ frequency: 300, mix: 1.0 }))
     expect(peak(output[0])).toBeLessThanOrEqual(peak(input[0]) + 0.001)
+  })
+})
+
+// ---------- Flanger ----------
+
+describe('flanger-processor', () => {
+  it('mix=0 passes dry signal through unchanged', () => {
+    const proc = loadProcessor('flanger-processor.js')
+    const input = makeInput(1)
+    const output = makeOutput(1)
+    fillSine(input[0], 440, 0.5)
+
+    proc.process([input], [output], makeParams({ rate: 0.5, depth: 0.7, feedback: 0.5, mix: 0 }))
+
+    for (let i = 0; i < BLOCK_SIZE; i++) {
+      expect(output[0][i]).toBeCloseTo(input[0][i], 5)
+    }
+  })
+
+  it('produces audible output with default-style settings after warmup', () => {
+    const proc = loadProcessor('flanger-processor.js')
+    const params = makeParams({ rate: 0.5, depth: 0.7, feedback: 0.5, mix: 0.5 })
+
+    let lastOutput = makeOutput(1)
+    for (let block = 0; block < 6; block++) {
+      const input = makeInput(1)
+      lastOutput = makeOutput(1)
+      fillSineBlocks(input[0], 220, 0.4, block * BLOCK_SIZE)
+      proc.process([input], [lastOutput], params)
+    }
+
+    expect(rms(lastOutput[0])).toBeGreaterThan(0.05)
+  })
+
+  it('does not emit NaN samples when feedback is high', () => {
+    const proc = loadProcessor('flanger-processor.js')
+    const params = makeParams({ rate: 0.9, depth: 1.0, feedback: 0.9, mix: 0.6 })
+
+    for (let block = 0; block < 8; block++) {
+      const input = makeInput(2)
+      const output = makeOutput(2)
+      fillSineBlocks(input[0], 330, 0.35, block * BLOCK_SIZE)
+      fillSineBlocks(input[1], 330, 0.35, block * BLOCK_SIZE)
+      proc.process([input], [output], params)
+
+      for (const channel of output) {
+        for (let i = 0; i < channel.length; i++) {
+          expect(Number.isFinite(channel[i])).toBe(true)
+        }
+      }
+    }
   })
 })
 
@@ -493,7 +548,11 @@ describe('looper-processor', () => {
     const input = makeInput(1)
     const output = makeOutput(1)
     fillSine(input[0], 440, 0.5)
-    proc.process([input], [output], makeParams({ inputLevel: 1.0, loopLevel: 1.0, overdubLevel: 0.8 }))
+    proc.process(
+      [input],
+      [output],
+      makeParams({ inputLevel: 1.0, loopLevel: 1.0, overdubLevel: 0.8 })
+    )
     for (let i = 0; i < BLOCK_SIZE; i++) {
       expect(output[0][i]).toBeCloseTo(input[0][i], 5)
     }
