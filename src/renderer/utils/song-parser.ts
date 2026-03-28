@@ -26,7 +26,8 @@ export function parseSongLine(line: string): ParsedLine {
     }
     const chord = match[1]
     const nextBracket = line.indexOf('[', re.lastIndex)
-    const text = nextBracket === -1 ? line.slice(re.lastIndex) : line.slice(re.lastIndex, nextBracket)
+    const text =
+      nextBracket === -1 ? line.slice(re.lastIndex) : line.slice(re.lastIndex, nextBracket)
     segments.push({ chord, text })
     lastIndex = re.lastIndex + text.length
   }

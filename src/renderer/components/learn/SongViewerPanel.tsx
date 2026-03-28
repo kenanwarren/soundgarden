@@ -64,7 +64,10 @@ function SongLyrics({ song }: { song: SongDefinition }): JSX.Element {
         if (line.type === 'blank') return <div key={i} className="h-4" />
         if (line.type === 'section') {
           return (
-            <div key={i} className="pb-1 pt-4 text-xs font-semibold uppercase tracking-widest text-zinc-500">
+            <div
+              key={i}
+              className="pb-1 pt-4 text-xs font-semibold uppercase tracking-widest text-zinc-500"
+            >
               {line.label}
             </div>
           )
@@ -131,7 +134,7 @@ export function SongViewerPanel(): JSX.Element {
   )
 
   const selectedSong = useMemo(
-    () => (selectedSongId ? SONGS.find((s) => s.id === selectedSongId) ?? null : null),
+    () => (selectedSongId ? (SONGS.find((s) => s.id === selectedSongId) ?? null) : null),
     [selectedSongId]
   )
 
@@ -207,7 +210,9 @@ export function SongViewerPanel(): JSX.Element {
       <div className="grid min-h-0 flex-1 gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
         <div className="flex flex-col gap-2 overflow-auto rounded-3xl border border-zinc-800 bg-zinc-900/80 p-4">
           {filtered.length === 0 && (
-            <div className="py-8 text-center text-sm text-zinc-500">No songs match the current filters.</div>
+            <div className="py-8 text-center text-sm text-zinc-500">
+              No songs match the current filters.
+            </div>
           )}
           {filtered.map((song) => (
             <SongCard
@@ -255,9 +260,7 @@ export function SongViewerPanel(): JSX.Element {
                   {selectedSong.notation && (
                     <button
                       onClick={() =>
-                        playback.isPlaying
-                          ? playback.stop()
-                          : playback.play(selectedSong.notation!)
+                        playback.isPlaying ? playback.stop() : playback.play(selectedSong.notation!)
                       }
                       className={`ml-2 inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium transition-colors ${
                         playback.isPlaying
@@ -296,7 +299,9 @@ export function SongViewerPanel(): JSX.Element {
             </>
           ) : (
             <div className="flex flex-1 items-center justify-center rounded-3xl border border-zinc-800 bg-zinc-900/80">
-              <div className="text-sm text-zinc-500">Select a song from the list to view lyrics and chords.</div>
+              <div className="text-sm text-zinc-500">
+                Select a song from the list to view lyrics and chords.
+              </div>
             </div>
           )}
         </div>

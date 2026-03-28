@@ -11,7 +11,12 @@ import {
   TabNote,
   Dot
 } from 'vexflow'
-import type { SongNotation, NotationMeasure, NotationNote, NoteDuration } from '../../utils/learn-types'
+import type {
+  SongNotation,
+  NotationMeasure,
+  NotationNote,
+  NoteDuration
+} from '../../utils/learn-types'
 
 type ViewMode = 'staff' | 'tab' | 'staff+tab'
 
