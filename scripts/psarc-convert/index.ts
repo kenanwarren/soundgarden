@@ -1,11 +1,16 @@
-import { readFileSync, writeFileSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
+import { resolve, join } from 'node:path'
 import { readPsarc } from './psarc-reader'
 import { decryptSng } from './sng-decryptor'
 import { parseSng, parseVocalsSng } from './sng-parser'
 import { parseArrangementXml, parseVocalsXml } from './xml-arrangement-parser'
 import { parseManifests } from './manifest-parser'
+import { assembleSong } from './song-assembler'
+import type { ArrangementInput } from './song-assembler'
+import { parseDifficultyArg } from './difficulty-mapper'
+import type { ArrangementType } from './difficulty-mapper'
 import { Platform } from './types'
+import type { GenreId, PracticeDifficulty } from '../../src/renderer/utils/learn-types'
 import type { ManifestData, PsarcFile, SngData, SngVocal } from './types'
 
 function parseArgs(argv: string[]): {
@@ -13,11 +18,17 @@ function parseArgs(argv: string[]): {
   dump: boolean
   output: string | null
   platform: Platform
+  key: string | undefined
+  genre: GenreId | undefined
+  baseDifficulty: PracticeDifficulty | undefined
 } {
   let input = ''
   let dump = false
   let output: string | null = null
   let platform = Platform.PC
+  let key: string | undefined
+  let genre: GenreId | undefined
+  let baseDifficulty: PracticeDifficulty | undefined
 
   for (let i = 2; i < argv.length; i++) {
     const arg = argv[i]
@@ -29,23 +40,31 @@ function parseArgs(argv: string[]): {
       output = argv[++i]
     } else if (arg === '--platform' && argv[i + 1]) {
       platform = argv[++i] === 'mac' ? Platform.Mac : Platform.PC
+    } else if (arg === '--key' && argv[i + 1]) {
+      key = argv[++i]
+    } else if (arg === '--genre' && argv[i + 1]) {
+      genre = argv[++i] as GenreId
+    } else if (arg === '--difficulty-base' && argv[i + 1]) {
+      baseDifficulty = parseDifficultyArg(argv[++i]) ?? undefined
     } else if (!arg.startsWith('--')) {
       input = arg
     }
   }
 
   if (!input) {
-    console.error('Usage: npx tsx scripts/psarc-convert/index.ts --input <file.psarc> [--dump] [--output <dir>] [--platform pc|mac]')
+    console.error(
+      'Usage: npx tsx scripts/psarc-convert/index.ts --input <file.psarc> [--dump] [--output <dir>] [--platform pc|mac] [--key Am] [--genre rock] [--difficulty-base "Intermediate 1"]'
+    )
     process.exit(1)
   }
 
-  return { input: resolve(input), dump, output: output ? resolve(output) : null, platform }
+  return { input: resolve(input), dump, output: output ? resolve(output) : null, platform, key, genre, baseDifficulty }
 }
 
 function classifyFile(
   path: string,
   manifests: ManifestData[]
-): { type: 'lead' | 'rhythm' | 'bass' | 'vocals' | 'unknown'; manifest?: ManifestData } {
+): { type: ArrangementType | 'vocals' | 'unknown'; manifest?: ManifestData } {
   const lower = path.toLowerCase()
 
   if (lower.includes('vocal')) return { type: 'vocals' }
@@ -68,12 +87,20 @@ function classifyFile(
   return { type: 'unknown' }
 }
 
+interface ParsedArrangement {
+  path: string
+  type: ArrangementType | 'vocals' | 'unknown'
+  manifest?: ManifestData
+  data: (SngData & { chordInstances?: Map<number, any[]> }) | null
+  vocals: SngVocal[] | null
+}
+
 function parseFromXml(
   files: PsarcFile[],
   manifests: ManifestData[]
-): Array<{ path: string; type: string; manifest?: ManifestData; data: SngData | null; vocals: SngVocal[] | null }> {
+): ParsedArrangement[] {
   const xmlFiles = files.filter((f) => f.path.startsWith('songs/arr/') && f.path.endsWith('.xml'))
-  const results: Array<{ path: string; type: string; manifest?: ManifestData; data: SngData | null; vocals: SngVocal[] | null }> = []
+  const results: ParsedArrangement[] = []
 
   for (const xmlFile of xmlFiles) {
     if (xmlFile.path.includes('showlights')) continue
@@ -114,9 +141,9 @@ function parseFromSng(
   files: PsarcFile[],
   manifests: ManifestData[],
   platform: Platform
-): Array<{ path: string; type: string; manifest?: ManifestData; data: SngData | null; vocals: SngVocal[] | null }> {
+): ParsedArrangement[] {
   const sngFiles = files.filter((f) => f.path.endsWith('.sng'))
-  const results: Array<{ path: string; type: string; manifest?: ManifestData; data: SngData | null; vocals: SngVocal[] | null }> = []
+  const results: ParsedArrangement[] = []
 
   for (const sngFile of sngFiles) {
     const classification = classifyFile(sngFile.path, manifests)
@@ -203,6 +230,59 @@ function main(): void {
     writeFileSync(outputPath, JSON.stringify(dumpData, null, 2))
     console.log(`\nDump written to: ${outputPath}`)
   }
+
+  // Convert to SongDefinition
+  const arrangementInputs: ArrangementInput[] = []
+  let allVocals: SngVocal[] = []
+
+  for (const parsed of parsedArrangements) {
+    if (parsed.type === 'vocals' && parsed.vocals) {
+      allVocals = parsed.vocals
+    } else if (parsed.type !== 'unknown' && parsed.type !== 'vocals' && parsed.data) {
+      arrangementInputs.push({
+        type: parsed.type,
+        manifest: parsed.manifest,
+        sngData: parsed.data,
+        chordInstances: (parsed.data as any).chordInstances,
+      })
+    }
+  }
+
+  if (arrangementInputs.length === 0) {
+    console.log('\nNo valid arrangements found to convert.')
+    return
+  }
+
+  console.log(`\nConverting ${arrangementInputs.length} arrangement(s) with ${allVocals.length} vocal syllables...`)
+
+  const song = assembleSong(arrangementInputs, allVocals, {
+    key: args.key,
+    genre: args.genre,
+    baseDifficulty: args.baseDifficulty,
+  })
+
+  if (!song) {
+    console.error('\nFailed to assemble song.')
+    return
+  }
+
+  console.log(`\nConverted: ${song.title}`)
+  console.log(`  ID: ${song.id}`)
+  console.log(`  Key: ${song.key}`)
+  console.log(`  Chords: ${song.chords.join(', ')}`)
+  console.log(`  Lines: ${song.lines.length}`)
+  console.log(`  Arrangements: ${song.arrangements?.length ?? 0}`)
+  if (song.tuning) console.log(`  Tuning: ${song.tuning}`)
+  if (song.capo) console.log(`  Capo: ${song.capo}`)
+  if (song.notation) {
+    console.log(`  Notation: ${song.notation.measures.length} measures, time sig ${song.notation.timeSignature.join('/')}`)
+  }
+
+  const outputDir = args.output ?? resolve(__dirname, '..', '..', 'resources', 'data', 'songs')
+  mkdirSync(outputDir, { recursive: true })
+  const outputPath = join(outputDir, `${song.id}.json`)
+  writeFileSync(outputPath, JSON.stringify(song, null, 2) + '\n')
+  console.log(`\nWritten to: ${outputPath}`)
 
   console.log('\nDone.')
 }
