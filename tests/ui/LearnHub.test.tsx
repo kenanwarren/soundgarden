@@ -95,10 +95,14 @@ describe('LearnHub', () => {
 
     expect(screen.getByText('Fingerstyle Paths')).toBeInTheDocument()
     expect(
-      screen.getByText('Use alternating bass and arpeggio patterns to build steady fingerstyle motion.')
+      screen.getByText(
+        'Use alternating bass and arpeggio patterns to build steady fingerstyle motion.'
+      )
     ).toBeInTheDocument()
     expect(
-      screen.queryByText('Build shuffle feel, dominant changes, blues-box motion, and ear-led response.')
+      screen.queryByText(
+        'Build shuffle feel, dominant changes, blues-box motion, and ear-led response.'
+      )
     ).not.toBeInTheDocument()
     expect(screen.getByText('Tools')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /Chord Library/i })).toBeInTheDocument()
@@ -109,7 +113,9 @@ describe('LearnHub', () => {
 
     renderWithRouter(<LearnHub />)
 
-    expect(screen.getByText(/Guided audio steps will unlock once your input is connected/i)).toBeInTheDocument()
+    expect(
+      screen.getByText(/Guided audio steps will unlock once your input is connected/i)
+    ).toBeInTheDocument()
     expect(screen.getAllByText('Connect input').length).toBeGreaterThan(0)
     expect(screen.getByText(/Quick lookup still lives here/i)).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /Scale Explorer/i })).toBeInTheDocument()

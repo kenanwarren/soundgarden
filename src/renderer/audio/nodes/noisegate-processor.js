@@ -7,7 +7,13 @@ class NoiseGateProcessor extends AudioWorkletProcessor {
 
   static get parameterDescriptors() {
     return [
-      { name: 'threshold', defaultValue: -40, minValue: -80, maxValue: 0, automationRate: 'k-rate' },
+      {
+        name: 'threshold',
+        defaultValue: -40,
+        minValue: -80,
+        maxValue: 0,
+        automationRate: 'k-rate'
+      },
       { name: 'attack', defaultValue: 1, minValue: 0.1, maxValue: 50, automationRate: 'k-rate' },
       { name: 'release', defaultValue: 50, minValue: 10, maxValue: 500, automationRate: 'k-rate' }
     ]
@@ -23,8 +29,8 @@ class NoiseGateProcessor extends AudioWorkletProcessor {
     const attackMs = parameters.attack[0]
     const releaseMs = parameters.release[0]
 
-    const attackCoeff = Math.exp(-1 / (sampleRate * attackMs / 1000))
-    const releaseCoeff = Math.exp(-1 / (sampleRate * releaseMs / 1000))
+    const attackCoeff = Math.exp(-1 / ((sampleRate * attackMs) / 1000))
+    const releaseCoeff = Math.exp(-1 / ((sampleRate * releaseMs) / 1000))
 
     for (let i = 0; i < input[0].length; i++) {
       let maxAbs = 0

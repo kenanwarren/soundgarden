@@ -10,8 +10,20 @@ class WahProcessor extends AudioWorkletProcessor {
 
   static get parameterDescriptors() {
     return [
-      { name: 'sensitivity', defaultValue: 0.5, minValue: 0, maxValue: 1.0, automationRate: 'k-rate' },
-      { name: 'frequency', defaultValue: 1500, minValue: 300, maxValue: 5000, automationRate: 'k-rate' },
+      {
+        name: 'sensitivity',
+        defaultValue: 0.5,
+        minValue: 0,
+        maxValue: 1.0,
+        automationRate: 'k-rate'
+      },
+      {
+        name: 'frequency',
+        defaultValue: 1500,
+        minValue: 300,
+        maxValue: 5000,
+        automationRate: 'k-rate'
+      },
       { name: 'q', defaultValue: 5, minValue: 1, maxValue: 15, automationRate: 'k-rate' },
       { name: 'mode', defaultValue: 0, minValue: 0, maxValue: 1, automationRate: 'k-rate' }
     ]
@@ -53,7 +65,7 @@ class WahProcessor extends AudioWorkletProcessor {
       // LFO mode: compute freq at block start
       const lfo = (Math.sin(phase) + 1) * 0.5
       const sweepFreq = minFreq + freqRange * lfo
-      const f = 2 * Math.sin(Math.PI * sweepFreq / sr)
+      const f = 2 * Math.sin((Math.PI * sweepFreq) / sr)
 
       for (let ch = 0; ch < output.length; ch++) {
         if (!input[ch]) continue

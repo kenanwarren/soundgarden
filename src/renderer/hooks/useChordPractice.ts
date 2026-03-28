@@ -1,15 +1,53 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useReducer, useRef } from 'react'
 import { useChordStore } from '../stores/chord-store'
 import { useChordDetection } from './useChordDetection'
+
+interface PracticeState {
+  cleanMatchCount: number
+  mismatchCount: number
+  mismatches: string[]
+}
+
+type PracticeAction =
+  | { type: 'reset' }
+  | { type: 'match' }
+  | { type: 'mismatch'; chordName: string }
+
+const INITIAL_STATE: PracticeState = {
+  cleanMatchCount: 0,
+  mismatchCount: 0,
+  mismatches: []
+}
+
+function reducer(state: PracticeState, action: PracticeAction): PracticeState {
+  switch (action.type) {
+    case 'reset':
+      return INITIAL_STATE
+    case 'match':
+      return {
+        ...state,
+        cleanMatchCount: state.cleanMatchCount + 1
+      }
+    case 'mismatch':
+      return {
+        cleanMatchCount: state.cleanMatchCount,
+        mismatchCount: state.mismatchCount + 1,
+        mismatches: state.mismatches.includes(action.chordName)
+          ? state.mismatches
+          : [...state.mismatches, action.chordName].slice(0, 5)
+      }
+  }
+}
 
 export function useChordPractice(targetRoot?: string, targetQuality?: string) {
   const { start: baseStart, stop, isActive } = useChordDetection()
   const currentChord = useChordStore((s) => s.currentChord)
   const tickCount = useChordStore((s) => s.tickCount)
   const peakDb = useChordStore((s) => s.peakDb)
-  const [cleanMatchCount, setCleanMatchCount] = useState(0)
-  const [mismatchCount, setMismatchCount] = useState(0)
-  const [mismatches, setMismatches] = useState<string[]>([])
+  const [{ cleanMatchCount, mismatchCount, mismatches }, dispatch] = useReducer(
+    reducer,
+    INITIAL_STATE
+  )
   const lastRegisteredAt = useRef(0)
   const lastRegisteredName = useRef<string | null>(null)
 
@@ -24,10 +62,7 @@ export function useChordPractice(targetRoot?: string, targetQuality?: string) {
     if (!isActive || !currentChord || peakDb < -70) return
 
     const now = Date.now()
-    if (
-      currentChord.name === lastRegisteredName.current &&
-      now - lastRegisteredAt.current < 1200
-    ) {
+    if (currentChord.name === lastRegisteredName.current && now - lastRegisteredAt.current < 1200) {
       return
     }
 
@@ -35,20 +70,15 @@ export function useChordPractice(targetRoot?: string, targetQuality?: string) {
     lastRegisteredName.current = currentChord.name
 
     if (isMatch) {
-      setCleanMatchCount((count) => count + 1)
+      dispatch({ type: 'match' })
       return
     }
 
-    setMismatchCount((count) => count + 1)
-    setMismatches((current) =>
-      current.includes(currentChord.name) ? current : [...current, currentChord.name].slice(0, 5)
-    )
+    dispatch({ type: 'mismatch', chordName: currentChord.name })
   }, [currentChord, isActive, isMatch, peakDb, tickCount])
 
   const start = useCallback(() => {
-    setCleanMatchCount(0)
-    setMismatchCount(0)
-    setMismatches([])
+    dispatch({ type: 'reset' })
     lastRegisteredAt.current = 0
     lastRegisteredName.current = null
     baseStart()

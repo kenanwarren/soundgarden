@@ -8,7 +8,13 @@ class AutoSwellProcessor extends AudioWorkletProcessor {
   static get parameterDescriptors() {
     return [
       { name: 'attack', defaultValue: 200, minValue: 10, maxValue: 2000, automationRate: 'k-rate' },
-      { name: 'sensitivity', defaultValue: -30, minValue: -60, maxValue: 0, automationRate: 'k-rate' },
+      {
+        name: 'sensitivity',
+        defaultValue: -30,
+        minValue: -60,
+        maxValue: 0,
+        automationRate: 'k-rate'
+      },
       { name: 'depth', defaultValue: 1.0, minValue: 0, maxValue: 1.0, automationRate: 'k-rate' }
     ]
   }
@@ -22,7 +28,7 @@ class AutoSwellProcessor extends AudioWorkletProcessor {
     const sensitivity = parameters.sensitivity[0]
     const depth = parameters.depth[0]
     const thresholdLin = Math.pow(10, sensitivity / 20)
-    const attackCoeff = 1 - Math.exp(-1 / (sampleRate * attackMs / 1000))
+    const attackCoeff = 1 - Math.exp(-1 / ((sampleRate * attackMs) / 1000))
     const releaseCoeff = 1 - Math.exp(-1 / (sampleRate * 0.005))
     const minGain = 1 - depth
     if (this.currentGain < 0) this.currentGain = minGain

@@ -144,7 +144,7 @@ function EffectKnobs({
 }: {
   effect: EffectConfig
   onParamChange: (param: string, value: number) => void
-  onLoadNamModel?: (data: Record<string, unknown>) => void
+  onLoadNamModel?: (data: Record<string, unknown>) => Promise<{ success: boolean; error?: string }>
   onLoadCabinetIR?: (data: ArrayBuffer) => Promise<{ success: boolean; error?: string }>
   onLooperCommand?: (command: string) => void
 }): JSX.Element {

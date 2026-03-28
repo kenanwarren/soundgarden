@@ -132,7 +132,8 @@ export const GENRE_DEFINITIONS: GenreDefinition[] = [
   {
     id: 'blues',
     title: 'Blues',
-    description: 'Dominant chords, shuffle feel, call-and-response phrases, and blues box movement.',
+    description:
+      'Dominant chords, shuffle feel, call-and-response phrases, and blues box movement.',
     shortSummary: 'Shuffles, 7th chords, and blues-scale phrasing.',
     starterPathId: 'blues-foundations',
     focusSkills: ['chords', 'scales', 'rhythm', 'ear', 'groove'],
@@ -202,7 +203,8 @@ export const GENRE_DEFINITIONS: GenreDefinition[] = [
   {
     id: 'fingerpicking',
     title: 'Fingerpicking',
-    description: 'Alternating bass, broken-chord rolls, and arpeggiated movement without hand-tracking.',
+    description:
+      'Alternating bass, broken-chord rolls, and arpeggiated movement without hand-tracking.',
     shortSummary: 'Pattern-led fingerstyle timing and open-chord control.',
     starterPathId: 'fingerpicking-foundations',
     focusSkills: ['fingerstyle', 'rhythm', 'technique', 'chords'],
@@ -754,7 +756,12 @@ export const PRACTICE_PATHS: PracticePath[] = [
         module: 'rhythm-trainer',
         route: '/learn/rhythm',
         audioRequired: true,
-        prefill: { module: 'rhythm-trainer', patternName: 'Rock Beat', bpm: 96, sensitivity: 'mid' },
+        prefill: {
+          module: 'rhythm-trainer',
+          patternName: 'Rock Beat',
+          bpm: 96,
+          sensitivity: 'mid'
+        },
         completionRule: { type: 'rhythm-accuracy', minAccuracy: 72, patternName: 'Rock Beat' }
       },
       {
@@ -834,7 +841,12 @@ export const PRACTICE_PATHS: PracticePath[] = [
         module: 'rhythm-trainer',
         route: '/learn/rhythm',
         audioRequired: true,
-        prefill: { module: 'rhythm-trainer', patternName: 'Pop Pulse', bpm: 96, sensitivity: 'mid' },
+        prefill: {
+          module: 'rhythm-trainer',
+          patternName: 'Pop Pulse',
+          bpm: 96,
+          sensitivity: 'mid'
+        },
         completionRule: { type: 'rhythm-accuracy', minAccuracy: 75, patternName: 'Pop Pulse' }
       },
       {
@@ -920,7 +932,11 @@ export const PRACTICE_PATHS: PracticePath[] = [
           bpm: 84,
           sensitivity: 'high'
         },
-        completionRule: { type: 'rhythm-accuracy', minAccuracy: 68, patternName: 'Muted Funk Chops' }
+        completionRule: {
+          type: 'rhythm-accuracy',
+          minAccuracy: 68,
+          patternName: 'Muted Funk Chops'
+        }
       },
       {
         id: 'funk-vamp-step',
@@ -964,7 +980,8 @@ export const PRACTICE_PATHS: PracticePath[] = [
   {
     id: 'country-road-groove',
     title: 'Country Road Groove',
-    description: 'Build bright open-chord rhythm, train-beat timing, and major-pentatonic movement.',
+    description:
+      'Build bright open-chord rhythm, train-beat timing, and major-pentatonic movement.',
     genre: 'country',
     difficulty: 'Developing',
     focusSkills: ['chords', 'rhythm', 'timing', 'scales'],
@@ -1005,7 +1022,11 @@ export const PRACTICE_PATHS: PracticePath[] = [
           bpm: 100,
           sensitivity: 'mid'
         },
-        completionRule: { type: 'rhythm-accuracy', minAccuracy: 72, patternName: 'Country Train Beat' }
+        completionRule: {
+          type: 'rhythm-accuracy',
+          minAccuracy: 72,
+          patternName: 'Country Train Beat'
+        }
       },
       {
         id: 'country-road-step',
@@ -1054,7 +1075,8 @@ export const PRACTICE_PATHS: PracticePath[] = [
     difficulty: 'Beginner',
     focusSkills: ['fingerstyle', 'rhythm', 'technique', 'chords'],
     recommendedTools: ['rhythm-trainer', 'chord-changes', 'scale-sequences', 'ear-training'],
-    toneSuggestions: GENRE_DEFINITIONS.find((genre) => genre.id === 'fingerpicking')?.toneSuggestions,
+    toneSuggestions: GENRE_DEFINITIONS.find((genre) => genre.id === 'fingerpicking')
+      ?.toneSuggestions,
     starterPresetIds: [
       'rhythm:alternating-bass',
       'rhythm:fingerpicked-arpeggio',
@@ -1075,7 +1097,11 @@ export const PRACTICE_PATHS: PracticePath[] = [
           bpm: 72,
           sensitivity: 'mid'
         },
-        completionRule: { type: 'rhythm-accuracy', minAccuracy: 72, patternName: 'Alternating Bass' }
+        completionRule: {
+          type: 'rhythm-accuracy',
+          minAccuracy: 72,
+          patternName: 'Alternating Bass'
+        }
       },
       {
         id: 'finger-arpeggio-step',
@@ -1104,7 +1130,11 @@ export const PRACTICE_PATHS: PracticePath[] = [
         route: '/learn/chord-changes',
         audioRequired: true,
         prefill: { module: 'chord-changes', presetId: 'fingerpicked-open-roll', bpm: 70 },
-        completionRule: { type: 'chord-changes', minSwitches: 4, presetId: 'fingerpicked-open-roll' }
+        completionRule: {
+          type: 'chord-changes',
+          minSwitches: 4,
+          presetId: 'fingerpicked-open-roll'
+        }
       },
       {
         id: 'finger-map-step',
@@ -1269,7 +1299,8 @@ export function getGenreProgress(
 
   return {
     ...totals,
-    percent: totals.totalCount === 0 ? 0 : Math.round((totals.completedCount / totals.totalCount) * 100)
+    percent:
+      totals.totalCount === 0 ? 0 : Math.round((totals.completedCount / totals.totalCount) * 100)
   }
 }
 

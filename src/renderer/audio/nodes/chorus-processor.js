@@ -3,10 +3,7 @@ const MAX_DELAY_SAMPLES = 4800 // 100ms at 48kHz
 class ChorusProcessor extends AudioWorkletProcessor {
   constructor() {
     super()
-    this.buffers = [
-      new Float32Array(MAX_DELAY_SAMPLES),
-      new Float32Array(MAX_DELAY_SAMPLES)
-    ]
+    this.buffers = [new Float32Array(MAX_DELAY_SAMPLES), new Float32Array(MAX_DELAY_SAMPLES)]
     this.writeIndex = 0
     this.phase = 0
   }

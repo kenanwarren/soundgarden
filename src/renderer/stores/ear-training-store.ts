@@ -52,7 +52,8 @@ export const useEarTrainingStore = create<EarTrainingState>()((set) => ({
       isListening: false,
       lastResult: null
     }),
-  setChallenge: (challenge) => set({ currentChallenge: challenge, isListening: false, lastResult: null }),
+  setChallenge: (challenge) =>
+    set({ currentChallenge: challenge, isListening: false, lastResult: null }),
   setListening: (listening) => set({ isListening: listening }),
   recordResult: (correct, missedTarget) =>
     set((state) => {

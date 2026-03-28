@@ -19,7 +19,7 @@ function countWaveNetWeights(config: any): number {
       total += condSize * co // condition weight
     }
     total += ch * (bc.head_size || 1) // head weight
-    if (bc.head_bias) total += (bc.head_size || 1) // head bias
+    if (bc.head_bias) total += bc.head_size || 1 // head bias
   }
   total += 1 // head_scale
   return total
@@ -45,16 +45,18 @@ describe('NAM parser', () => {
 
   it('counts weights for simple synthetic config', () => {
     const config = {
-      layers: [{
-        input_size: 1,
-        channels: 4,
-        kernel_size: 3,
-        dilations: [1, 2],
-        head_size: 1,
-        gated: false,
-        head_bias: true,
-        condition_size: 0
-      }]
+      layers: [
+        {
+          input_size: 1,
+          channels: 4,
+          kernel_size: 3,
+          dilations: [1, 2],
+          head_size: 1,
+          gated: false,
+          head_bias: true,
+          condition_size: 0
+        }
+      ]
     }
 
     // rechannel: 1*4 = 4
@@ -67,16 +69,18 @@ describe('NAM parser', () => {
 
   it('counts weights for gated config', () => {
     const config = {
-      layers: [{
-        input_size: 1,
-        channels: 4,
-        kernel_size: 3,
-        dilations: [1],
-        head_size: 1,
-        gated: true,
-        head_bias: false,
-        condition_size: 0
-      }]
+      layers: [
+        {
+          input_size: 1,
+          channels: 4,
+          kernel_size: 3,
+          dilations: [1],
+          head_size: 1,
+          gated: true,
+          head_bias: false,
+          condition_size: 0
+        }
+      ]
     }
 
     // rechannel: 4

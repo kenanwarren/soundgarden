@@ -6,10 +6,22 @@ class CompressorProcessor extends AudioWorkletProcessor {
 
   static get parameterDescriptors() {
     return [
-      { name: 'threshold', defaultValue: -20, minValue: -60, maxValue: 0, automationRate: 'k-rate' },
+      {
+        name: 'threshold',
+        defaultValue: -20,
+        minValue: -60,
+        maxValue: 0,
+        automationRate: 'k-rate'
+      },
       { name: 'ratio', defaultValue: 4, minValue: 1, maxValue: 20, automationRate: 'k-rate' },
       { name: 'attack', defaultValue: 10, minValue: 0.1, maxValue: 100, automationRate: 'k-rate' },
-      { name: 'release', defaultValue: 100, minValue: 10, maxValue: 1000, automationRate: 'k-rate' },
+      {
+        name: 'release',
+        defaultValue: 100,
+        minValue: 10,
+        maxValue: 1000,
+        automationRate: 'k-rate'
+      },
       { name: 'makeup', defaultValue: 0, minValue: 0, maxValue: 30, automationRate: 'k-rate' }
     ]
   }
@@ -26,8 +38,8 @@ class CompressorProcessor extends AudioWorkletProcessor {
     const releaseMs = parameters.release[0]
     const makeupDb = parameters.makeup[0]
 
-    const attackCoeff = Math.exp(-1 / (sampleRate * attackMs / 1000))
-    const releaseCoeff = Math.exp(-1 / (sampleRate * releaseMs / 1000))
+    const attackCoeff = Math.exp(-1 / ((sampleRate * attackMs) / 1000))
+    const releaseCoeff = Math.exp(-1 / ((sampleRate * releaseMs) / 1000))
     const makeupGain = Math.pow(10, makeupDb / 20)
 
     for (let i = 0; i < input[0].length; i++) {

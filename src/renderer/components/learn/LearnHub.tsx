@@ -112,13 +112,7 @@ function Tag({
   )
 }
 
-function StepState({
-  done,
-  label
-}: {
-  done: boolean
-  label: string
-}): JSX.Element {
+function StepState({ done, label }: { done: boolean; label: string }): JSX.Element {
   return (
     <div className="flex items-center gap-2 text-sm">
       {done ? (
@@ -155,7 +149,10 @@ function SkillMapCard({
       </div>
 
       <div className="mt-4 h-2 rounded-full bg-zinc-800">
-        <div className={`h-2 rounded-full transition-all ${progressTone(value)}`} style={{ width: `${value}%` }} />
+        <div
+          className={`h-2 rounded-full transition-all ${progressTone(value)}`}
+          style={{ width: `${value}%` }}
+        />
       </div>
 
       <div className="mt-4 grid gap-3 md:grid-cols-3">
@@ -166,7 +163,9 @@ function SkillMapCard({
         <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 px-4 py-3">
           <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">Best score</div>
           <div className="mt-2 text-lg font-medium text-white">
-            {entry?.bestScore === null || entry?.bestScore === undefined ? '—' : `${Math.round(entry.bestScore)}%`}
+            {entry?.bestScore === null || entry?.bestScore === undefined
+              ? '—'
+              : `${Math.round(entry.bestScore)}%`}
           </div>
         </div>
         <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 px-4 py-3">
@@ -225,7 +224,10 @@ function GenreCard({
       </div>
 
       <div className="mt-4 h-2 rounded-full bg-zinc-800">
-        <div className={`h-2 rounded-full transition-all ${progressTone(percent)}`} style={{ width: `${percent}%` }} />
+        <div
+          className={`h-2 rounded-full transition-all ${progressTone(percent)}`}
+          style={{ width: `${percent}%` }}
+        />
       </div>
 
       <div className="mt-4 flex flex-wrap gap-2">
@@ -249,7 +251,8 @@ function GenreCard({
 
       {starterPath && nextStep && (
         <div className="mt-4 text-sm text-zinc-300">
-          Start here: <span className="font-medium text-white">{starterPath.title}</span> · {nextStep.title}
+          Start here: <span className="font-medium text-white">{starterPath.title}</span> ·{' '}
+          {nextStep.title}
         </div>
       )}
     </button>
@@ -282,13 +285,18 @@ function PathCard({
           <p className="mt-1 text-sm text-zinc-400">{path.description}</p>
         </div>
         <div className="flex flex-wrap justify-end gap-2">
-          {genre && <Tag label={genre.title} tone={path.genre === 'general' ? 'default' : 'accent'} />}
+          {genre && (
+            <Tag label={genre.title} tone={path.genre === 'general' ? 'default' : 'accent'} />
+          )}
           <Tag label={path.difficulty} />
         </div>
       </div>
 
       <div className="mt-4 h-2 rounded-full bg-zinc-800">
-        <div className="h-2 rounded-full bg-emerald-500 transition-all" style={{ width: `${summary.percent}%` }} />
+        <div
+          className="h-2 rounded-full bg-emerald-500 transition-all"
+          style={{ width: `${summary.percent}%` }}
+        />
       </div>
       <div className="mt-2 text-sm text-zinc-500">
         {summary.completedCount}/{summary.totalCount} steps completed
@@ -326,7 +334,11 @@ function PathCard({
         {path.steps.slice(0, 3).map((step) => (
           <StepState
             key={step.id}
-            done={step.completionRule.type === 'setup-ready' ? isSetupReady(status) : !!completedSteps[step.id]}
+            done={
+              step.completionRule.type === 'setup-ready'
+                ? isSetupReady(status)
+                : !!completedSteps[step.id]
+            }
             label={step.title}
           />
         ))}
@@ -401,7 +413,8 @@ export function LearnHub(): JSX.Element {
             Guided audio steps will unlock once your input is connected.
           </div>
           <p className="mt-2 text-amber-50/80">
-            You can still browse genre paths, review skill gaps, and open scale or chord content while the input is offline.
+            You can still browse genre paths, review skill gaps, and open scale or chord content
+            while the input is offline.
           </p>
         </div>
       )}
@@ -410,7 +423,9 @@ export function LearnHub(): JSX.Element {
         <div className="rounded-3xl border border-zinc-800 bg-zinc-900/80 p-6">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">Continue practicing</div>
+              <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">
+                Continue practicing
+              </div>
               <div className="mt-2 text-2xl font-semibold text-white">
                 {lastEntry?.lastSession?.title ?? 'Start your first learning session'}
               </div>
@@ -428,7 +443,9 @@ export function LearnHub(): JSX.Element {
             <div className="mt-5 grid gap-3 md:grid-cols-3">
               <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 px-4 py-3">
                 <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">Module</div>
-                <div className="mt-2 text-lg font-medium text-white">{lastEntry.lastSession.module}</div>
+                <div className="mt-2 text-lg font-medium text-white">
+                  {lastEntry.lastSession.module}
+                </div>
               </div>
               <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 px-4 py-3">
                 <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">Best score</div>
@@ -438,7 +455,9 @@ export function LearnHub(): JSX.Element {
               </div>
               <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 px-4 py-3">
                 <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">Best streak</div>
-                <div className="mt-2 text-lg font-medium text-white">{lastEntry.bestStreak ?? '—'}</div>
+                <div className="mt-2 text-lg font-medium text-white">
+                  {lastEntry.bestStreak ?? '—'}
+                </div>
               </div>
             </div>
           ) : null}
@@ -472,7 +491,10 @@ export function LearnHub(): JSX.Element {
               if (!nextStep) return null
               const blocked = nextStep.audioRequired && !status.isConnected
               return (
-                <div key={nextStep.id} className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4">
+                <div
+                  key={nextStep.id}
+                  className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4"
+                >
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <div className="text-sm font-medium text-white">{nextStep.title}</div>
@@ -508,7 +530,8 @@ export function LearnHub(): JSX.Element {
             <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">Genre browser</div>
             <div className="mt-2 text-2xl font-semibold text-white">Start from a style</div>
             <p className="mt-2 max-w-3xl text-sm text-zinc-400">
-              Genre cards aggregate progress across their starter paths and surface lightweight tone guidance without hiding the direct tools.
+              Genre cards aggregate progress across their starter paths and surface lightweight tone
+              guidance without hiding the direct tools.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -531,7 +554,9 @@ export function LearnHub(): JSX.Element {
         <div className="mt-5 grid gap-4 xl:grid-cols-3">
           {visibleGenres.map((genre) => {
             const starterPath = getStarterPath(genre.id)
-            const nextStep = starterPath ? getNextIncompleteStep(starterPath, completedSteps, status) : null
+            const nextStep = starterPath
+              ? getNextIncompleteStep(starterPath, completedSteps, status)
+              : null
             const progressSummary = getGenreProgress(genre.id, completedSteps, status)
 
             return (
@@ -576,7 +601,8 @@ export function LearnHub(): JSX.Element {
             <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">Path library</div>
             <div className="mt-2 text-2xl font-semibold text-white">{pathSectionTitle}</div>
             <p className="mt-2 max-w-3xl text-sm text-zinc-400">
-              Browse every path, narrow by style, or pivot around a skill focus without losing the direct tools below.
+              Browse every path, narrow by style, or pivot around a skill focus without losing the
+              direct tools below.
             </p>
           </div>
           {browseMode === 'genre' && (
@@ -618,7 +644,12 @@ export function LearnHub(): JSX.Element {
 
       <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
         {skillCards.map(({ module, title, description }) => (
-          <SkillMapCard key={module} title={title} description={description} entry={progress[module]} />
+          <SkillMapCard
+            key={module}
+            title={title}
+            description={description}
+            entry={progress[module]}
+          />
         ))}
       </div>
 
@@ -628,7 +659,8 @@ export function LearnHub(): JSX.Element {
           Tools
         </div>
         <p className="mt-2 max-w-3xl text-sm text-zinc-400">
-          Quick lookup still lives here. Use these tools to browse chords, scales, and rhythm patterns directly without stepping into a genre path.
+          Quick lookup still lives here. Use these tools to browse chords, scales, and rhythm
+          patterns directly without stepping into a genre path.
         </p>
         <div className="mt-4 grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
           {LEARN_FEATURES.map(({ to, module, title, description }) => {
@@ -639,7 +671,10 @@ export function LearnHub(): JSX.Element {
                 to={to}
                 className="group flex flex-col gap-3 rounded-3xl border border-zinc-800 bg-zinc-900/80 p-6 transition-colors hover:border-emerald-600"
               >
-                <Icon size={28} className="text-emerald-500 transition-colors group-hover:text-emerald-400" />
+                <Icon
+                  size={28}
+                  className="text-emerald-500 transition-colors group-hover:text-emerald-400"
+                />
                 <div>
                   <h3 className="text-lg font-semibold text-white">{title}</h3>
                   <p className="mt-1 text-sm text-zinc-400">{description}</p>

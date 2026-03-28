@@ -11,7 +11,13 @@ class PhaserProcessor extends AudioWorkletProcessor {
       { name: 'rate', defaultValue: 0.5, minValue: 0.05, maxValue: 5, automationRate: 'k-rate' },
       { name: 'depth', defaultValue: 0.7, minValue: 0, maxValue: 1.0, automationRate: 'k-rate' },
       { name: 'stages', defaultValue: 4, minValue: 2, maxValue: 12, automationRate: 'k-rate' },
-      { name: 'feedback', defaultValue: 0.5, minValue: -0.95, maxValue: 0.95, automationRate: 'k-rate' },
+      {
+        name: 'feedback',
+        defaultValue: 0.5,
+        minValue: -0.95,
+        maxValue: 0.95,
+        automationRate: 'k-rate'
+      },
       { name: 'mix', defaultValue: 0.5, minValue: 0, maxValue: 1.0, automationRate: 'k-rate' }
     ]
   }
@@ -38,8 +44,8 @@ class PhaserProcessor extends AudioWorkletProcessor {
     // Compute allpass coeff at block start/end and interpolate
     const lfo0 = (Math.sin(this.phase) + 1) * 0.5
     const lfoEnd = (Math.sin(this.phase + phaseInc * n) + 1) * 0.5
-    const tan0 = Math.tan(Math.PI * (minFreq + freqRange * lfo0) / sr)
-    const tanEnd = Math.tan(Math.PI * (minFreq + freqRange * lfoEnd) / sr)
+    const tan0 = Math.tan((Math.PI * (minFreq + freqRange * lfo0)) / sr)
+    const tanEnd = Math.tan((Math.PI * (minFreq + freqRange * lfoEnd)) / sr)
     const a0 = (tan0 - 1) / (tan0 + 1)
     const aEnd = (tanEnd - 1) / (tanEnd + 1)
     const aInc = (aEnd - a0) / n

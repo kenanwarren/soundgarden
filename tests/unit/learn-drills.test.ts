@@ -35,9 +35,15 @@ describe('learn-drills', () => {
   })
 
   it('matches only the configured chord root and quality', () => {
-    expect(matchesChordVoicing({ root: 'C', quality: 'major' }, { root: 'C', quality: 'major' })).toBe(true)
-    expect(matchesChordVoicing({ root: 'C', quality: 'major' }, { root: 'G', quality: 'major' })).toBe(false)
-    expect(matchesChordVoicing({ root: 'C', quality: 'major' }, { root: 'C', quality: 'minor' })).toBe(false)
+    expect(
+      matchesChordVoicing({ root: 'C', quality: 'major' }, { root: 'C', quality: 'major' })
+    ).toBe(true)
+    expect(
+      matchesChordVoicing({ root: 'C', quality: 'major' }, { root: 'G', quality: 'major' })
+    ).toBe(false)
+    expect(
+      matchesChordVoicing({ root: 'C', quality: 'major' }, { root: 'C', quality: 'minor' })
+    ).toBe(false)
     expect(matchesChordVoicing({ root: 'C', quality: 'major' }, null)).toBe(false)
   })
 })

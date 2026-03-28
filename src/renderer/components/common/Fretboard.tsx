@@ -36,12 +36,8 @@ export function Fretboard({
 
   const stringY = (s: number) => paddingTop + s * stringSpacing
 
-  const positionSet = new Set(
-    highlightedPositions.map((p) => `${p.string}-${p.fret}`)
-  )
-  const positionMap = new Map(
-    highlightedPositions.map((p) => [`${p.string}-${p.fret}`, p])
-  )
+  const positionSet = new Set(highlightedPositions.map((p) => `${p.string}-${p.fret}`))
+  const positionMap = new Map(highlightedPositions.map((p) => [`${p.string}-${p.fret}`, p]))
 
   return (
     <svg
@@ -83,15 +79,7 @@ export function Fretboard({
             </g>
           )
         }
-        return (
-          <circle
-            key={`marker-${fret}`}
-            cx={cx}
-            cy={stringY(2.5)}
-            r="3"
-            fill="#3f3f46"
-          />
-        )
+        return <circle key={`marker-${fret}`} cx={cx} cy={stringY(2.5)} r="3" fill="#3f3f46" />
       })}
 
       {/* Strings */}
@@ -125,10 +113,7 @@ export function Fretboard({
 
       {/* Highlighted positions */}
       {highlightedPositions.map((pos) => {
-        const cx =
-          pos.fret === 0
-            ? paddingLeft - 14
-            : (fretX(pos.fret) + fretX(pos.fret - 1)) / 2
+        const cx = pos.fret === 0 ? paddingLeft - 14 : (fretX(pos.fret) + fretX(pos.fret - 1)) / 2
         const cy = stringY(pos.string)
         const isRoot = pos.note === rootNote
         const isCurrentlyPlaying =
@@ -153,12 +138,7 @@ export function Fretboard({
                 strokeWidth="2"
                 opacity="0.6"
               >
-                <animate
-                  attributeName="r"
-                  values="8;12;8"
-                  dur="1s"
-                  repeatCount="indefinite"
-                />
+                <animate attributeName="r" values="8;12;8" dur="1s" repeatCount="indefinite" />
                 <animate
                   attributeName="opacity"
                   values="0.6;0.2;0.6"

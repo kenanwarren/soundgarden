@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import { RotateCcw } from 'lucide-react'
 import { CHORD_VOICINGS } from '../../utils/chord-voicings'
 import {
@@ -18,6 +18,7 @@ import { AudioRequiredState } from '../common/AudioRequiredState'
 import { BpmControl } from '../common/BpmControl'
 import { ChordDiagram } from '../common/ChordDiagram'
 import { LearnSessionSummary } from './LearnSessionSummary'
+import type { CompletionState } from '../../utils/learn-types'
 
 function SummaryCard({ label, value }: { label: string; value: string }): JSX.Element {
   return (
@@ -28,19 +29,72 @@ function SummaryCard({ label, value }: { label: string; value: string }): JSX.El
   )
 }
 
+interface ChordChangesState {
+  presetId: string
+  currentTargetIndex: number
+  cleanSwitches: number
+  mismatchCount: number
+  mismatches: string[]
+}
+
+type ChordChangesAction =
+  | { type: 'set-preset'; presetId: string }
+  | { type: 'reset-session' }
+  | { type: 'match'; targetCount: number }
+  | { type: 'mismatch'; chordName: string }
+
+const INITIAL_STATE: ChordChangesState = {
+  presetId: 'open-two',
+  currentTargetIndex: 0,
+  cleanSwitches: 0,
+  mismatchCount: 0,
+  mismatches: []
+}
+
+function reducer(state: ChordChangesState, action: ChordChangesAction): ChordChangesState {
+  switch (action.type) {
+    case 'set-preset':
+      return {
+        ...INITIAL_STATE,
+        presetId: action.presetId
+      }
+    case 'reset-session':
+      return {
+        ...state,
+        currentTargetIndex: 0,
+        cleanSwitches: 0,
+        mismatchCount: 0,
+        mismatches: []
+      }
+    case 'match':
+      return {
+        ...state,
+        cleanSwitches: state.cleanSwitches + 1,
+        currentTargetIndex: (state.currentTargetIndex + 1) % Math.max(action.targetCount, 1)
+      }
+    case 'mismatch':
+      return {
+        ...state,
+        mismatchCount: state.mismatchCount + 1,
+        mismatches: state.mismatches.includes(action.chordName)
+          ? state.mismatches
+          : [...state.mismatches, action.chordName].slice(0, 8)
+      }
+  }
+}
+
 export function ChordChangesPanel(): JSX.Element {
   const lessonStep = useLessonStep('chord-changes')
   const recordSession = useLearnProgressStore((state) => state.recordSession)
-  const savedSummary = useLearnProgressStore((state) => state.progress['chord-changes']?.lastSession)
+  const savedSummary = useLearnProgressStore(
+    (state) => state.progress['chord-changes']?.lastSession
+  )
   const sessionStartedAt = useRef<number | null>(null)
   const lastProcessedChord = useRef<string | null>(null)
 
-  const [presetId, setPresetId] = useState('open-two')
+  const [{ presetId, currentTargetIndex, cleanSwitches, mismatchCount, mismatches }, dispatch] =
+    useReducer(reducer, INITIAL_STATE)
   const [isRunning, setIsRunning] = useState(false)
-  const [currentTargetIndex, setCurrentTargetIndex] = useState(0)
-  const [cleanSwitches, setCleanSwitches] = useState(0)
-  const [mismatchCount, setMismatchCount] = useState(0)
-  const [mismatches, setMismatches] = useState<string[]>([])
 
   const preset = getChordChangePreset(presetId) ?? getChordChangePreset('open-two')
   const targetVoicings = useMemo(
@@ -61,23 +115,22 @@ export function ChordChangesPanel(): JSX.Element {
   const currentChord = useChordStore((state) => state.currentChord)
 
   const resetSessionState = useCallback(() => {
-    setCurrentTargetIndex(0)
-    setCleanSwitches(0)
-    setMismatchCount(0)
-    setMismatches([])
+    dispatch({ type: 'reset-session' })
     lastProcessedChord.current = null
   }, [])
 
   useEffect(() => {
     if (!lessonStep || lessonStep.prefill.module !== 'chord-changes') return
-    setPresetId(lessonStep.prefill.presetId)
+    dispatch({ type: 'set-preset', presetId: lessonStep.prefill.presetId })
     if (lessonStep.prefill.bpm) setBpm(lessonStep.prefill.bpm)
-    resetSessionState()
-  }, [lessonStep, resetSessionState, setBpm])
+    lastProcessedChord.current = null
+  }, [lessonStep, setBpm])
 
   const buildSummary = useCallback(() => {
     const attempts = cleanSwitches + mismatchCount
     const score = attempts > 0 ? (cleanSwitches / attempts) * 100 : 0
+    const completionState: CompletionState =
+      cleanSwitches >= 4 ? 'completed' : attempts > 0 ? 'in-progress' : 'not-started'
 
     return {
       module: 'chord-changes' as const,
@@ -86,8 +139,7 @@ export function ChordChangesPanel(): JSX.Element {
       route: '/learn/chord-changes',
       score,
       bestStreak: cleanSwitches,
-      completionState:
-        cleanSwitches >= 4 ? 'completed' : attempts > 0 ? 'in-progress' : 'not-started',
+      completionState,
       weakSpots: mismatches.slice(0, 4),
       presetId: preset?.id ?? presetId,
       presetName: preset?.name ?? 'Custom',
@@ -119,16 +171,12 @@ export function ChordChangesPanel(): JSX.Element {
 
     const inTargetSet = targetVoicings.some((target) => matchesChordVoicing(target, currentChord))
     if (matchesChordVoicing(currentTarget, currentChord)) {
-      setCleanSwitches((value) => value + 1)
-      setCurrentTargetIndex((index) => (index + 1) % Math.max(targetVoicings.length, 1))
+      dispatch({ type: 'match', targetCount: targetVoicings.length })
       return
     }
 
     if (!inTargetSet || currentChord.name !== currentTarget.name) {
-      setMismatchCount((value) => value + 1)
-      setMismatches((current) =>
-        current.includes(currentChord.name) ? current : [...current, currentChord.name].slice(0, 8)
-      )
+      dispatch({ type: 'mismatch', chordName: currentChord.name })
     }
   }, [currentChord, currentTarget, isRunning, targetVoicings])
 
@@ -197,7 +245,7 @@ export function ChordChangesPanel(): JSX.Element {
               <button
                 key={option.id}
                 onClick={() => {
-                  setPresetId(option.id)
+                  dispatch({ type: 'set-preset', presetId: option.id })
                   resetSessionState()
                 }}
                 className={`rounded-2xl border p-4 text-left transition-colors ${
@@ -210,15 +258,16 @@ export function ChordChangesPanel(): JSX.Element {
                 <div className="mt-1 text-xs opacity-75">{option.description}</div>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {option.chordNames.map((name, index) => (
-                    <span key={`${option.id}-${name}-${index}`} className="rounded-full bg-black/20 px-2 py-1 text-xs">
+                    <span
+                      key={`${option.id}-${name}-${index}`}
+                      className="rounded-full bg-black/20 px-2 py-1 text-xs"
+                    >
                       {name}
                     </span>
                   ))}
                 </div>
                 {option.toneSuggestions?.length ? (
-                  <div className="mt-3 text-xs opacity-80">
-                    Tone: {option.toneSuggestions[0]}
-                  </div>
+                  <div className="mt-3 text-xs opacity-80">Tone: {option.toneSuggestions[0]}</div>
                 ) : null}
               </button>
             )
@@ -287,8 +336,12 @@ export function ChordChangesPanel(): JSX.Element {
           </p>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 px-4 py-3">
-              <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">Current target</div>
-              <div className="mt-2 text-lg font-medium text-white">{currentTarget?.name ?? '—'}</div>
+              <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">
+                Current target
+              </div>
+              <div className="mt-2 text-lg font-medium text-white">
+                {currentTarget?.name ?? '—'}
+              </div>
             </div>
             <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 px-4 py-3">
               <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">Mismatches</div>

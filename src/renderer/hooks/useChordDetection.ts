@@ -25,7 +25,11 @@ export function useChordDetection() {
       clearInterval(intervalRef.current)
     }
     if (analyserRef.current) {
-      try { analyserRef.current.disconnect() } catch { /* */ }
+      try {
+        analyserRef.current.disconnect()
+      } catch {
+        /* */
+      }
     }
 
     const analyser = ctx.createAnalyser()
@@ -97,7 +101,11 @@ export function useChordDetection() {
     }
 
     if (analyserRef.current) {
-      try { analyserRef.current.disconnect() } catch { /* */ }
+      try {
+        analyserRef.current.disconnect()
+      } catch {
+        /* */
+      }
       analyserRef.current = null
     }
 

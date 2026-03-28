@@ -14,13 +14,20 @@ const FFT_SIZE = 512
 const SENSITIVITY_THRESHOLDS: Record<string, number> = {
   low: 0.008,
   mid: 0.004,
-  high: 0.002,
+  high: 0.002
 }
 
 export function useRhythmTrainer() {
   const isConnected = useAudioStore((s) => s.isConnected)
-  const { selectedPatternIndex, isRunning, sensitivity, setRunning, addResult, setCurrentSubdivision, reset } =
-    useRhythmStore()
+  const {
+    selectedPatternIndex,
+    isRunning,
+    sensitivity,
+    setRunning,
+    addResult,
+    setCurrentSubdivision,
+    reset
+  } = useRhythmStore()
   const { bpm } = useMetronomeStore()
 
   const pattern = RHYTHM_PATTERNS[selectedPatternIndex]
@@ -34,30 +41,27 @@ export function useRhythmTrainer() {
   const currentSubRef = useRef(0)
   const beatTimesRef = useRef<{ time: number; isHit: boolean }[]>([])
 
-  const scheduleClick = useCallback(
-    (time: number, type: 'downbeat' | 'beat' | 'hit') => {
-      const ctx = getPlaybackContext()
-      const osc = ctx.createOscillator()
-      const gain = ctx.createGain()
-      osc.connect(gain)
-      gain.connect(ctx.destination)
+  const scheduleClick = useCallback((time: number, type: 'downbeat' | 'beat' | 'hit') => {
+    const ctx = getPlaybackContext()
+    const osc = ctx.createOscillator()
+    const gain = ctx.createGain()
+    osc.connect(gain)
+    gain.connect(ctx.destination)
 
-      if (type === 'downbeat') {
-        osc.frequency.value = 1200
-        gain.gain.setValueAtTime(0.7, time)
-      } else if (type === 'beat') {
-        osc.frequency.value = 900
-        gain.gain.setValueAtTime(0.4, time)
-      } else {
-        osc.frequency.value = 600
-        gain.gain.setValueAtTime(0.25, time)
-      }
-      gain.gain.exponentialRampToValueAtTime(0.001, time + 0.05)
-      osc.start(time)
-      osc.stop(time + 0.05)
-    },
-    []
-  )
+    if (type === 'downbeat') {
+      osc.frequency.value = 1200
+      gain.gain.setValueAtTime(0.7, time)
+    } else if (type === 'beat') {
+      osc.frequency.value = 900
+      gain.gain.setValueAtTime(0.4, time)
+    } else {
+      osc.frequency.value = 600
+      gain.gain.setValueAtTime(0.25, time)
+    }
+    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.05)
+    osc.start(time)
+    osc.stop(time + 0.05)
+  }, [])
 
   const start = useCallback(async () => {
     reset()
@@ -173,7 +177,16 @@ export function useRhythmTrainer() {
 
     onsetDetectorRef.current = window.setInterval(detectOnsets, 10)
     setRunning(true)
-  }, [bpm, pattern, sensitivity, scheduleClick, reset, setRunning, addResult, setCurrentSubdivision])
+  }, [
+    bpm,
+    pattern,
+    sensitivity,
+    scheduleClick,
+    reset,
+    setRunning,
+    addResult,
+    setCurrentSubdivision
+  ])
 
   const stop = useCallback(() => {
     if (schedulerRef.current !== null) {
@@ -190,7 +203,11 @@ export function useRhythmTrainer() {
       if (pipeline) {
         pipeline.removeTap(analyserRef.current)
       } else {
-        try { analyserRef.current.disconnect() } catch { /* */ }
+        try {
+          analyserRef.current.disconnect()
+        } catch {
+          /* */
+        }
       }
       analyserRef.current = null
     }

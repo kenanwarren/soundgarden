@@ -8,6 +8,7 @@ import { useLessonStep } from '../../hooks/useLessonStep'
 import { useLearnProgressStore } from '../../stores/learn-progress-store'
 import { LearnSessionSummary } from './LearnSessionSummary'
 import { EAR_TRAINING_PRESETS, getEarTrainingPreset } from '../../utils/learn-data'
+import type { CompletionState } from '../../utils/learn-types'
 
 const MODES = [
   {
@@ -58,6 +59,13 @@ export function EarTrainingPanel(): JSX.Element {
   const accuracy = total > 0 ? Math.round((score / total) * 100) : null
 
   const buildSummary = useCallback(() => {
+    const completionState: CompletionState =
+      accuracy !== null && accuracy >= 70 && total >= 4
+        ? 'completed'
+        : total > 0
+          ? 'in-progress'
+          : 'not-started'
+
     return {
       module: 'ear-training' as const,
       title: `${mode === 'note' ? 'Note' : 'Interval'} ear session`,
@@ -65,8 +73,7 @@ export function EarTrainingPanel(): JSX.Element {
       route: '/learn/ear-training',
       score: accuracy,
       bestStreak,
-      completionState:
-        accuracy !== null && accuracy >= 70 && total >= 4 ? 'completed' : total > 0 ? 'in-progress' : 'not-started',
+      completionState,
       weakSpots: missedTargets.slice(0, 4),
       mode,
       accuracy,
@@ -171,7 +178,8 @@ export function EarTrainingPanel(): JSX.Element {
       <div className="rounded-3xl border border-zinc-800 bg-zinc-900/80 p-5">
         <div className="text-sm font-medium text-white">Prompt context</div>
         <p className="mt-1 text-sm text-zinc-400">
-          Genre presets keep the ear work framed around a musical context without changing the core scoring rules.
+          Genre presets keep the ear work framed around a musical context without changing the core
+          scoring rules.
         </p>
         <div className="mt-4 grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
           {EAR_TRAINING_PRESETS.map((preset) => (
@@ -237,7 +245,9 @@ export function EarTrainingPanel(): JSX.Element {
                   ? 'Replay the reference note, then listen for your answer.'
                   : `Replay the interval, then play back the target tone (${currentChallenge.intervalName}).`}
               </p>
-              {selectedPreset && <p className="mt-2 text-sm text-zinc-500">{selectedPreset.promptLabel}</p>}
+              {selectedPreset && (
+                <p className="mt-2 text-sm text-zinc-500">{selectedPreset.promptLabel}</p>
+              )}
             </div>
 
             {lastResult && (
@@ -300,7 +310,8 @@ export function EarTrainingPanel(): JSX.Element {
           metrics={[
             {
               label: 'Accuracy',
-              value: displayedSummary.accuracy === null ? 'Waiting' : `${displayedSummary.accuracy}%`,
+              value:
+                displayedSummary.accuracy === null ? 'Waiting' : `${displayedSummary.accuracy}%`,
               tone:
                 (displayedSummary.accuracy ?? 0) >= 70
                   ? 'good'
@@ -308,8 +319,14 @@ export function EarTrainingPanel(): JSX.Element {
                     ? 'warning'
                     : 'default'
             },
-            { label: 'Correct / total', value: `${displayedSummary.correct} / ${displayedSummary.total}` },
-            { label: 'Mode', value: displayedSummary.mode === 'note' ? 'Note recall' : 'Interval recall' },
+            {
+              label: 'Correct / total',
+              value: `${displayedSummary.correct} / ${displayedSummary.total}`
+            },
+            {
+              label: 'Mode',
+              value: displayedSummary.mode === 'note' ? 'Note recall' : 'Interval recall'
+            },
             { label: 'Best streak', value: String(displayedSummary.bestStreak ?? '—') }
           ]}
           weakSpots={displayedSummary.weakSpots}

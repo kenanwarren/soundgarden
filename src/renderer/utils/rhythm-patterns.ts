@@ -99,8 +99,22 @@ export const RHYTHM_PATTERNS: RhythmPattern[] = [
     beatsPerMeasure: 4,
     subdivisions: 4,
     hits: [
-      true, false, true, false, false, true, false, true, true, false, true, false, false, true,
-      false, true
+      true,
+      false,
+      true,
+      false,
+      false,
+      true,
+      false,
+      true,
+      true,
+      false,
+      true,
+      false,
+      false,
+      true,
+      false,
+      true
     ],
     genreTags: ['funk']
   },
@@ -138,8 +152,22 @@ export const RHYTHM_PATTERNS: RhythmPattern[] = [
     beatsPerMeasure: 4,
     subdivisions: 4,
     hits: [
-      true, false, false, true, false, false, true, false, false, false, true, false, true, false,
-      false, false
+      true,
+      false,
+      false,
+      true,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      true,
+      false,
+      true,
+      false,
+      false,
+      false
     ],
     genreTags: ['rock', 'blues']
   },
@@ -168,8 +196,22 @@ export const RHYTHM_PATTERNS: RhythmPattern[] = [
     beatsPerMeasure: 4,
     subdivisions: 4,
     hits: [
-      false, true, false, true, true, false, false, true, false, true, false, true, true, false,
-      false, true
+      false,
+      true,
+      false,
+      true,
+      true,
+      false,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      true,
+      false,
+      false,
+      true
     ],
     genreTags: ['funk']
   },
@@ -197,7 +239,24 @@ export const RHYTHM_PATTERNS: RhythmPattern[] = [
     difficulty: 2,
     beatsPerMeasure: 4,
     subdivisions: 4,
-    hits: [true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false],
+    hits: [
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false
+    ],
     genreTags: ['fingerpicking']
   }
 ]

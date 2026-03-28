@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { usePitchDetection } from './usePitchDetection'
 import { useScaleStore } from '../stores/scale-store'
 import { getScaleNotes } from '../utils/scale-data'
@@ -20,7 +20,7 @@ export function useScalePractice() {
   const lastHitTime = useRef<Record<string, number>>({})
   const scale = SCALES[selectedScaleIndex]
   const scaleNotes = getScaleNotes(selectedRoot, scale)
-  const scaleNoteSet = new Set(scaleNotes)
+  const scaleNoteSet = useMemo(() => new Set(scaleNotes), [scaleNotes])
 
   const onPitch = useCallback(
     (data: { note: string; octave: number; frequency: number; clarity: number; cents: number }) => {

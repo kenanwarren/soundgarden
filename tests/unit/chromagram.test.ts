@@ -37,7 +37,7 @@ function buildChromagram(
 
 describe('chromagram from FFT frequencies', () => {
   it('C major from fundamentals (C4=261.63, E4=329.63, G4=392.00)', () => {
-    const chroma = buildChromagram([261.63, 329.63, 392.00])
+    const chroma = buildChromagram([261.63, 329.63, 392.0])
     const result = detectChord(chroma)
     expect(result).not.toBeNull()
     expect(result!.root).toBe('C')
@@ -79,10 +79,7 @@ describe('chromagram from FFT frequencies', () => {
 
   // Realistic signal level tests
   it('detects E major at -40dBFS (moderate guitar signal)', () => {
-    const chroma = buildChromagram(
-      [82.41, 123.47, 164.81, 207.65, 246.94, 329.63],
-      -40
-    )
+    const chroma = buildChromagram([82.41, 123.47, 164.81, 207.65, 246.94, 329.63], -40)
     const result = detectChord(chroma)
     expect(result).not.toBeNull()
     expect(result!.root).toBe('E')
@@ -90,10 +87,7 @@ describe('chromagram from FFT frequencies', () => {
   })
 
   it('detects E major at -60dBFS (quiet guitar signal)', () => {
-    const chroma = buildChromagram(
-      [82.41, 123.47, 164.81, 207.65, 246.94, 329.63],
-      -60
-    )
+    const chroma = buildChromagram([82.41, 123.47, 164.81, 207.65, 246.94, 329.63], -60)
     const result = detectChord(chroma)
     expect(result).not.toBeNull()
     expect(result!.root).toBe('E')

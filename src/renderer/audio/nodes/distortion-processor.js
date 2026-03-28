@@ -53,7 +53,7 @@ class DistortionProcessor extends AudioWorkletProcessor {
           if (x >= 0) {
             shaped = x / (1 + x)
           } else {
-            shaped = x / (1 - x) * 0.8
+            shaped = (x / (1 - x)) * 0.8
           }
           lp += alpha * (shaped - lp)
           out[i] = inp[i] * dry + lp * mix
@@ -61,7 +61,7 @@ class DistortionProcessor extends AudioWorkletProcessor {
       } else {
         for (let i = 0; i < inp.length; i++) {
           const x = inp[i] * gain
-          const shaped = x > 1 ? 1 : (x < -1 ? -1 : x)
+          const shaped = x > 1 ? 1 : x < -1 ? -1 : x
           lp += alpha * (shaped - lp)
           out[i] = inp[i] * dry + lp * mix
         }

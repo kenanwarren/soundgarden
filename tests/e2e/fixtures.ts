@@ -40,8 +40,12 @@ export function persistedState<T>(state: T): string {
 }
 
 export const test = base.extend<ElectronFixtures>({
-  soundgarden: async ({}, use) => {
+  soundgarden: async ({ browserName: _browserName }, use) => {
     const userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'soundgarden-e2e-'))
+    const launchArgs = [path.join(process.cwd(), '.')]
+    if (process.platform === 'linux') {
+      launchArgs.push('--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage')
+    }
     let currentOptions: RelaunchOptions = {
       audioMode: 'offline-no-input'
     }
@@ -51,7 +55,7 @@ export const test = base.extend<ElectronFixtures>({
     const launch = async (options: RelaunchOptions = currentOptions): Promise<Page> => {
       currentOptions = { ...currentOptions, ...options }
       currentApp = await electron.launch({
-        args: [path.join(process.cwd(), '.')],
+        args: launchArgs,
         env: {
           ...process.env,
           SOUNDGARDEN_E2E: '1',

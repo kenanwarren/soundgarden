@@ -45,7 +45,13 @@ describe('ChordChangesPanel', () => {
   beforeEach(() => {
     localStorage.clear()
     useLearnProgressStore.getState().reset()
-    useChordStore.setState({ isActive: false, currentChord: null, chromagram: null, tickCount: 0, peakDb: -Infinity })
+    useChordStore.setState({
+      isActive: false,
+      currentChord: null,
+      chromagram: null,
+      tickCount: 0,
+      peakDb: -Infinity
+    })
     useMetronomeStore.setState({
       bpm: 120,
       beatsPerMeasure: 4,

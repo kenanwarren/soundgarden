@@ -139,15 +139,19 @@ export function useEffectsChain() {
   }, [chain, isConnected])
 
   useEffect(() => {
+    const managedEffects = managedRef.current
     return () => {
-      for (const managed of managedRef.current.values()) {
+      for (const managed of managedEffects.values()) {
         managed.dispose()
       }
-      managedRef.current.clear()
+      managedEffects.clear()
     }
   }, [])
 
-  const loadNamModel = (effectId: string, modelData: Record<string, unknown>): Promise<{ success: boolean; error?: string }> => {
+  const loadNamModel = (
+    effectId: string,
+    modelData: Record<string, unknown>
+  ): Promise<{ success: boolean; error?: string }> => {
     return new Promise((resolve) => {
       const managed = managedRef.current.get(effectId)
       if (!managed || managed.config.type !== 'nam') {
@@ -174,7 +178,10 @@ export function useEffectsChain() {
     })
   }
 
-  const loadCabinetIR = async (effectId: string, audioData: ArrayBuffer): Promise<{ success: boolean; error?: string }> => {
+  const loadCabinetIR = async (
+    effectId: string,
+    audioData: ArrayBuffer
+  ): Promise<{ success: boolean; error?: string }> => {
     const managed = managedRef.current.get(effectId)
     if (!managed || managed.config.type !== 'cabinet') {
       return { success: false, error: 'Effect not found' }
@@ -472,7 +479,14 @@ function createGraphicEqEffect(ctx: AudioContext, config: EffectConfig): Managed
       getInput: () => nodes[0],
       getOutput: () => nodes[nodes.length - 1]
     },
-    internals: { band60: nodes[0], band250: nodes[1], band1k: nodes[2], band4k: nodes[3], band8k: nodes[4], band12k: nodes[5] },
+    internals: {
+      band60: nodes[0],
+      band250: nodes[1],
+      band1k: nodes[2],
+      band4k: nodes[3],
+      band8k: nodes[4],
+      band12k: nodes[5]
+    },
     dispose: () => nodes.forEach((n) => n.disconnect())
   }
 }
