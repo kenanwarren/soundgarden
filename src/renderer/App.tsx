@@ -1,5 +1,5 @@
 import { Routes, Route, NavLink } from 'react-router-dom'
-import { Home, Guitar, Sliders, Settings, Power, Timer, Music } from 'lucide-react'
+import { Home, Guitar, Sliders, Settings, Power, Timer, Music, GraduationCap } from 'lucide-react'
 import { useAudioEngine, useAudioEngineInit } from './hooks/useAudioEngine'
 import { useDevices } from './hooks/useDevices'
 import { useTuner } from './hooks/useTuner'
@@ -13,6 +13,11 @@ import { EffectsChainPanel } from './components/effects/EffectsChain'
 import { MetronomePanel } from './components/metronome/MetronomePanel'
 import { ChordPanel } from './components/chords/ChordPanel'
 import { useAudioStore } from './stores/audio-store'
+import { LearnHub } from './components/learn/LearnHub'
+import { ScalePanel } from './components/learn/ScalePanel'
+import { ChordLibraryPanel } from './components/learn/ChordLibraryPanel'
+import { RhythmPanel } from './components/learn/RhythmPanel'
+import { EarTrainingPanel } from './components/learn/EarTrainingPanel'
 
 function HomePage(): JSX.Element {
   const { isConnected, connect, disconnect } = useAudioEngine()
@@ -147,6 +152,7 @@ const navItems = [
   { to: '/effects', icon: Sliders, label: 'Effects' },
   { to: '/metronome', icon: Timer, label: 'Metronome' },
   { to: '/chords', icon: Music, label: 'Chords' },
+  { to: '/learn', icon: GraduationCap, label: 'Learn' },
   { to: '/settings', icon: Settings, label: 'Settings' }
 ]
 
@@ -181,6 +187,11 @@ export default function App(): JSX.Element {
           <Route path="/effects" element={<EffectsPage />} />
           <Route path="/metronome" element={<MetronomePage />} />
           <Route path="/chords" element={<ChordsPage />} />
+          <Route path="/learn" element={<LearnHub />} />
+          <Route path="/learn/scales" element={<ScalePanel />} />
+          <Route path="/learn/chords" element={<ChordLibraryPanel />} />
+          <Route path="/learn/rhythm" element={<RhythmPanel />} />
+          <Route path="/learn/ear-training" element={<EarTrainingPanel />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </main>
