@@ -1,5 +1,5 @@
 import { Routes, Route, NavLink } from 'react-router-dom'
-import { Home, Guitar, Sliders, Settings, Power } from 'lucide-react'
+import { Home, Guitar, Sliders, Settings, Power, Timer, Music } from 'lucide-react'
 import { useAudioEngine, useAudioEngineInit } from './hooks/useAudioEngine'
 import { useDevices } from './hooks/useDevices'
 import { useTuner } from './hooks/useTuner'
@@ -10,6 +10,8 @@ import { VolumeSlider } from './components/audio/VolumeSlider'
 import { TunerDisplay } from './components/tuner/TunerDisplay'
 import { TunerSettings } from './components/tuner/TunerSettings'
 import { EffectsChainPanel } from './components/effects/EffectsChain'
+import { MetronomePanel } from './components/metronome/MetronomePanel'
+import { ChordPanel } from './components/chords/ChordPanel'
 import { useAudioStore } from './stores/audio-store'
 
 function HomePage(): JSX.Element {
@@ -52,7 +54,9 @@ function HomePage(): JSX.Element {
       </div>
 
       <p className="text-xs text-zinc-600">
-        {isConnected ? 'Audio connected — playing through' : 'Select an input device and press the button to connect'}
+        {isConnected
+          ? 'Audio connected — playing through'
+          : 'Select an input device and press the button to connect'}
       </p>
     </div>
   )
@@ -104,6 +108,31 @@ function EffectsPage(): JSX.Element {
   )
 }
 
+function MetronomePage(): JSX.Element {
+  return (
+    <div className="flex flex-col items-center justify-center h-full gap-8 p-8">
+      <h2 className="text-2xl font-bold text-white">Metronome</h2>
+      <MetronomePanel />
+    </div>
+  )
+}
+
+function ChordsPage(): JSX.Element {
+  const isConnected = useAudioStore((s) => s.isConnected)
+
+  return (
+    <div className="flex flex-col items-center justify-center h-full gap-8 p-8">
+      <h2 className="text-2xl font-bold text-white">Chord Recognition</h2>
+
+      {!isConnected ? (
+        <p className="text-zinc-400">Connect your audio input on the Home page first</p>
+      ) : (
+        <ChordPanel />
+      )}
+    </div>
+  )
+}
+
 function SettingsPage(): JSX.Element {
   return (
     <div className="flex items-center justify-center h-full">
@@ -116,6 +145,8 @@ const navItems = [
   { to: '/', icon: Home, label: 'Home' },
   { to: '/tuner', icon: Guitar, label: 'Tuner' },
   { to: '/effects', icon: Sliders, label: 'Effects' },
+  { to: '/metronome', icon: Timer, label: 'Metronome' },
+  { to: '/chords', icon: Music, label: 'Chords' },
   { to: '/settings', icon: Settings, label: 'Settings' }
 ]
 
@@ -148,6 +179,8 @@ export default function App(): JSX.Element {
           <Route path="/" element={<HomePage />} />
           <Route path="/tuner" element={<TunerPage />} />
           <Route path="/effects" element={<EffectsPage />} />
+          <Route path="/metronome" element={<MetronomePage />} />
+          <Route path="/chords" element={<ChordsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </main>

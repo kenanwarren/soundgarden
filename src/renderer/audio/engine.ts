@@ -39,7 +39,7 @@ export class AudioEngine {
     this.analyserNode.smoothingTimeConstant = 0.8
 
     this.pipeline = new AudioPipeline(this.context)
-    this.pipeline.setAnalyserNode(this.analyserNode)
+    this.pipeline.addTap(this.analyserNode)
 
     this.removeDeviceChangeListener = onDeviceChange(() => {
       this.deviceChangeCallbacks.forEach((cb) => cb())

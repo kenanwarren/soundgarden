@@ -9,8 +9,8 @@ export class AudioPipeline {
   private context: AudioContext
   private sourceNode: AudioNode | null = null
   private masterGain: GainNode
-  private analyserNode: AnalyserNode | null = null
   private effectNodes: EffectNode[] = []
+  private taps: Set<AudioNode> = new Set()
 
   constructor(context: AudioContext) {
     this.context = context
@@ -19,8 +19,16 @@ export class AudioPipeline {
     this.masterGain.connect(context.destination)
   }
 
-  setAnalyserNode(node: AnalyserNode): void {
-    this.analyserNode = node
+  addTap(node: AudioNode): void {
+    this.taps.add(node)
+    if (this.sourceNode) {
+      this.sourceNode.connect(node)
+    }
+  }
+
+  removeTap(node: AudioNode): void {
+    this.taps.delete(node)
+    try { node.disconnect() } catch { /* */ }
   }
 
   connectSource(source: AudioNode): void {
@@ -63,24 +71,17 @@ export class AudioPipeline {
   rebuildChain(): void {
     if (!this.sourceNode) return
 
-    // Disconnect everything from source forward
     this.sourceNode.disconnect()
 
-    // Disconnect all effect nodes
     for (const effect of this.effectNodes) {
-      try {
-        effect.getOutput().disconnect()
-      } catch {
-        // Node may not be connected
-      }
+      try { effect.getOutput().disconnect() } catch { /* */ }
     }
 
-    // Always connect source → analyser (parallel tap for level metering)
-    if (this.analyserNode) {
-      this.sourceNode.connect(this.analyserNode)
+    // Reconnect all parallel taps
+    for (const tap of this.taps) {
+      this.sourceNode.connect(tap)
     }
 
-    // Build chain: source → [enabled effects] → masterGain → destination
     const enabledEffects = this.effectNodes.filter((e) => e.enabled)
 
     if (enabledEffects.length === 0) {
@@ -88,15 +89,12 @@ export class AudioPipeline {
       return
     }
 
-    // Connect source to first effect
     this.sourceNode.connect(enabledEffects[0].getInput())
 
-    // Chain effects together
     for (let i = 0; i < enabledEffects.length - 1; i++) {
       enabledEffects[i].getOutput().connect(enabledEffects[i + 1].getInput())
     }
 
-    // Connect last effect to master gain
     enabledEffects[enabledEffects.length - 1].getOutput().connect(this.masterGain)
   }
 }
