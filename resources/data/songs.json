@@ -5193,5 +5193,1357 @@
         }
       ]
     }
+  },
+  {
+    "id": "wildwood-flower-carter",
+    "variantOf": "wildwood-flower",
+    "variantLabel": "Carter Style",
+    "title": "Wildwood Flower (Carter Style)",
+    "genres": ["country", "fingerpicking"],
+    "difficulty": "Developing",
+    "key": "C",
+    "chords": ["C", "G", "F"],
+    "attribution": "Traditional, 1860; Carter Family style arrangement",
+    "lines": [
+      "[section:Verse 1]",
+      "Oh I'll [C]twine with my mingles and [F]waving black [C]hair",
+      "With the [G]roses so red and the [C]lilies so fair",
+      "And the [C]myrtle so bright with the [F]emerald [C]hue",
+      "The pale [G]and the leader and [C]eyes look like blue",
+      "",
+      "[section:Verse 2]",
+      "I will [C]dance, I will sing and my [F]laugh shall be [C]gay",
+      "I will [G]charm every heart, in his [C]crown I will sway",
+      "When I [C]woke from my dreaming, my [F]idol was [C]clay",
+      "All [G]portions of love had all [C]flown away",
+      "",
+      "[section:Verse 3]",
+      "He [C]taught me to love him and [F]promised to [C]love",
+      "And to [G]cherish me over all [C]others above",
+      "How my [C]heart is now wondering, no [F]misery can [C]tell",
+      "He [G]left me no warning, no [C]words of farewell"
+    ],
+    "notation": {
+      "timeSignature": [4, 4],
+      "tempo": 120,
+      "measures": [
+        {
+          "chord": "C",
+          "lyricFragment": "Oh I'll twine with my",
+          "notes": [
+            {
+              "pitch": "C3",
+              "duration": "eighth",
+              "tab": { "string": 4, "fret": 3 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "G3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 0 }
+            },
+            {
+              "pitch": "G4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 3 }
+            },
+            {
+              "pitch": "C3",
+              "duration": "eighth",
+              "tab": { "string": 4, "fret": 3 }
+            },
+            {
+              "pitch": "G4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 3 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 1 }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "mingles and",
+          "notes": [
+            {
+              "pitch": "C3",
+              "duration": "eighth",
+              "tab": { "string": 4, "fret": 3 }
+            },
+            {
+              "pitch": "D3",
+              "duration": "eighth",
+              "tab": { "string": 3, "fret": 0 }
+            },
+            {
+              "pitch": "G3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 0 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "C3",
+              "duration": "eighth",
+              "tab": { "string": 4, "fret": 3 }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": { "string": 1, "fret": 1 }
+            },
+            {
+              "pitch": "rest",
+              "duration": "eighth"
+            }
+          ]
+        },
+        {
+          "chord": "F",
+          "lyricFragment": "waving black",
+          "notes": [
+            {
+              "pitch": "F3",
+              "duration": "eighth",
+              "tab": { "string": 3, "fret": 3 }
+            },
+            {
+              "pitch": "F4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 1 }
+            },
+            {
+              "pitch": "A3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 2 }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 1 }
+            },
+            {
+              "pitch": "F3",
+              "duration": "eighth",
+              "tab": { "string": 3, "fret": 3 }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 1 }
+            },
+            {
+              "pitch": "F4",
+              "duration": "quarter",
+              "tab": { "string": 0, "fret": 1 }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "hair",
+          "notes": [
+            {
+              "pitch": "C3",
+              "duration": "eighth",
+              "tab": { "string": 4, "fret": 3 }
+            },
+            {
+              "pitch": "G4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 3 }
+            },
+            {
+              "pitch": "G3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 0 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "C3",
+              "duration": "eighth",
+              "tab": { "string": 4, "fret": 3 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "rest",
+              "duration": "eighth"
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "With the roses so",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 0 }
+            },
+            {
+              "pitch": "D3",
+              "duration": "eighth",
+              "tab": { "string": 3, "fret": 0 }
+            },
+            {
+              "pitch": "G3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 0 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "G3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 0 }
+            },
+            {
+              "pitch": "G4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 3 }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": { "string": 0, "fret": 3 }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "red and the lilies",
+          "notes": [
+            {
+              "pitch": "C3",
+              "duration": "eighth",
+              "tab": { "string": 4, "fret": 3 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "G3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 0 }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 1 }
+            },
+            {
+              "pitch": "C3",
+              "duration": "eighth",
+              "tab": { "string": 4, "fret": 3 }
+            },
+            {
+              "pitch": "D3",
+              "duration": "eighth",
+              "tab": { "string": 3, "fret": 0 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": { "string": 0, "fret": 0 }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "so fair",
+          "notes": [
+            {
+              "pitch": "C3",
+              "duration": "eighth",
+              "tab": { "string": 4, "fret": 3 }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 1 }
+            },
+            {
+              "pitch": "G3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 0 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "C4",
+              "duration": "half",
+              "tab": { "string": 1, "fret": 1 }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "amazing-grace-embellished",
+    "variantOf": "amazing-grace",
+    "variantLabel": "Embellished",
+    "title": "Amazing Grace (Embellished)",
+    "genres": ["rock"],
+    "difficulty": "Developing",
+    "key": "G",
+    "chords": ["G", "G7", "C", "D7"],
+    "attribution": "John Newton, 1779; embellished hymn arrangement",
+    "lines": [
+      "[section:Verse 1]",
+      "A[G]mazing grace, how [G7]sweet the [C]sound",
+      "That [G]saved a wretch like [D7]me",
+      "I [G]once was lost but [G7]now am [C]found",
+      "Was [G]blind but [D7]now I [G]see",
+      "",
+      "[section:Verse 2]",
+      "'Twas [G]grace that taught my [G7]heart to [C]fear",
+      "And [G]grace my fears re[D7]lieved",
+      "How [G]precious did that [G7]grace ap[C]pear",
+      "The [G]hour I [D7]first be[G]lieved",
+      "",
+      "[section:Verse 3]",
+      "Through [G]many dangers, [G7]toils and [C]snares",
+      "I [G]have already [D7]come",
+      "'Tis [G]grace hath brought me [G7]safe thus [C]far",
+      "And [G]grace will [D7]lead me [G]home"
+    ],
+    "notation": {
+      "timeSignature": [3, 4],
+      "tempo": 66,
+      "measures": [
+        {
+          "chord": "G",
+          "lyricFragment": "A-",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "eighth",
+              "tab": { "string": 3, "fret": 0 }
+            },
+            {
+              "pitch": "E3",
+              "duration": "eighth",
+              "tab": { "string": 3, "fret": 2 }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": { "string": 3, "fret": 0 }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "mazing",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": { "string": 0, "fret": 3 }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 2 }
+            },
+            {
+              "pitch": "G4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 3 }
+            },
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "tab": { "string": 1, "fret": 0 }
+            }
+          ]
+        },
+        {
+          "chord": "G7",
+          "lyricFragment": "grace, how",
+          "notes": [
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "tab": { "string": 1, "fret": 0 }
+            },
+            {
+              "pitch": "A3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 2 }
+            },
+            {
+              "pitch": "B3",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 0 }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": { "string": 1, "fret": 1 }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "sweet the",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": { "string": 0, "fret": 3 }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 2 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": { "string": 0, "fret": 0 }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "sound, that",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": { "string": 3, "fret": 0 }
+            },
+            {
+              "pitch": "E3",
+              "duration": "eighth",
+              "tab": { "string": 3, "fret": 2 }
+            },
+            {
+              "pitch": "D3",
+              "duration": "eighth",
+              "tab": { "string": 3, "fret": 0 }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": { "string": 3, "fret": 0 }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "saved a",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": { "string": 0, "fret": 3 }
+            },
+            {
+              "pitch": "A3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 2 }
+            },
+            {
+              "pitch": "G3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 0 }
+            },
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": { "string": 0, "fret": 3 }
+            }
+          ]
+        },
+        {
+          "chord": "D7",
+          "lyricFragment": "wretch like",
+          "notes": [
+            {
+              "pitch": "F#4",
+              "duration": "quarter",
+              "tab": { "string": 0, "fret": 2 }
+            },
+            {
+              "pitch": "G4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 3 }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 2 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": { "string": 0, "fret": 0 }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "me. I",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": { "string": 3, "fret": 0 }
+            },
+            {
+              "pitch": "E3",
+              "duration": "eighth",
+              "tab": { "string": 3, "fret": 2 }
+            },
+            {
+              "pitch": "D3",
+              "duration": "eighth",
+              "tab": { "string": 3, "fret": 0 }
+            },
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": { "string": 3, "fret": 0 }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "once was",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": { "string": 0, "fret": 3 }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 2 }
+            },
+            {
+              "pitch": "G4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 3 }
+            },
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "tab": { "string": 1, "fret": 0 }
+            }
+          ]
+        },
+        {
+          "chord": "G7",
+          "lyricFragment": "lost, but",
+          "notes": [
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "tab": { "string": 1, "fret": 0 }
+            },
+            {
+              "pitch": "A3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 2 }
+            },
+            {
+              "pitch": "B3",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 0 }
+            },
+            {
+              "pitch": "C4",
+              "duration": "quarter",
+              "tab": { "string": 1, "fret": 1 }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "now am",
+          "notes": [
+            {
+              "pitch": "G4",
+              "duration": "quarter",
+              "tab": { "string": 0, "fret": 3 }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 2 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "quarter",
+              "tab": { "string": 0, "fret": 0 }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "found, was",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "quarter",
+              "tab": { "string": 3, "fret": 0 }
+            },
+            {
+              "pitch": "G3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 0 }
+            },
+            {
+              "pitch": "A3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 2 }
+            },
+            {
+              "pitch": "G3",
+              "duration": "quarter",
+              "tab": { "string": 2, "fret": 0 }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "blind, but",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration": "quarter",
+              "tab": { "string": 2, "fret": 0 }
+            },
+            {
+              "pitch": "F#3",
+              "duration": "eighth",
+              "tab": { "string": 3, "fret": 4 }
+            },
+            {
+              "pitch": "G3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 0 }
+            },
+            {
+              "pitch": "A3",
+              "duration": "quarter",
+              "tab": { "string": 2, "fret": 2 }
+            }
+          ]
+        },
+        {
+          "chord": "D7",
+          "lyricFragment": "now I",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration": "quarter",
+              "tab": { "string": 2, "fret": 0 }
+            },
+            {
+              "pitch": "A3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 2 }
+            },
+            {
+              "pitch": "G3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 0 }
+            },
+            {
+              "pitch": "F#3",
+              "duration": "quarter",
+              "tab": { "string": 3, "fret": 4 }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "see.",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration": "half",
+              "dotted": true,
+              "tab": { "string": 2, "fret": 0 }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "greensleeves-lute-style",
+    "variantOf": "greensleeves",
+    "variantLabel": "Lute Style",
+    "title": "Greensleeves (Lute Style)",
+    "genres": ["fingerpicking"],
+    "difficulty": "Intermediate",
+    "key": "Am",
+    "chords": ["Am", "G", "Em", "E7"],
+    "attribution": "Traditional, 16th century; lute-style guitar arrangement",
+    "lines": [
+      "[section:Verse 1]",
+      "[Am]Alas, my love, you [G]do me wrong",
+      "To [Am]cast me off dis[E7]courteously",
+      "For [Am]I have loved you [G]well and long",
+      "De[Am]lighting [E7]in your [Am]company",
+      "",
+      "[section:Chorus]",
+      "[G]Greensleeves was [Em]all my joy",
+      "[Am]Greensleeves was [E7]my delight",
+      "[G]Greensleeves was my [Em]heart of gold",
+      "And [Am]who but my [E7]lady [Am]Greensleeves",
+      "",
+      "[section:Verse 2]",
+      "[Am]Your vows you've broken, [G]like my heart",
+      "Oh, [Am]why did you so en[E7]rapture me",
+      "Now [Am]I remain in a [G]world apart",
+      "But my [Am]heart re[E7]mains in cap[Am]tivity"
+    ],
+    "notation": {
+      "timeSignature": [6, 8],
+      "tempo": 80,
+      "measures": [
+        {
+          "chord": "Am",
+          "lyricFragment": "A-",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 2 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 1 }
+            },
+            {
+              "pitch": "A3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 2 }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 1 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            }
+          ]
+        },
+        {
+          "chord": "Am",
+          "lyricFragment": "las, my",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 2 }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 1 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "D3",
+              "duration": "eighth",
+              "tab": { "string": 3, "fret": 0 }
+            },
+            {
+              "pitch": "A3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 2 }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 1 }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "love, you",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 0 }
+            },
+            {
+              "pitch": "B3",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 0 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "G3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 0 }
+            },
+            {
+              "pitch": "D3",
+              "duration": "eighth",
+              "tab": { "string": 3, "fret": 0 }
+            },
+            {
+              "pitch": "B3",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 0 }
+            }
+          ]
+        },
+        {
+          "chord": "G",
+          "lyricFragment": "do me",
+          "notes": [
+            {
+              "pitch": "G3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 0 }
+            },
+            {
+              "pitch": "B3",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 0 }
+            },
+            {
+              "pitch": "F#4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 2 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "D3",
+              "duration": "eighth",
+              "tab": { "string": 3, "fret": 0 }
+            },
+            {
+              "pitch": "G3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 0 }
+            }
+          ]
+        },
+        {
+          "chord": "Am",
+          "lyricFragment": "wrong, to",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 2 }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 1 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "A3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 2 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 1 }
+            }
+          ]
+        },
+        {
+          "chord": "Am",
+          "lyricFragment": "cast me",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 2 }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 1 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "A3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 2 }
+            },
+            {
+              "pitch": "G#3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 1 }
+            },
+            {
+              "pitch": "A3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 2 }
+            }
+          ]
+        },
+        {
+          "chord": "E7",
+          "lyricFragment": "off dis-",
+          "notes": [
+            {
+              "pitch": "E3",
+              "duration": "eighth",
+              "tab": { "string": 3, "fret": 2 }
+            },
+            {
+              "pitch": "B3",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 0 }
+            },
+            {
+              "pitch": "G#3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 1 }
+            },
+            {
+              "pitch": "E3",
+              "duration": "eighth",
+              "tab": { "string": 3, "fret": 2 }
+            },
+            {
+              "pitch": "G#3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 1 }
+            },
+            {
+              "pitch": "B3",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 0 }
+            }
+          ]
+        },
+        {
+          "chord": "Am",
+          "lyricFragment": "courteously",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 2 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 1 }
+            },
+            {
+              "pitch": "A3",
+              "duration": "quarter",
+              "dotted": true,
+              "tab": { "string": 2, "fret": 2 }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "house-rising-sun-arpeggio",
+    "variantOf": "house-of-the-rising-sun",
+    "variantLabel": "Arpeggio",
+    "title": "House of the Rising Sun (Arpeggio)",
+    "genres": ["fingerpicking"],
+    "difficulty": "Intermediate",
+    "key": "Am",
+    "chords": ["Am", "C", "D", "F", "E7"],
+    "attribution": "Traditional; arpeggiated guitar arrangement",
+    "lines": [
+      "[section:Verse 1]",
+      "There [Am]is a [C]house in [D]New Or[F]leans",
+      "They [Am]call the [C]Rising [E7]Sun",
+      "And it's [Am]been the [C]ruin of [D]many a poor [F]boy",
+      "And [Am]God I [E7]know I'm [Am]one",
+      "",
+      "[section:Verse 2]",
+      "My [Am]mother [C]was a [D]tai[F]lor",
+      "She [Am]sewed my [C]new blue [E7]jeans",
+      "My [Am]father [C]was a [D]gamblin' [F]man",
+      "Down [Am]in [E7]New Or[Am]leans",
+      "",
+      "[section:Verse 3]",
+      "Oh [Am]mother [C]tell your [D]chil[F]dren",
+      "Not to [Am]do what [C]I have [E7]done",
+      "Spend your [Am]lives in [C]sin and [D]mise[F]ry",
+      "In the [Am]House of the [E7]Rising [Am]Sun"
+    ],
+    "notation": {
+      "timeSignature": [6, 8],
+      "tempo": 80,
+      "measures": [
+        {
+          "chord": "Am",
+          "lyricFragment": "There",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 2 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 1 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 1 }
+            },
+            {
+              "pitch": "A3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 2 }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "is a",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 1 }
+            },
+            {
+              "pitch": "G4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 3 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "G4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 3 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 1 }
+            }
+          ]
+        },
+        {
+          "chord": "D",
+          "lyricFragment": "house in",
+          "notes": [
+            {
+              "pitch": "D3",
+              "duration": "eighth",
+              "tab": { "string": 3, "fret": 0 }
+            },
+            {
+              "pitch": "A3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 2 }
+            },
+            {
+              "pitch": "F4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 1 }
+            },
+            {
+              "pitch": "A3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 2 }
+            },
+            {
+              "pitch": "F4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 1 }
+            },
+            {
+              "pitch": "D3",
+              "duration": "eighth",
+              "tab": { "string": 3, "fret": 0 }
+            }
+          ]
+        },
+        {
+          "chord": "F",
+          "lyricFragment": "New Or-",
+          "notes": [
+            {
+              "pitch": "F3",
+              "duration": "eighth",
+              "tab": { "string": 3, "fret": 3 }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 1 }
+            },
+            {
+              "pitch": "F4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 1 }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 1 }
+            },
+            {
+              "pitch": "F4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 1 }
+            },
+            {
+              "pitch": "G4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 3 }
+            }
+          ]
+        },
+        {
+          "chord": "Am",
+          "lyricFragment": "leans, they",
+          "notes": [
+            {
+              "pitch": "A3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 2 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 1 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 1 }
+            },
+            {
+              "pitch": "A3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 2 }
+            }
+          ]
+        },
+        {
+          "chord": "C",
+          "lyricFragment": "call the",
+          "notes": [
+            {
+              "pitch": "C4",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 1 }
+            },
+            {
+              "pitch": "G4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 3 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "G4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 3 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "D3",
+              "duration": "eighth",
+              "tab": { "string": 3, "fret": 0 }
+            }
+          ]
+        },
+        {
+          "chord": "E7",
+          "lyricFragment": "Rising",
+          "notes": [
+            {
+              "pitch": "E3",
+              "duration": "eighth",
+              "tab": { "string": 3, "fret": 2 }
+            },
+            {
+              "pitch": "B3",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 0 }
+            },
+            {
+              "pitch": "G#3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 1 }
+            },
+            {
+              "pitch": "B3",
+              "duration": "eighth",
+              "tab": { "string": 1, "fret": 0 }
+            },
+            {
+              "pitch": "E4",
+              "duration": "eighth",
+              "tab": { "string": 0, "fret": 0 }
+            },
+            {
+              "pitch": "D3",
+              "duration": "eighth",
+              "tab": { "string": 3, "fret": 0 }
+            }
+          ]
+        },
+        {
+          "chord": "E7",
+          "lyricFragment": "Sun",
+          "notes": [
+            {
+              "pitch": "E3",
+              "duration": "eighth",
+              "tab": { "string": 3, "fret": 2 }
+            },
+            {
+              "pitch": "G#3",
+              "duration": "eighth",
+              "tab": { "string": 2, "fret": 1 }
+            },
+            {
+              "pitch": "B3",
+              "duration": "quarter",
+              "dotted": true,
+              "tab": { "string": 1, "fret": 0 }
+            },
+            {
+              "pitch": "rest",
+              "duration": "eighth"
+            }
+          ]
+        }
+      ]
+    }
   }
 ]

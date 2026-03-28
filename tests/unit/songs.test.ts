@@ -41,6 +41,47 @@ describe('buildSongCatalog', () => {
     expect(getSongDifficultyLabel(saints!)).toBe('Beginner to Developing')
   })
 
+  it('groups wildwood-flower-carter under wildwood-flower', () => {
+    const catalog = buildSongCatalog(loadSongs())
+    const wf = catalog.find((song) => song.id === 'wildwood-flower')
+
+    expect(wf).toBeTruthy()
+    expect(catalog.some((song) => song.id === 'wildwood-flower-carter')).toBe(false)
+    expect(getSongArrangements(wf!).map((a) => a.label)).toEqual(['Standard', 'Carter Style'])
+    expect(getSongDifficultyLabel(wf!)).toBe('Beginner to Developing')
+    expect(wf?.genres).toEqual(expect.arrayContaining(['fingerpicking']))
+  })
+
+  it('groups amazing-grace-embellished under amazing-grace', () => {
+    const catalog = buildSongCatalog(loadSongs())
+    const ag = catalog.find((song) => song.id === 'amazing-grace')
+
+    expect(ag).toBeTruthy()
+    expect(catalog.some((song) => song.id === 'amazing-grace-embellished')).toBe(false)
+    expect(getSongArrangements(ag!).map((a) => a.label)).toEqual(['Standard', 'Embellished'])
+    expect(getSongDifficultyLabel(ag!)).toBe('Beginner to Developing')
+  })
+
+  it('groups greensleeves-lute-style under greensleeves', () => {
+    const catalog = buildSongCatalog(loadSongs())
+    const gs = catalog.find((song) => song.id === 'greensleeves')
+
+    expect(gs).toBeTruthy()
+    expect(catalog.some((song) => song.id === 'greensleeves-lute-style')).toBe(false)
+    expect(getSongArrangements(gs!).map((a) => a.label)).toEqual(['Standard', 'Lute Style'])
+    expect(getSongDifficultyLabel(gs!)).toBe('Developing to Intermediate')
+  })
+
+  it('groups house-rising-sun-arpeggio under house-of-the-rising-sun', () => {
+    const catalog = buildSongCatalog(loadSongs())
+    const hrs = catalog.find((song) => song.id === 'house-of-the-rising-sun')
+
+    expect(hrs).toBeTruthy()
+    expect(catalog.some((song) => song.id === 'house-rising-sun-arpeggio')).toBe(false)
+    expect(getSongArrangements(hrs!).map((a) => a.label)).toEqual(['Standard', 'Arpeggio'])
+    expect(getSongDifficultyLabel(hrs!)).toBe('Developing to Intermediate')
+  })
+
   it('keeps orphaned variants visible as standalone songs', () => {
     const orphanVariant: SongDefinition = {
       id: 'orphan-variant',
@@ -105,5 +146,21 @@ describe('getPreferredSongArrangement', () => {
     expect(getPreferredSongArrangement(song, 'Developing')?.id).toBe('saints-funk')
     expect(getPreferredSongArrangement(song, 'Beginner')?.id).toBe('saints')
     expect(getPreferredSongArrangement(song, 'Beginner', 'saints-funk')?.id).toBe('saints-funk')
+  })
+
+  it('selects a Developing arrangement from catalog data', () => {
+    const catalog = buildSongCatalog(loadSongs())
+    const wf = catalog.find((s) => s.id === 'wildwood-flower')!
+    const arr = getPreferredSongArrangement(wf, 'Developing')
+    expect(arr?.id).toBe('wildwood-flower-carter')
+    expect(arr?.difficulty).toBe('Developing')
+  })
+
+  it('selects an Intermediate arrangement from catalog data', () => {
+    const catalog = buildSongCatalog(loadSongs())
+    const gs = catalog.find((s) => s.id === 'greensleeves')!
+    const arr = getPreferredSongArrangement(gs, 'Intermediate')
+    expect(arr?.id).toBe('greensleeves-lute-style')
+    expect(arr?.difficulty).toBe('Intermediate')
   })
 })
