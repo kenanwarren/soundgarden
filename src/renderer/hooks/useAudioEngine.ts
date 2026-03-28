@@ -1,14 +1,35 @@
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useCallback } from 'react'
 import { AudioEngine } from '../audio/engine'
+import { AudioPipeline } from '../audio/pipeline'
+import { FakeAudioEngine, DEFAULT_FAKE_INPUT_DEVICE_ID, DEFAULT_FAKE_OUTPUT_DEVICE_ID } from '../audio/fake-engine'
+import type { AudioDeviceInfo } from '../audio/types'
 import { useAudioStore } from '../stores/audio-store'
 import { useAppSettingsStore } from '../stores/app-settings-store'
 import { useUiStore } from '../stores/ui-store'
 import type { PermissionState } from '../utils/system-status'
+import { getE2ERuntimeConfig, type E2EAudioMode } from '../utils/e2e-runtime'
 
-const engineRef = { current: null as AudioEngine | null }
+interface AudioEngineLike {
+  readonly isRunning: boolean
+  readonly sampleRate: number
+  readonly latencyEstimate: number
+  initialize(): Promise<void>
+  enumerateDevices(): Promise<AudioDeviceInfo[]>
+  connectInput(deviceId: string): Promise<void>
+  disconnectInput(): void
+  setOutputDevice(deviceId: string): Promise<void>
+  setMasterVolume(volume: number): void
+  onDeviceChange(callback: () => void): () => void
+  onLevel(callback: (level: number) => void): void
+  getPipeline(): AudioPipeline | null
+  getContext(): AudioContext | null
+  dispose(): Promise<void>
+}
+
+const engineRef = { current: null as AudioEngineLike | null }
 let globalInitialized = false
 
-export function getEngine(): AudioEngine | null {
+export function getEngine(): AudioEngineLike | null {
   return engineRef.current
 }
 
@@ -19,7 +40,7 @@ function normalizePermissionState(state: string): PermissionState {
   return 'unknown'
 }
 
-async function syncDevices(engine: AudioEngine): Promise<void> {
+async function syncDevices(engine: AudioEngineLike): Promise<void> {
   const { setDevicesLoading, setDevices, setLastRecoverableError } = useAudioStore.getState()
   const { audio, setAudioSetting } = useAppSettingsStore.getState()
   const permissionState = useAudioStore.getState().permissionState
@@ -81,6 +102,66 @@ async function syncDevices(engine: AudioEngine): Promise<void> {
   }
 }
 
+async function initializeE2EEngine(
+  engine: FakeAudioEngine,
+  mode: E2EAudioMode,
+  setInputLevel: (level: number) => void,
+  setPermissionState: (state: PermissionState) => void,
+  setConnected: (connected: boolean) => void
+): Promise<void> {
+  const setAudioSetting = useAppSettingsStore.getState().setAudioSetting
+  const initialAudio = useAppSettingsStore.getState().audio
+
+  if (mode !== 'permission-denied' && !initialAudio.outputDeviceId) {
+    setAudioSetting('outputDeviceId', DEFAULT_FAKE_OUTPUT_DEVICE_ID)
+  }
+
+  if ((mode === 'offline-selected-input' || mode === 'connected') && !initialAudio.inputDeviceId) {
+    setAudioSetting('inputDeviceId', DEFAULT_FAKE_INPUT_DEVICE_ID)
+  }
+
+  setPermissionState(mode === 'permission-denied' ? 'denied' : 'granted')
+
+  await syncDevices(engine)
+
+  engine.onLevel((level) => setInputLevel(level))
+  engine.onDeviceChange(() => {
+    void syncDevices(engine)
+  })
+
+  const { audio } = useAppSettingsStore.getState()
+
+  if (audio.outputDeviceId) {
+    try {
+      await engine.setOutputDevice(audio.outputDeviceId)
+    } catch {
+      setAudioSetting('outputDeviceId', null)
+    }
+  }
+
+  if (mode === 'connected' && audio.inputDeviceId) {
+    try {
+      await engine.connectInput(audio.inputDeviceId)
+      setConnected(true)
+    } catch (err) {
+      setConnected(false)
+      useAudioStore
+        .getState()
+        .setLastRecoverableError('Soundgarden could not reconnect to the saved input device.')
+      useUiStore.getState().pushNotice({
+        tone: 'warning',
+        title: 'Reconnect failed',
+        description: String(err)
+      })
+    }
+  } else {
+    setConnected(false)
+    setInputLevel(0)
+  }
+
+  engine.setMasterVolume(audio.monitoringEnabled ? audio.masterVolume : 0)
+}
+
 /**
  * Call this once at the App level to initialize the audio engine.
  * The engine persists for the lifetime of the app (not tied to page navigation).
@@ -93,7 +174,9 @@ export function useAudioEngineInit() {
     if (globalInitialized) return
     globalInitialized = true
 
-    const engine = new AudioEngine()
+    const runtimeConfig = getE2ERuntimeConfig()
+    const e2eAudioMode = runtimeConfig.enabled ? runtimeConfig.audioMode ?? 'offline-no-input' : null
+    const engine: AudioEngineLike = e2eAudioMode ? new FakeAudioEngine(e2eAudioMode) : new AudioEngine()
     engineRef.current = engine
     let cancelled = false
     let permissionStatus: PermissionStatus | null = null
@@ -122,6 +205,17 @@ export function useAudioEngineInit() {
 
     void engine.initialize().then(async () => {
       if (cancelled) return
+
+      if (e2eAudioMode && engine instanceof FakeAudioEngine) {
+        await initializeE2EEngine(
+          engine,
+          e2eAudioMode,
+          setInputLevel,
+          setPermissionState,
+          setConnected
+        )
+        return
+      }
 
       await setupPermissionTracking()
 

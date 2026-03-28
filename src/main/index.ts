@@ -3,6 +3,12 @@ import { join } from 'path'
 import { is } from '@electron-toolkit/utils'
 import { registerIpcHandlers } from './ipc-handlers'
 
+const e2eUserDataDir = process.env['SOUNDGARDEN_E2E_USER_DATA_DIR']
+
+if (process.env['SOUNDGARDEN_E2E'] === '1' && e2eUserDataDir) {
+  app.setPath('userData', e2eUserDataDir)
+}
+
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
     width: 1200,
