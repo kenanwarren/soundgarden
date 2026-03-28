@@ -1,4 +1,5 @@
-import { Power, X, GripVertical } from 'lucide-react'
+import { useRef, useState } from 'react'
+import { Power, X, GripVertical, Upload } from 'lucide-react'
 import { Knob } from '../common/Knob'
 import type { EffectConfig } from '../../stores/effects-store'
 
@@ -8,6 +9,7 @@ interface EffectPedalProps {
   onRemove: () => void
   onParamChange: (param: string, value: number) => void
   onDragStart: (e: React.DragEvent) => void
+  onLoadNamModel?: (data: Record<string, unknown>) => Promise<{ success: boolean; error?: string }>
 }
 
 const EFFECT_LABELS: Record<string, string> = {
@@ -17,7 +19,8 @@ const EFFECT_LABELS: Record<string, string> = {
   delay: 'Delay',
   chorus: 'Chorus',
   compressor: 'Compressor',
-  noisegate: 'Noise Gate'
+  noisegate: 'Noise Gate',
+  nam: 'NAM Capture'
 }
 
 const EFFECT_COLORS: Record<string, string> = {
@@ -27,7 +30,8 @@ const EFFECT_COLORS: Record<string, string> = {
   delay: 'border-cyan-600',
   chorus: 'border-pink-600',
   compressor: 'border-yellow-600',
-  noisegate: 'border-red-600'
+  noisegate: 'border-red-600',
+  nam: 'border-amber-500'
 }
 
 export function EffectPedal({
@@ -35,7 +39,8 @@ export function EffectPedal({
   onToggle,
   onRemove,
   onParamChange,
-  onDragStart
+  onDragStart,
+  onLoadNamModel
 }: EffectPedalProps): JSX.Element {
   return (
     <div
@@ -75,7 +80,7 @@ export function EffectPedal({
       </div>
 
       <div className="flex gap-3 justify-center">
-        <EffectKnobs effect={effect} onParamChange={onParamChange} />
+        <EffectKnobs effect={effect} onParamChange={onParamChange} onLoadNamModel={onLoadNamModel} />
       </div>
     </div>
   )
@@ -83,10 +88,12 @@ export function EffectPedal({
 
 function EffectKnobs({
   effect,
-  onParamChange
+  onParamChange,
+  onLoadNamModel
 }: {
   effect: EffectConfig
   onParamChange: (param: string, value: number) => void
+  onLoadNamModel?: (data: Record<string, unknown>) => void
 }): JSX.Element {
   const p = effect.params
   const set = onParamChange
@@ -145,7 +152,73 @@ function EffectKnobs({
           <Knob label="Rel" value={p.release ?? 50} min={10} max={500} step={5} unit="ms" onChange={(v) => set('release', v)} />
         </>
       )
+    case 'nam':
+      return <NamControls params={p} onParamChange={set} onLoadModel={onLoadNamModel} />
     default:
       return <span className="text-xs text-zinc-500">No parameters</span>
   }
+}
+
+function NamControls({
+  params,
+  onParamChange,
+  onLoadModel
+}: {
+  params: Record<string, number>
+  onParamChange: (param: string, value: number) => void
+  onLoadModel?: (data: Record<string, unknown>) => Promise<{ success: boolean; error?: string }>
+}): JSX.Element {
+  const fileRef = useRef<HTMLInputElement>(null)
+  const [modelName, setModelName] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !onLoadModel) return
+
+    setLoading(true)
+    setError(null)
+    try {
+      const text = await file.text()
+      const data = JSON.parse(text)
+      const result = await onLoadModel(data)
+      if (result.success) {
+        setModelName(data.metadata?.name || data.name || file.name.replace('.nam', ''))
+      } else {
+        setError(result.error || 'Failed to load model')
+        setModelName(null)
+      }
+    } catch (err) {
+      setError(String(err))
+      setModelName(null)
+    }
+    setLoading(false)
+    if (fileRef.current) fileRef.current.value = ''
+  }
+
+  return (
+    <div className="flex flex-col gap-3 items-center">
+      <input
+        ref={fileRef}
+        type="file"
+        accept=".nam"
+        onChange={handleFileSelect}
+        className="hidden"
+      />
+      <button
+        onClick={() => fileRef.current?.click()}
+        disabled={loading}
+        className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-zinc-800 rounded border border-zinc-700 hover:border-amber-500 text-zinc-300 hover:text-white transition-colors"
+      >
+        <Upload size={12} />
+        {loading ? 'Loading...' : modelName ?? 'Load .nam'}
+      </button>
+      {error && <span className="text-xs text-red-400 max-w-48 text-center">{error}</span>}
+      <div className="flex gap-3">
+        <Knob label="Input" value={params.inputGain ?? 1} min={0} max={16} step={0.1} onChange={(v) => onParamChange('inputGain', v)} />
+        <Knob label="Output" value={params.outputGain ?? 1} min={0} max={4} step={0.1} onChange={(v) => onParamChange('outputGain', v)} />
+      </div>
+    </div>
+  )
 }

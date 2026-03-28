@@ -18,6 +18,7 @@ export default defineConfig({
     },
     plugins: [react(), tailwindcss()],
     build: {
+      assetsInlineLimit: 100000,
       rollupOptions: {
         input: {
           index: resolve(__dirname, 'src/renderer/index.html')

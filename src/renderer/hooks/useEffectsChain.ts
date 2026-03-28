@@ -8,7 +8,8 @@ import {
   delayProcessorUrl,
   chorusProcessorUrl,
   compressorProcessorUrl,
-  noisegateProcessorUrl
+  noisegateProcessorUrl,
+  namProcessorUrl
 } from '../audio/worklet-urls'
 
 interface ManagedEffect {
@@ -23,7 +24,8 @@ const WORKLET_URLS: Record<string, string> = {
   delay: delayProcessorUrl,
   chorus: chorusProcessorUrl,
   compressor: compressorProcessorUrl,
-  noisegate: noisegateProcessorUrl
+  noisegate: noisegateProcessorUrl,
+  nam: namProcessorUrl
 }
 
 export function useEffectsChain() {
@@ -48,10 +50,10 @@ export function useEffectsChain() {
         if (url && !workletLoadedRef.current.has(effect.type)) {
           try {
             await ctx.audioWorklet.addModule(url)
-          } catch {
-            /* already loaded */
+            workletLoadedRef.current.add(effect.type)
+          } catch (err) {
+            console.error(`Failed to load worklet for ${effect.type}:`, err)
           }
-          workletLoadedRef.current.add(effect.type)
         }
       }
 
@@ -64,9 +66,13 @@ export function useEffectsChain() {
 
       for (const effect of chain) {
         if (!managedRef.current.has(effect.id)) {
-          const managed = createManagedEffect(ctx, effect)
-          if (managed) {
-            managedRef.current.set(effect.id, managed)
+          try {
+            const managed = createManagedEffect(ctx, effect)
+            if (managed) {
+              managedRef.current.set(effect.id, managed)
+            }
+          } catch (err) {
+            console.error(`Failed to create effect ${effect.type}:`, err)
           }
         }
 
@@ -106,13 +112,41 @@ export function useEffectsChain() {
     }
   }, [])
 
+  const loadNamModel = (effectId: string, modelData: Record<string, unknown>): Promise<{ success: boolean; error?: string }> => {
+    return new Promise((resolve) => {
+      const managed = managedRef.current.get(effectId)
+      if (!managed || managed.config.type !== 'nam') {
+        resolve({ success: false, error: 'Effect not found' })
+        return
+      }
+      const node = managed.internals.node as AudioWorkletNode
+
+      const timeout = setTimeout(() => {
+        node.port.removeEventListener('message', handleMessage)
+        resolve({ success: false, error: 'Timeout loading model' })
+      }, 10000)
+
+      const handleMessage = (e: MessageEvent) => {
+        if (e.data.type === 'modelLoaded' || e.data.type === 'modelError') {
+          clearTimeout(timeout)
+          node.port.removeEventListener('message', handleMessage)
+          resolve({ success: e.data.success ?? false, error: e.data.error })
+        }
+      }
+
+      node.port.addEventListener('message', handleMessage)
+      node.port.postMessage({ type: 'loadModel', modelData })
+    })
+  }
+
   return {
     chain,
     addEffect: useEffectsStore.getState().addEffect,
     removeEffect: useEffectsStore.getState().removeEffect,
     toggleEffect: useEffectsStore.getState().toggleEffect,
     setParam: useEffectsStore.getState().setParam,
-    reorderEffects: useEffectsStore.getState().reorderEffects
+    reorderEffects: useEffectsStore.getState().reorderEffects,
+    loadNamModel
   }
 }
 
@@ -123,6 +157,7 @@ function createManagedEffect(ctx: AudioContext, effect: EffectConfig): ManagedEf
     case 'chorus':
     case 'compressor':
     case 'noisegate':
+    case 'nam':
       return createWorkletEffect(ctx, effect)
     case 'eq':
       return createEqEffect(ctx, effect)
@@ -138,11 +173,21 @@ const WORKLET_NAMES: Record<string, string> = {
   delay: 'delay-processor',
   chorus: 'chorus-processor',
   compressor: 'compressor-processor',
-  noisegate: 'noisegate-processor'
+  noisegate: 'noisegate-processor',
+  nam: 'nam-processor'
 }
 
 function createWorkletEffect(ctx: AudioContext, config: EffectConfig): ManagedEffect {
   const node = new AudioWorkletNode(ctx, WORKLET_NAMES[config.type])
+  if (config.type === 'nam') {
+    node.port.addEventListener('message', (e: MessageEvent) => {
+      if (e.data?.type === 'modelError') {
+        console.error('NAM model runtime error:', e.data.error)
+      }
+    })
+    node.port.start()
+  }
+
   return {
     config,
     pipelineNode: {
@@ -270,6 +315,13 @@ function updateParams(managed: ManagedEffect, effect: EffectConfig, ctx: AudioCo
       const node = managed.internals.node as AudioWorkletNode
       for (const [param, value] of Object.entries(effect.params)) {
         node.parameters.get(param)?.setTargetAtTime(value, t, 0.01)
+      }
+      break
+    }
+    case 'nam': {
+      const node = managed.internals.node as AudioWorkletNode
+      for (const [name, value] of Object.entries(effect.params)) {
+        node.port.postMessage({ type: 'setParam', name, value })
       }
       break
     }

@@ -17,6 +17,7 @@ const DEFAULT_PARAMS: Record<AudioProcessorType, Record<string, number>> = {
   chorus: { rate: 1.5, depth: 0.5, mix: 0.5 },
   compressor: { threshold: -20, ratio: 4, attack: 10, release: 100, makeup: 0 },
   noisegate: { threshold: -40, attack: 1, release: 50 },
+  nam: { inputGain: 1.0, outputGain: 1.0 },
   tuner: {}
 }
 

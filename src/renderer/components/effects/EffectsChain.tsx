@@ -11,11 +11,12 @@ const AVAILABLE_EFFECTS: { type: AudioProcessorType; label: string }[] = [
   { type: 'eq', label: 'EQ' },
   { type: 'chorus', label: 'Chorus' },
   { type: 'reverb', label: 'Reverb' },
-  { type: 'delay', label: 'Delay' }
+  { type: 'delay', label: 'Delay' },
+  { type: 'nam', label: 'NAM Capture' }
 ]
 
 export function EffectsChainPanel(): JSX.Element {
-  const { chain, addEffect, removeEffect, toggleEffect, setParam, reorderEffects } =
+  const { chain, addEffect, removeEffect, toggleEffect, setParam, reorderEffects, loadNamModel } =
     useEffectsChain()
   const [showMenu, setShowMenu] = useState(false)
   const dragIdx = useRef<number | null>(null)
@@ -61,6 +62,7 @@ export function EffectsChainPanel(): JSX.Element {
               onRemove={() => removeEffect(effect.id)}
               onParamChange={(param, value) => setParam(effect.id, param, value)}
               onDragStart={(e) => handleDragStart(e, idx)}
+              onLoadNamModel={effect.type === 'nam' ? (data) => loadNamModel(effect.id, data) : undefined}
             />
           </div>
         ))}
