@@ -29,34 +29,39 @@ class NAMProcessor extends AudioWorkletProcessor {
     var output = outputs[0]
     if (!input || !output) return true
 
-    for (var ch = 0; ch < output.length; ch++) {
+    var numCh = output.length
+    var numFrames = output[0].length
+
+    for (var ch = 0; ch < numCh; ch++) {
       if (input[ch]) {
-        for (var i = 0; i < output[ch].length; i++) output[ch][i] = input[ch][i]
+        for (var i = 0; i < numFrames; i++) output[ch][i] = input[ch][i]
       }
     }
 
     if (!this.model || !input[0]) return true
 
     try {
-      var modelInputScale = this.model.inputScale || 1.0
-      var inGain = this.inputGain * modelInputScale
-      var outGain = this.outputGain
       var mono = input[0]
+      var outBuf = output[0]
+      var inGain = this.inputGain * (this.model.inputScale || 1.0)
+      var outGain = this.outputGain
+      var forwardBuf = this.model.forwardBuffer
+
+      forwardBuf(mono, outBuf, numFrames, inGain, outGain)
+
       var inputPeak = 0
       var outputPeak = 0
-      for (var i = 0; i < output[0].length; i++) {
-        var dry = mono[i]
-        if (Math.abs(dry) > inputPeak) inputPeak = Math.abs(dry)
-        var s = this.model.forward(dry * inGain) * outGain
-        if (s !== s) s = 0
-        if (Math.abs(s) > outputPeak) outputPeak = Math.abs(s)
-        for (var ch = 0; ch < output.length; ch++) output[ch][i] = s
+      for (var i = 0; i < numFrames; i++) {
+        var av = mono[i]; if (av < 0) av = -av
+        if (av > inputPeak) inputPeak = av
+        av = outBuf[i]; if (av < 0) av = -av
+        if (av > outputPeak) outputPeak = av
       }
 
       if (inputPeak > 1e-4 && outputPeak < 1e-6) {
-        for (var ch = 0; ch < output.length; ch++) {
+        for (var ch = 0; ch < numCh; ch++) {
           if (!input[ch]) continue
-          for (var i = 0; i < output[ch].length; i++) output[ch][i] = input[ch][i]
+          for (var i = 0; i < numFrames; i++) output[ch][i] = input[ch][i]
         }
         if (!this.reportedSilentOutput) {
           this.reportedSilentOutput = true
@@ -64,6 +69,9 @@ class NAMProcessor extends AudioWorkletProcessor {
         }
       } else {
         this.reportedSilentOutput = false
+        for (var ch = 1; ch < numCh; ch++) {
+          for (var i = 0; i < numFrames; i++) output[ch][i] = outBuf[i]
+        }
       }
     } catch (err) {
       this.model = null
@@ -102,22 +110,37 @@ class NAMProcessor extends AudioWorkletProcessor {
         var cW = take(ch * co * ks), cB = take(co)
         var condW = condSize > 0 ? take(condSize * co) : null
         var mW = take(ch * ch), mB = take(ch)
-        var kernelWeights = new Array(ks)
-        for (var k = 0; k < ks; k++) kernelWeights[k] = new Float32Array(co * ch)
-        for (var o = 0; o < co; o++) {
-          var srcBase = o * ch * ks
-          var dstBase = o * ch
-          for (var c = 0; c < ch; c++) {
-            var src = srcBase + c * ks
-            for (var k = 0; k < ks; k++) kernelWeights[k][dstBase + c] = cW[src + k]
+
+        var flatKernel = new Float32Array(ks * co * ch)
+        for (var k = 0; k < ks; k++) {
+          for (var o = 0; o < co; o++) {
+            var srcBase = o * ch * ks
+            var dstBase = k * co * ch + o * ch
+            for (var c = 0; c < ch; c++) {
+              flatKernel[dstBase + c] = cW[srcBase + c * ks + k]
+            }
           }
         }
-        var tapSamples = new Int32Array(ks)
-        for (var k = 0; k < ks; k++) tapSamples[k] = (bs - d * (ks - 1 - k)) % bs
+
+        var condBias = null
+        if (condW && condSize > 0) {
+          condBias = new Float32Array(co)
+          if (condSize === 1) {
+            for (var o = 0; o < co; o++) condBias[o] = cB[o] + condW[o] * conditionValue
+          } else {
+            for (var o = 0; o < co; o++) {
+              var v = cB[o]
+              for (var ci = 0; ci < condSize; ci++) v += condW[ci * co + o] * conditionValue
+              condBias[o] = v
+            }
+          }
+        }
+
+        var tapOffsets = new Int32Array(ks)
+        for (var k = 0; k < ks; k++) tapOffsets[k] = ((bs - d * (ks - 1 - k)) % bs) * ch
+
         layers.push({
-          cB: cB,
-          condW: condW,
-          condSize: condSize,
+          bias: condBias || cB,
           mW: mW,
           mB: mB,
           buf: new Float32Array(bs * ch),
@@ -126,8 +149,9 @@ class NAMProcessor extends AudioWorkletProcessor {
           ks: ks,
           ch: ch,
           co: co,
-          kernelWeights: kernelWeights,
-          tapSamples: tapSamples
+          flatKernel: flatKernel,
+          tapOffsets: tapOffsets,
+          tapDelta: ch
         })
       }
       var hW = take(ch * headSize), hB = headBias ? take(headSize) : null
@@ -135,65 +159,70 @@ class NAMProcessor extends AudioWorkletProcessor {
     }
     var headScale = w.length > pos ? w[pos] : (config.head_scale || 1.0)
 
-    return { forward: function(sample) {
-      var ph = null
-      for (var b = 0; b < blocks.length; b++) {
-        var bl = blocks[b], ch = bl.ch, co = bl.co, x = bl.x, cv = bl.cv
-        if (bl.inSize === 1) {
-          for (var c = 0; c < ch; c++) x[c] = sample * bl.rW[c]
-        } else {
-          for (var c = 0; c < ch; c++) {
-            var v = 0
-            var rwBase = c * bl.inSize
-            for (var j = 0; j < bl.inSize; j++) v += ph[j] * bl.rW[rwBase + j]
-            x[c] = v
+    var numBlocks = blocks.length
+
+    return { forwardBuffer: function(inBuf, outBuf, numFrames, inGain, outGain) {
+      for (var i = 0; i < numFrames; i++) {
+        var sample = inBuf[i] * inGain
+        var ph = null
+        for (var b = 0; b < numBlocks; b++) {
+          var bl = blocks[b], ch = bl.ch, co = bl.co, x = bl.x, cv = bl.cv, rW = bl.rW
+          if (bl.inSize === 1) {
+            for (var c = 0; c < ch; c++) x[c] = sample * rW[c]
+          } else {
+            var inSz = bl.inSize
+            for (var c = 0; c < ch; c++) {
+              var v = 0, rwBase = c * inSz
+              for (var j = 0; j < inSz; j++) v += ph[j] * rW[rwBase + j]
+              x[c] = v
+            }
           }
-        }
-        for (var l = 0; l < bl.layers.length; l++) {
-          var ly = bl.layers[l], bi = ly.bi, buf = ly.buf, frameBase = bi * ch
-          for (var c = 0; c < ch; c++) buf[frameBase + c] = x[c]
-          for (var o = 0; o < co; o++) cv[o] = ly.cB[o]
-          if (ly.condW && ly.condSize > 0) {
-            if (ly.condSize === 1) {
-              for (var o = 0; o < co; o++) cv[o] += ly.condW[o] * conditionValue
-            } else {
-              for (var o = 0; o < co; o++) {
-                for (var ci = 0; ci < ly.condSize; ci++) {
-                  cv[o] += ly.condW[ci * co + o] * conditionValue
-                }
+          var numLayers = bl.layers.length
+          for (var l = 0; l < numLayers; l++) {
+            var ly = bl.layers[l], bi = ly.bi, buf = ly.buf, frameBase = bi * ch
+            var bias = ly.bias, mW = ly.mW, mB = ly.mB
+            var lks = ly.ks, lco = ly.co, fk = ly.flatKernel, tO = ly.tapOffsets
+
+            for (var c = 0; c < ch; c++) buf[frameBase + c] = x[c]
+
+            for (var o = 0; o < lco; o++) cv[o] = bias[o]
+
+            for (var k = 0; k < lks; k++) {
+              var bO = tO[k]
+              var fkBase = k * lco * ch
+              for (var o = 0; o < lco; o++) {
+                var kwOff = fkBase + o * ch
+                var sum = 0
+                for (var c = 0; c < ch; c++) sum += fk[kwOff + c] * buf[bO + c]
+                cv[o] += sum
               }
             }
-          }
-          for (var k = 0; k < ly.ks; k++) {
-            var bO = ly.tapSamples[k] * ch
-            var kw = ly.kernelWeights[k]
-            for (var o = 0; o < co; o++) {
-              var kwBase = o * ch
-              var sum = 0
-              for (var c = 0; c < ch; c++) sum += kw[kwBase + c] * buf[bO + c]
-              cv[o] += sum
+
+            if (bl.gated) {
+              for (var c = 0; c < ch; c++) cv[c] = Math.tanh(cv[c]) * (1 / (1 + Math.exp(-cv[c + ch])))
+            } else {
+              for (var c = 0; c < lco; c++) cv[c] = Math.tanh(cv[c])
+            }
+
+            for (var o = 0; o < ch; o++) {
+              var v = mB[o], mBase = o * ch
+              for (var c = 0; c < ch; c++) v += mW[mBase + c] * cv[c]
+              x[o] = v + buf[frameBase + o]
+            }
+
+            ly.bi = bi + 1
+            if (ly.bi === ly.bs) ly.bi = 0
+            for (var k = 0; k < lks; k++) {
+              tO[k] += ch
+              if (tO[k] >= ly.bs * ch) tO[k] = 0
             }
           }
-          if (bl.gated) { for (var c = 0; c < ch; c++) cv[c] = Math.tanh(cv[c]) * (1 / (1 + Math.exp(-cv[c + ch]))) }
-          else { for (var c = 0; c < co; c++) cv[c] = Math.tanh(cv[c]) }
-          for (var o = 0; o < ch; o++) {
-            var v = ly.mB[o]
-            var mBase = o * ch
-            for (var c = 0; c < ch; c++) v += ly.mW[mBase + c] * cv[c]
-            x[o] = v + buf[frameBase + o]
-          }
-          ly.bi = bi + 1
-          if (ly.bi === ly.bs) ly.bi = 0
-          for (var k = 0; k < ly.ks; k++) {
-            var nextTap = ly.tapSamples[k] + 1
-            if (nextTap === ly.bs) nextTap = 0
-            ly.tapSamples[k] = nextTap
-          }
+          ph = x
+          if (bl.hs === 1) { var v = bl.hB ? bl.hB[0] : 0; for (var c = 0; c < ch; c++) v += bl.hW[c] * x[c]; sample = v }
         }
-        ph = x
-        if (bl.hs === 1) { var v = bl.hB ? bl.hB[0] : 0; for (var c = 0; c < ch; c++) v += bl.hW[c] * x[c]; sample = v }
+        var s = sample * headScale * outGain
+        outBuf[i] = s !== s ? 0 : s
       }
-      return sample * headScale
     }, inputScale: this._getInputScale(data) }
   }
 
@@ -201,24 +230,58 @@ class NAMProcessor extends AudioWorkletProcessor {
     var cfg = data.config || {}, w = data.weights, pos = 0
     function take(n) { var a = new Float32Array(n); for (var i = 0; i < n; i++) a[i] = w[pos++]; return a }
     var hs = cfg.hidden_size || 32, nl = cfg.num_layers || 1, layers = []
+    var hs4 = 4 * hs
     for (var l = 0; l < nl; l++) {
       var is = l === 0 ? (cfg.input_size || 1) : hs
-      var Wi = take(4*hs*is), Wh = take(4*hs*hs)
-      var biasIH = take(4*hs), biasHH = take(4*hs)
-      var bias = new Float32Array(4*hs)
-      for (var g = 0; g < 4*hs; g++) bias[g] = biasIH[g] + biasHH[g]
+      var Wi = take(hs4 * is), Wh = take(hs4 * hs)
+      var biasIH = take(hs4), biasHH = take(hs4)
+      var bias = new Float32Array(hs4)
+      for (var g = 0; g < hs4; g++) bias[g] = biasIH[g] + biasHH[g]
       layers.push({ Wi: Wi, Wh: Wh, bias: bias, h: new Float32Array(hs), c: new Float32Array(hs), is: is })
     }
-    var hW = take(hs), hB = take(1), gates = new Float32Array(4 * hs)
-    return { forward: function(sample) {
-      var inp = [sample]
-      for (var l = 0; l < nl; l++) {
-        var ly = layers[l]
-        for (var g = 0; g < 4*hs; g++) { var v = ly.bias[g]; for (var j = 0; j < ly.is; j++) v += ly.Wi[g*ly.is+j]*inp[j]; for (var j = 0; j < hs; j++) v += ly.Wh[g*hs+j]*ly.h[j]; gates[g] = v }
-        for (var j = 0; j < hs; j++) { var ig=1/(1+Math.exp(-gates[j])),fg=1/(1+Math.exp(-gates[hs+j])),gg=Math.tanh(gates[2*hs+j]),og=1/(1+Math.exp(-gates[3*hs+j])); ly.c[j]=fg*ly.c[j]+ig*gg; ly.h[j]=og*Math.tanh(ly.c[j]) }
-        inp = ly.h
+    var hW = take(hs), hB = take(1)
+    var gates = new Float32Array(hs4)
+    var tmpInp = new Float32Array(hs)
+
+    return { forwardBuffer: function(inBuf, outBuf, numFrames, inGain, outGain) {
+      for (var i = 0; i < numFrames; i++) {
+        var inpVal = inBuf[i] * inGain
+        var inp = null, inpLen = 1
+        for (var l = 0; l < nl; l++) {
+          var ly = layers[l], lyIs = ly.is, lyWi = ly.Wi, lyWh = ly.Wh, lyBias = ly.bias
+          var lyH = ly.h, lyC = ly.c
+
+          for (var g = 0; g < hs4; g++) {
+            var v = lyBias[g]
+            if (inpLen === 1) {
+              v += lyWi[g] * inpVal
+            } else {
+              var wiBase = g * lyIs
+              for (var j = 0; j < lyIs; j++) v += lyWi[wiBase + j] * inp[j]
+            }
+            var whBase = g * hs
+            for (var j = 0; j < hs; j++) v += lyWh[whBase + j] * lyH[j]
+            gates[g] = v
+          }
+
+          for (var j = 0; j < hs; j++) {
+            var ig = 1 / (1 + Math.exp(-gates[j]))
+            var fg = 1 / (1 + Math.exp(-gates[hs + j]))
+            var gg = Math.tanh(gates[2 * hs + j])
+            var og = 1 / (1 + Math.exp(-gates[3 * hs + j]))
+            lyC[j] = fg * lyC[j] + ig * gg
+            lyH[j] = og * Math.tanh(lyC[j])
+          }
+
+          inp = lyH
+          inpLen = hs
+          inpVal = 0
+        }
+        var out = hB[0] || 0
+        for (var j = 0; j < hs; j++) out += hW[j] * inp[j]
+        var s = out * outGain
+        outBuf[i] = s !== s ? 0 : s
       }
-      var out = hB[0]||0; for (var j = 0; j < hs; j++) out += hW[j]*inp[j]; return out
     }, inputScale: this._getInputScale(data) }
   }
 

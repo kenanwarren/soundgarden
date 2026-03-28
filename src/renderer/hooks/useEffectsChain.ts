@@ -57,10 +57,12 @@ export function useEffectsChain() {
         }
       }
 
+      const disposedIds = new Set<string>()
       for (const [id, managed] of managedRef.current) {
         if (!chain.find((e) => e.id === id)) {
           managed.dispose()
           managedRef.current.delete(id)
+          disposedIds.add(id)
         }
       }
 
@@ -86,7 +88,7 @@ export function useEffectsChain() {
 
       const existingNodes = pipeline.getEffectNodes()
       const unmanagedNodes = existingNodes.filter(
-        (n) => !managedRef.current.has(n.id)
+        (n) => !managedRef.current.has(n.id) && !disposedIds.has(n.id)
       )
 
       const pipelineNodes: EffectNode[] = [...unmanagedNodes]
