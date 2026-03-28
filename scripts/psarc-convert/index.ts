@@ -282,16 +282,23 @@ function main(): void {
     }
   }
 
-  if (arrangementInputs.length === 0) {
-    console.log('\nNo valid arrangements found to convert.')
+  const bassCount = arrangementInputs.filter((a) => a.type === 'bass').length
+  const guitarInputs = arrangementInputs.filter((a) => a.type !== 'bass')
+
+  if (bassCount > 0) {
+    console.log(`\nSkipping ${bassCount} bass arrangement(s) (bass rendering not yet supported)`)
+  }
+
+  if (guitarInputs.length === 0) {
+    console.log('\nNo valid guitar arrangements found to convert.')
     return
   }
 
   console.log(
-    `\nConverting ${arrangementInputs.length} arrangement(s) with ${allVocals.length} vocal syllables...`
+    `\nConverting ${guitarInputs.length} arrangement(s) with ${allVocals.length} vocal syllables...`
   )
 
-  const song = assembleSong(arrangementInputs, allVocals, {
+  const song = assembleSong(guitarInputs, allVocals, {
     key: args.key,
     genre: args.genre,
     baseDifficulty: args.baseDifficulty
