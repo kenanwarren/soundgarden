@@ -5,6 +5,7 @@ describe('ear-training-store', () => {
   beforeEach(() => {
     useEarTrainingStore.setState({
       mode: 'note',
+      challengePresetId: null,
       currentChallenge: null,
       isListening: false,
       score: 0,
@@ -19,6 +20,7 @@ describe('ear-training-store', () => {
   it('has correct initial state', () => {
     const state = useEarTrainingStore.getState()
     expect(state.mode).toBe('note')
+    expect(state.challengePresetId).toBeNull()
     expect(state.score).toBe(0)
     expect(state.streak).toBe(0)
     expect(state.bestStreak).toBe(0)
@@ -63,9 +65,11 @@ describe('ear-training-store', () => {
   it('setMode resets all scores', () => {
     useEarTrainingStore.getState().recordResult(true)
     useEarTrainingStore.getState().recordResult(true)
+    useEarTrainingStore.getState().setChallengePresetId('blues-call-response')
     useEarTrainingStore.getState().setMode('interval')
     const state = useEarTrainingStore.getState()
     expect(state.mode).toBe('interval')
+    expect(state.challengePresetId).toBeNull()
     expect(state.score).toBe(0)
     expect(state.streak).toBe(0)
     expect(state.bestStreak).toBe(0)
@@ -109,5 +113,25 @@ describe('ear-training-store', () => {
     useEarTrainingStore.getState().setListening(true)
     useEarTrainingStore.getState().recordResult(true)
     expect(useEarTrainingStore.getState().isListening).toBe(false)
+  })
+
+  it('setChallengePresetId preserves the active mode but clears the active prompt state', () => {
+    useEarTrainingStore.getState().setMode('interval')
+    useEarTrainingStore.getState().setChallenge({
+      referenceNote: 'C',
+      referenceOctave: 4,
+      targetNote: 'G',
+      targetOctave: 4,
+      intervalSemitones: 7,
+      intervalName: 'Perfect Fifth'
+    })
+    useEarTrainingStore.getState().setListening(true)
+    useEarTrainingStore.getState().setChallengePresetId('rock-riff-intervals')
+
+    const state = useEarTrainingStore.getState()
+    expect(state.mode).toBe('interval')
+    expect(state.challengePresetId).toBe('rock-riff-intervals')
+    expect(state.currentChallenge).toBeNull()
+    expect(state.isListening).toBe(false)
   })
 })

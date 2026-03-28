@@ -32,6 +32,49 @@ describe('learn-progress-store', () => {
     expect(entry.weakSpots).toContain('Dragging 12ms')
   })
 
+  it('preserves best score, best streak, and completed state across weaker follow-up sessions', () => {
+    const store = useLearnProgressStore.getState()
+
+    store.recordSession({
+      module: 'ear-training',
+      title: 'Note ear session',
+      description: 'Started with a strong note-recognition round.',
+      route: '/learn/ear-training',
+      score: 90,
+      bestStreak: 5,
+      completionState: 'completed',
+      weakSpots: ['Bb'],
+      mode: 'note',
+      accuracy: 90,
+      correct: 9,
+      total: 10,
+      missedTargets: ['Bb']
+    }, 'foundations-ear-note')
+
+    store.recordSession({
+      module: 'ear-training',
+      title: 'Interval ear session',
+      description: 'Follow-up round with weaker interval recall.',
+      route: '/learn/ear-training',
+      score: 45,
+      bestStreak: 2,
+      completionState: 'in-progress',
+      weakSpots: ['Perfect 5th'],
+      mode: 'interval',
+      accuracy: 45,
+      correct: 2,
+      total: 5,
+      missedTargets: ['Perfect 5th']
+    }, 'blues-call-response')
+
+    const entry = useLearnProgressStore.getState().progress['ear-training']
+    expect(entry.attempts).toBe(2)
+    expect(entry.bestScore).toBe(90)
+    expect(entry.bestStreak).toBe(5)
+    expect(entry.completionState).toBe('completed')
+    expect(entry.weakSpots).toEqual(expect.arrayContaining(['Bb', 'Perfect 5th']))
+  })
+
   it('marks lesson steps complete only when the recorded summary satisfies the rule', () => {
     useLearnProgressStore.getState().recordSession({
       module: 'chord-changes',
@@ -70,5 +113,49 @@ describe('learn-progress-store', () => {
     }, 'chord-fluency-changes')
 
     expect(useLearnProgressStore.getState().completedSteps['chord-fluency-changes']).toBeUndefined()
+  })
+
+  it('requires matching sequence requirements before marking scale-sequence steps complete', () => {
+    const store = useLearnProgressStore.getState()
+
+    store.recordSession({
+      module: 'scale-sequences',
+      title: 'G Major Pentatonic descending sequence',
+      description: 'Completed the requested descending loops.',
+      route: '/learn/scale-sequences',
+      score: 100,
+      bestStreak: 10,
+      completionState: 'completed',
+      weakSpots: [],
+      root: 'G',
+      scaleName: 'Major Pentatonic',
+      sequenceType: 'descending',
+      loopsCompleted: 2,
+      targetLoops: 2,
+      missedNotes: []
+    }, 'country-pentatonic-step')
+
+    expect(useLearnProgressStore.getState().completedSteps['country-pentatonic-step']).toBeTypeOf('number')
+
+    useLearnProgressStore.setState({ progress: {}, completedSteps: {} })
+
+    useLearnProgressStore.getState().recordSession({
+      module: 'scale-sequences',
+      title: 'G Major Pentatonic ascending sequence',
+      description: 'Played enough loops, but with the wrong sequence type.',
+      route: '/learn/scale-sequences',
+      score: 100,
+      bestStreak: 10,
+      completionState: 'completed',
+      weakSpots: [],
+      root: 'G',
+      scaleName: 'Major Pentatonic',
+      sequenceType: 'ascending',
+      loopsCompleted: 2,
+      targetLoops: 2,
+      missedNotes: []
+    }, 'country-pentatonic-step')
+
+    expect(useLearnProgressStore.getState().completedSteps['country-pentatonic-step']).toBeUndefined()
   })
 })

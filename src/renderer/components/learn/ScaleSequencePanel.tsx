@@ -8,7 +8,11 @@ import { PageHeader } from '../layout/PageHeader'
 import { Fretboard } from '../common/Fretboard'
 import { AudioRequiredState } from '../common/AudioRequiredState'
 import { useLessonStep } from '../../hooks/useLessonStep'
-import { getScaleIndexByName } from '../../utils/learn-data'
+import {
+  SCALE_SEQUENCE_PRESETS,
+  getScaleIndexByName,
+  getScaleSequencePreset
+} from '../../utils/learn-data'
 import { useLearnProgressStore } from '../../stores/learn-progress-store'
 import { LearnSessionSummary } from './LearnSessionSummary'
 import { buildScaleSequence, type ScaleSequenceType } from '../../utils/learn-drills'
@@ -30,6 +34,7 @@ export function ScaleSequencePanel(): JSX.Element {
   const lastAcceptedAt = useRef(0)
   const lastMissedAt = useRef(0)
 
+  const [selectedPresetId, setSelectedPresetId] = useState<string | null>(null)
   const [root, setRoot] = useState('A')
   const [scaleIndex, setScaleIndex] = useState(getScaleIndexByName('Minor Pentatonic'))
   const [sequenceType, setSequenceType] = useState<ScaleSequenceType>('ascending')
@@ -44,6 +49,7 @@ export function ScaleSequencePanel(): JSX.Element {
   const [detectedOctave, setDetectedOctave] = useState<number | null>(null)
 
   const scale = SCALES[scaleIndex]
+  const selectedPreset = getScaleSequencePreset(selectedPresetId)
   const scaleNotes = getScaleNotes(root, scale)
   const sequence = useMemo(
     () => buildScaleSequence(scaleNotes, sequenceType),
@@ -66,14 +72,33 @@ export function ScaleSequencePanel(): JSX.Element {
     lastMissedAt.current = 0
   }, [])
 
+  const applySequencePreset = useCallback(
+    (presetId: string) => {
+      const preset = getScaleSequencePreset(presetId)
+      if (!preset) return
+      setSelectedPresetId(preset.id)
+      setRoot(preset.root)
+      setScaleIndex(getScaleIndexByName(preset.scaleName))
+      setSequenceType(preset.sequenceType)
+      setTargetLoops(preset.loops)
+      resetSessionState()
+    },
+    [resetSessionState]
+  )
+
   useEffect(() => {
     if (!lessonStep || lessonStep.prefill.module !== 'scale-sequences') return
+    if (lessonStep.prefill.presetId) {
+      applySequencePreset(lessonStep.prefill.presetId)
+      return
+    }
+    setSelectedPresetId(null)
     setRoot(lessonStep.prefill.root)
     setScaleIndex(getScaleIndexByName(lessonStep.prefill.scaleName))
     setSequenceType(lessonStep.prefill.sequenceType)
     setTargetLoops(lessonStep.prefill.loops ?? 2)
     resetSessionState()
-  }, [lessonStep, resetSessionState])
+  }, [applySequencePreset, lessonStep, resetSessionState])
 
   const progressSteps = loopsCompleted * sequence.length + currentIndex
   const totalSteps = Math.max(1, targetLoops * Math.max(sequence.length, 1))
@@ -104,13 +129,6 @@ export function ScaleSequencePanel(): JSX.Element {
     recordSession(buildSummary(), lessonStep?.id)
     sessionStartedAt.current = null
   }, [buildSummary, lessonStep?.id, progressSteps, recordSession])
-
-  const stopPractice = useCallback(() => {
-    finalizeSession()
-    stop()
-    setIsPracticing(false)
-    sessionStartedAt.current = null
-  }, [finalizeSession, stop])
 
   const onPitch = useCallback(
     (data: { note: string; octave: number; frequency: number; clarity: number; cents: number }) => {
@@ -159,6 +177,13 @@ export function ScaleSequencePanel(): JSX.Element {
     id: '__scale_sequence__',
     onPitch
   })
+
+  const stopPractice = useCallback(() => {
+    finalizeSession()
+    stop()
+    setIsPracticing(false)
+    sessionStartedAt.current = null
+  }, [finalizeSession, stop])
 
   useEffect(() => {
     if (isPracticing && loopsCompleted >= targetLoops && targetLoops > 0) {
@@ -211,9 +236,35 @@ export function ScaleSequencePanel(): JSX.Element {
 
       <div className="grid gap-4 md:grid-cols-4">
         <SummaryCard label="Scale" value={`${root} ${scale.name}`} />
-        <SummaryCard label="Sequence" value={sequenceType} />
+        <SummaryCard label="Sequence" value={selectedPreset?.name ?? sequenceType} />
         <SummaryCard label="Loops" value={`${loopsCompleted}/${targetLoops}`} />
         <SummaryCard label="Next note" value={expectedNote ?? 'Ready'} />
+      </div>
+
+      <div className="rounded-3xl border border-zinc-800 bg-zinc-900/80 p-5">
+        <div className="text-sm font-medium text-white">Sequence presets</div>
+        <p className="mt-1 text-sm text-zinc-400">
+          Genre-ready presets keep the sequence settings coherent, but you can still edit them manually.
+        </p>
+        <div className="mt-4 grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
+          {SCALE_SEQUENCE_PRESETS.map((preset) => (
+            <button
+              key={preset.id}
+              onClick={() => applySequencePreset(preset.id)}
+              className={`rounded-2xl border p-4 text-left transition-colors ${
+                selectedPresetId === preset.id
+                  ? 'border-emerald-400/60 bg-emerald-600 text-white'
+                  : 'border-zinc-800 bg-zinc-800 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-700'
+              }`}
+            >
+              <div className="text-sm font-medium">{preset.name}</div>
+              <div className="mt-1 text-xs opacity-75">{preset.description}</div>
+              <div className="mt-3 text-xs opacity-80">
+                {preset.root} {preset.scaleName} · {preset.sequenceType} · {preset.loops} loops
+              </div>
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
@@ -224,7 +275,10 @@ export function ScaleSequencePanel(): JSX.Element {
               {NOTE_NAMES.map((note) => (
                 <button
                   key={note}
-                  onClick={() => setRoot(note)}
+                  onClick={() => {
+                    setSelectedPresetId(null)
+                    setRoot(note)
+                  }}
                   className={`rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
                     root === note
                       ? 'bg-emerald-600 text-white'
@@ -243,7 +297,10 @@ export function ScaleSequencePanel(): JSX.Element {
               {SCALES.map((definition, index) => (
                 <button
                   key={definition.name}
-                  onClick={() => setScaleIndex(index)}
+                  onClick={() => {
+                    setSelectedPresetId(null)
+                    setScaleIndex(index)
+                  }}
                   className={`rounded-xl px-3 py-2 text-sm transition-colors ${
                     scaleIndex === index
                       ? 'bg-emerald-600 text-white'
@@ -262,7 +319,10 @@ export function ScaleSequencePanel(): JSX.Element {
               {(['ascending', 'descending', 'thirds'] as ScaleSequenceType[]).map((option) => (
                 <button
                   key={option}
-                  onClick={() => setSequenceType(option)}
+                  onClick={() => {
+                    setSelectedPresetId(null)
+                    setSequenceType(option)
+                  }}
                   className={`rounded-xl px-3 py-2 text-sm capitalize transition-colors ${
                     sequenceType === option
                       ? 'bg-emerald-600 text-white'
@@ -326,7 +386,10 @@ export function ScaleSequencePanel(): JSX.Element {
                   min={1}
                   max={6}
                   value={targetLoops}
-                  onChange={(event) => setTargetLoops(Math.max(1, Number(event.target.value) || 1))}
+                  onChange={(event) => {
+                    setSelectedPresetId(null)
+                    setTargetLoops(Math.max(1, Number(event.target.value) || 1))
+                  }}
                   className="ml-3 w-16 rounded-xl border border-zinc-800 bg-zinc-950 px-3 py-2 text-center text-white outline-none"
                 />
               </label>

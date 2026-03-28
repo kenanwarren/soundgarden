@@ -32,6 +32,14 @@ describe('generateChallenge', () => {
         expect(oct === 3 || oct === 4).toBe(true)
       }
     })
+
+    it('respects constrained reference notes when provided', () => {
+      const allowed = new Set(['C', 'E', 'G'])
+      for (let i = 0; i < 30; i++) {
+        const challenge = generateChallenge('note', { referenceNotes: ['C', 'E', 'G'] })
+        expect(allowed.has(challenge.referenceNote)).toBe(true)
+      }
+    })
   })
 
   describe('interval mode', () => {
@@ -82,6 +90,14 @@ describe('generateChallenge', () => {
       for (let i = 0; i < 50; i++) {
         const challenge = generateChallenge('interval')
         expect(noteSet.has(challenge.targetNote)).toBe(true)
+      }
+    })
+
+    it('respects constrained semitone pools when provided', () => {
+      const allowed = new Set([3, 7])
+      for (let i = 0; i < 30; i++) {
+        const challenge = generateChallenge('interval', { allowedSemitones: [3, 7] })
+        expect(allowed.has(challenge.intervalSemitones)).toBe(true)
       }
     })
   })

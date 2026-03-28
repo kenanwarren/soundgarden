@@ -7,6 +7,7 @@ import { AudioRequiredState } from '../common/AudioRequiredState'
 import { useLessonStep } from '../../hooks/useLessonStep'
 import { useLearnProgressStore } from '../../stores/learn-progress-store'
 import { LearnSessionSummary } from './LearnSessionSummary'
+import { EAR_TRAINING_PRESETS, getEarTrainingPreset } from '../../utils/learn-data'
 
 const MODES = [
   {
@@ -33,6 +34,7 @@ function SummaryCard({ label, value }: { label: string; value: string }): JSX.El
 export function EarTrainingPanel(): JSX.Element {
   const {
     mode,
+    challengePresetId,
     currentChallenge,
     isListening,
     score,
@@ -42,6 +44,7 @@ export function EarTrainingPanel(): JSX.Element {
     missedTargets,
     lastResult,
     setMode,
+    setChallengePresetId,
     reset
   } = useEarTrainingStore()
   const { newRound, playChallenge, listen, stopListening, isConnected } = useEarTraining()
@@ -49,6 +52,8 @@ export function EarTrainingPanel(): JSX.Element {
   const recordSession = useLearnProgressStore((state) => state.recordSession)
   const savedSummary = useLearnProgressStore((state) => state.progress['ear-training']?.lastSession)
   const sessionStartedAt = useRef<number | null>(null)
+  const appliedLessonId = useRef<string | null>(null)
+  const selectedPreset = getEarTrainingPreset(challengePresetId)
 
   const accuracy = total > 0 ? Math.round((score / total) * 100) : null
 
@@ -78,13 +83,21 @@ export function EarTrainingPanel(): JSX.Element {
   }, [buildSummary, lessonStep?.id, recordSession, total])
 
   useEffect(() => {
-    if (!lessonStep || lessonStep.prefill.module !== 'ear-training') return
-    if (lessonStep.prefill.mode !== mode) {
-      finalizeSession()
-      setMode(lessonStep.prefill.mode)
-      sessionStartedAt.current = null
+    if (!lessonStep || lessonStep.prefill.module !== 'ear-training') {
+      appliedLessonId.current = null
+      return
     }
-  }, [finalizeSession, lessonStep, mode, setMode])
+    if (appliedLessonId.current === lessonStep.id) return
+    finalizeSession()
+    if (lessonStep.prefill.mode !== mode) {
+      setMode(lessonStep.prefill.mode)
+    } else {
+      reset()
+    }
+    setChallengePresetId(lessonStep.prefill.presetId ?? null)
+    sessionStartedAt.current = null
+    appliedLessonId.current = lessonStep.id
+  }, [finalizeSession, lessonStep, mode, reset, setChallengePresetId, setMode])
 
   useEffect(() => {
     return () => {
@@ -155,6 +168,44 @@ export function EarTrainingPanel(): JSX.Element {
         ))}
       </div>
 
+      <div className="rounded-3xl border border-zinc-800 bg-zinc-900/80 p-5">
+        <div className="text-sm font-medium text-white">Prompt context</div>
+        <p className="mt-1 text-sm text-zinc-400">
+          Genre presets keep the ear work framed around a musical context without changing the core scoring rules.
+        </p>
+        <div className="mt-4 grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
+          {EAR_TRAINING_PRESETS.map((preset) => (
+            <button
+              key={preset.id}
+              onClick={() => {
+                finalizeSession()
+                if (preset.mode !== mode) {
+                  setMode(preset.mode)
+                } else {
+                  reset()
+                }
+                setChallengePresetId(preset.id)
+                sessionStartedAt.current = null
+              }}
+              className={`rounded-2xl border p-4 text-left transition-colors ${
+                challengePresetId === preset.id
+                  ? 'border-emerald-400/60 bg-emerald-600 text-white'
+                  : 'border-zinc-800 bg-zinc-800 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-700'
+              }`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="text-sm font-medium">{preset.name}</div>
+                <span className="rounded-full bg-black/20 px-2 py-1 text-[10px] uppercase tracking-[0.18em]">
+                  {preset.mode}
+                </span>
+              </div>
+              <div className="mt-1 text-xs opacity-75">{preset.description}</div>
+              <div className="mt-3 text-xs opacity-80">{preset.promptLabel}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="rounded-3xl border border-zinc-800 bg-zinc-900/80 p-8">
         {!currentChallenge ? (
           <div className="flex flex-col items-center gap-4 text-center">
@@ -163,6 +214,9 @@ export function EarTrainingPanel(): JSX.Element {
                 ? 'Start a round to hear one target note, then play it back cleanly on the guitar.'
                 : 'Start a round to hear an interval, then play back the target note at the end of the prompt.'}
             </p>
+            {selectedPreset && (
+              <p className="max-w-xl text-sm text-zinc-500">{selectedPreset.promptLabel}</p>
+            )}
             <button
               onClick={() => {
                 if (sessionStartedAt.current === null) sessionStartedAt.current = Date.now()
@@ -183,6 +237,7 @@ export function EarTrainingPanel(): JSX.Element {
                   ? 'Replay the reference note, then listen for your answer.'
                   : `Replay the interval, then play back the target tone (${currentChallenge.intervalName}).`}
               </p>
+              {selectedPreset && <p className="mt-2 text-sm text-zinc-500">{selectedPreset.promptLabel}</p>}
             </div>
 
             {lastResult && (

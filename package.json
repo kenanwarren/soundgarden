@@ -14,7 +14,7 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test",
+    "test:e2e": "npm run build && playwright test",
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },
@@ -66,7 +66,10 @@
     "zustand": "^5.0.12"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "@tailwindcss/vite": "^4.2.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
@@ -74,6 +77,8 @@
     "electron": "^41.1.0",
     "electron-builder": "^26.8.1",
     "eslint": "^10.1.0",
+    "jsdom": "^29.0.1",
+    "playwright": "^1.58.2",
     "prettier": "^3.8.1",
     "tailwindcss": "^4.2.2",
     "typescript": "^6.0.2",

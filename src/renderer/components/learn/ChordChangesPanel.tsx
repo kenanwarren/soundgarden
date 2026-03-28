@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { RotateCcw } from 'lucide-react'
 import { CHORD_VOICINGS } from '../../utils/chord-voicings'
-import { getChordChangePreset, getChordIndexByName } from '../../utils/learn-data'
+import {
+  CHORD_CHANGE_PRESETS,
+  getChordChangePreset,
+  getChordIndexByName
+} from '../../utils/learn-data'
 import { useLessonStep } from '../../hooks/useLessonStep'
 import { useLearnProgressStore } from '../../stores/learn-progress-store'
 import { useMetronomeStore } from '../../stores/metronome-store'
@@ -188,9 +192,7 @@ export function ChordChangesPanel(): JSX.Element {
       <div className="rounded-3xl border border-zinc-800 bg-zinc-900/80 p-5">
         <div className="text-sm font-medium text-white">Progression preset</div>
         <div className="mt-4 grid gap-3 lg:grid-cols-3">
-          {['open-two', 'pop-four', 'dominant-ladder'].map((optionId) => {
-            const option = getChordChangePreset(optionId)
-            if (!option) return null
+          {CHORD_CHANGE_PRESETS.map((option) => {
             return (
               <button
                 key={option.id}
@@ -207,12 +209,17 @@ export function ChordChangesPanel(): JSX.Element {
                 <div className="text-sm font-medium">{option.name}</div>
                 <div className="mt-1 text-xs opacity-75">{option.description}</div>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {option.chordNames.map((name) => (
-                    <span key={name} className="rounded-full bg-black/20 px-2 py-1 text-xs">
+                  {option.chordNames.map((name, index) => (
+                    <span key={`${option.id}-${name}-${index}`} className="rounded-full bg-black/20 px-2 py-1 text-xs">
                       {name}
                     </span>
                   ))}
                 </div>
+                {option.toneSuggestions?.length ? (
+                  <div className="mt-3 text-xs opacity-80">
+                    Tone: {option.toneSuggestions[0]}
+                  </div>
+                ) : null}
               </button>
             )
           })}

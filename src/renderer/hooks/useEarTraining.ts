@@ -4,6 +4,7 @@ import { usePitchDetection } from './usePitchDetection'
 import { noteToFrequency } from '../utils/note-utils'
 import { getPlaybackContext } from '../utils/playback-context'
 import { generateChallenge } from '../utils/ear-training-challenge'
+import { getEarTrainingPreset } from '../utils/learn-data'
 
 const TONE_DURATION = 0.8
 const TONE_GAP = 0.3
@@ -11,12 +12,14 @@ const TONE_GAP = 0.3
 export function useEarTraining() {
   const {
     mode,
+    challengePresetId,
     currentChallenge,
     isListening,
     setChallenge,
     setListening,
     recordResult
   } = useEarTrainingStore()
+  const preset = getEarTrainingPreset(challengePresetId)
 
   const playTone = useCallback(
     (frequency: number, startTime: number, duration: number) => {
@@ -80,10 +83,13 @@ export function useEarTraining() {
   })
 
   const newRound = useCallback(async () => {
-    const challenge = generateChallenge(mode)
+    const challenge = generateChallenge(mode, {
+      allowedSemitones: preset?.allowedSemitones,
+      referenceNotes: preset?.referenceNotes
+    })
     setChallenge(challenge)
     await playChallenge(challenge)
-  }, [mode, setChallenge, playChallenge])
+  }, [mode, playChallenge, preset?.allowedSemitones, preset?.referenceNotes, setChallenge])
 
   const listen = useCallback(async () => {
     setListening(true)

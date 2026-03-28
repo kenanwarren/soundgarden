@@ -7,6 +7,25 @@ export type LearnModuleId =
   | 'chord-changes'
   | 'scale-sequences'
 
+export type GenreId =
+  | 'general'
+  | 'blues'
+  | 'rock'
+  | 'pop'
+  | 'funk'
+  | 'country'
+  | 'fingerpicking'
+
+export type LearnSkillId =
+  | 'chords'
+  | 'scales'
+  | 'rhythm'
+  | 'ear'
+  | 'timing'
+  | 'groove'
+  | 'technique'
+  | 'fingerstyle'
+
 export type CompletionState = 'not-started' | 'in-progress' | 'completed'
 export type PracticeDifficulty = 'Beginner' | 'Developing' | 'Intermediate'
 
@@ -25,7 +44,7 @@ export type LessonPrefill =
       bpm?: number
       sensitivity?: 'low' | 'mid' | 'high'
     }
-  | { module: 'ear-training'; mode: 'note' | 'interval' }
+  | { module: 'ear-training'; mode: 'note' | 'interval'; presetId?: string }
   | { module: 'chord-changes'; presetId: string; bpm?: number }
   | {
       module: 'scale-sequences'
@@ -33,6 +52,7 @@ export type LessonPrefill =
       scaleName: string
       sequenceType: 'ascending' | 'descending' | 'thirds'
       loops?: number
+      presetId?: string
     }
 
 export type LessonCompletionRule =
@@ -55,11 +75,28 @@ export interface LessonStep {
   completionRule: LessonCompletionRule
 }
 
+export interface GenreDefinition {
+  id: GenreId
+  title: string
+  description: string
+  shortSummary: string
+  starterPathId?: string
+  focusSkills: LearnSkillId[]
+  recommendedTools: LearnModuleId[]
+  toneSuggestions: string[]
+  hidden?: boolean
+}
+
 export interface PracticePath {
   id: string
   title: string
   description: string
+  genre: GenreId
   difficulty: PracticeDifficulty
+  focusSkills: LearnSkillId[]
+  recommendedTools: LearnModuleId[]
+  toneSuggestions?: string[]
+  starterPresetIds?: string[]
   steps: LessonStep[]
 }
 

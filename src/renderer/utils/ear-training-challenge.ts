@@ -11,10 +11,17 @@ export interface Challenge {
   intervalName: string
 }
 
-export function generateChallenge(mode: EarTrainingMode): Challenge {
-  const referenceNoteIndex = Math.floor(Math.random() * 12)
+interface ChallengeOptions {
+  allowedSemitones?: number[]
+  referenceNotes?: string[]
+}
+
+export function generateChallenge(mode: EarTrainingMode, options?: ChallengeOptions): Challenge {
+  const allowedNotes =
+    options?.referenceNotes?.filter((note) => NOTE_NAMES.includes(note)) ?? NOTE_NAMES
+  const referenceNote = allowedNotes[Math.floor(Math.random() * allowedNotes.length)]
+  const referenceNoteIndex = NOTE_NAMES.indexOf(referenceNote)
   const referenceOctave = 3 + Math.floor(Math.random() * 2)
-  const referenceNote = NOTE_NAMES[referenceNoteIndex]
 
   if (mode === 'note') {
     return {
@@ -27,8 +34,16 @@ export function generateChallenge(mode: EarTrainingMode): Challenge {
     }
   }
 
-  const availableIntervals = INTERVALS.filter((i) => i.semitones > 0 && i.semitones <= 12)
-  const interval = availableIntervals[Math.floor(Math.random() * availableIntervals.length)]
+  const availableIntervals = INTERVALS.filter(
+    (i) =>
+      i.semitones > 0 &&
+      i.semitones <= 12 &&
+      (!options?.allowedSemitones?.length || options.allowedSemitones.includes(i.semitones))
+  )
+  const intervalPool = availableIntervals.length
+    ? availableIntervals
+    : INTERVALS.filter((i) => i.semitones > 0 && i.semitones <= 12)
+  const interval = intervalPool[Math.floor(Math.random() * intervalPool.length)]
   const targetIndex = (referenceNoteIndex + interval.semitones) % 12
   const targetNote = NOTE_NAMES[targetIndex]
   const targetOctave = referenceOctave + Math.floor((referenceNoteIndex + interval.semitones) / 12)

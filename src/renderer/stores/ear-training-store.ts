@@ -5,6 +5,7 @@ export type EarTrainingMode = 'note' | 'interval'
 
 interface EarTrainingState {
   mode: EarTrainingMode
+  challengePresetId: string | null
   currentChallenge: Challenge | null
   isListening: boolean
   score: number
@@ -14,6 +15,7 @@ interface EarTrainingState {
   missedTargets: string[]
   lastResult: 'correct' | 'incorrect' | null
   setMode: (mode: EarTrainingMode) => void
+  setChallengePresetId: (presetId: string | null) => void
   setChallenge: (challenge: Challenge) => void
   setListening: (listening: boolean) => void
   recordResult: (correct: boolean, missedTarget?: string) => void
@@ -22,6 +24,7 @@ interface EarTrainingState {
 
 export const useEarTrainingStore = create<EarTrainingState>()((set) => ({
   mode: 'note',
+  challengePresetId: null,
   currentChallenge: null,
   isListening: false,
   score: 0,
@@ -33,6 +36,7 @@ export const useEarTrainingStore = create<EarTrainingState>()((set) => ({
   setMode: (mode) =>
     set({
       mode,
+      challengePresetId: null,
       score: 0,
       streak: 0,
       bestStreak: 0,
@@ -40,6 +44,13 @@ export const useEarTrainingStore = create<EarTrainingState>()((set) => ({
       missedTargets: [],
       lastResult: null,
       currentChallenge: null
+    }),
+  setChallengePresetId: (challengePresetId) =>
+    set({
+      challengePresetId,
+      currentChallenge: null,
+      isListening: false,
+      lastResult: null
     }),
   setChallenge: (challenge) => set({ currentChallenge: challenge, isListening: false, lastResult: null }),
   setListening: (listening) => set({ isListening: listening }),

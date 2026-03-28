@@ -1,3 +1,5 @@
+import type { GenreId } from './learn-types'
+
 export interface RhythmPattern {
   name: string
   description: string
@@ -5,6 +7,7 @@ export interface RhythmPattern {
   beatsPerMeasure: number
   subdivisions: number
   hits: boolean[]
+  genreTags?: GenreId[]
 }
 
 export const RHYTHM_PATTERNS: RhythmPattern[] = [
@@ -14,7 +17,8 @@ export const RHYTHM_PATTERNS: RhythmPattern[] = [
     difficulty: 1,
     beatsPerMeasure: 4,
     subdivisions: 1,
-    hits: [true, false, false, false]
+    hits: [true, false, false, false],
+    genreTags: ['general']
   },
   {
     name: 'Quarter Notes',
@@ -22,7 +26,8 @@ export const RHYTHM_PATTERNS: RhythmPattern[] = [
     difficulty: 1,
     beatsPerMeasure: 4,
     subdivisions: 1,
-    hits: [true, true, true, true]
+    hits: [true, true, true, true],
+    genreTags: ['general', 'rock', 'pop', 'country']
   },
   {
     name: 'Half Notes',
@@ -30,7 +35,8 @@ export const RHYTHM_PATTERNS: RhythmPattern[] = [
     difficulty: 1,
     beatsPerMeasure: 4,
     subdivisions: 1,
-    hits: [true, false, true, false]
+    hits: [true, false, true, false],
+    genreTags: ['general', 'country']
   },
   {
     name: 'Eighth Notes',
@@ -38,7 +44,8 @@ export const RHYTHM_PATTERNS: RhythmPattern[] = [
     difficulty: 1,
     beatsPerMeasure: 4,
     subdivisions: 2,
-    hits: [true, true, true, true, true, true, true, true]
+    hits: [true, true, true, true, true, true, true, true],
+    genreTags: ['general', 'rock', 'pop', 'country']
   },
   {
     name: 'Eighth Rest Start',
@@ -46,7 +53,8 @@ export const RHYTHM_PATTERNS: RhythmPattern[] = [
     difficulty: 2,
     beatsPerMeasure: 4,
     subdivisions: 2,
-    hits: [false, true, false, true, false, true, false, true]
+    hits: [false, true, false, true, false, true, false, true],
+    genreTags: ['funk']
   },
   {
     name: 'Basic Syncopation',
@@ -54,7 +62,8 @@ export const RHYTHM_PATTERNS: RhythmPattern[] = [
     difficulty: 2,
     beatsPerMeasure: 4,
     subdivisions: 2,
-    hits: [true, false, true, true, true, false, true, true]
+    hits: [true, false, true, true, true, false, true, true],
+    genreTags: ['funk', 'pop']
   },
   {
     name: 'Rock Beat',
@@ -62,7 +71,8 @@ export const RHYTHM_PATTERNS: RhythmPattern[] = [
     difficulty: 2,
     beatsPerMeasure: 4,
     subdivisions: 2,
-    hits: [true, false, false, true, true, false, false, true]
+    hits: [true, false, false, true, true, false, false, true],
+    genreTags: ['rock']
   },
   {
     name: 'Folk Strum',
@@ -70,7 +80,8 @@ export const RHYTHM_PATTERNS: RhythmPattern[] = [
     difficulty: 2,
     beatsPerMeasure: 4,
     subdivisions: 2,
-    hits: [true, false, true, true, false, true, true, false]
+    hits: [true, false, true, true, false, true, true, false],
+    genreTags: ['pop', 'country']
   },
   {
     name: 'Sixteenth Notes',
@@ -78,7 +89,8 @@ export const RHYTHM_PATTERNS: RhythmPattern[] = [
     difficulty: 2,
     beatsPerMeasure: 4,
     subdivisions: 4,
-    hits: Array(16).fill(true)
+    hits: Array(16).fill(true),
+    genreTags: ['rock', 'funk']
   },
   {
     name: 'Sixteenth Funk',
@@ -89,7 +101,8 @@ export const RHYTHM_PATTERNS: RhythmPattern[] = [
     hits: [
       true, false, true, false, false, true, false, true, true, false, true, false, false, true,
       false, true
-    ]
+    ],
+    genreTags: ['funk']
   },
   {
     name: 'Waltz',
@@ -97,7 +110,8 @@ export const RHYTHM_PATTERNS: RhythmPattern[] = [
     difficulty: 1,
     beatsPerMeasure: 3,
     subdivisions: 1,
-    hits: [true, true, true]
+    hits: [true, true, true],
+    genreTags: ['country']
   },
   {
     name: 'Waltz Eighth',
@@ -105,7 +119,8 @@ export const RHYTHM_PATTERNS: RhythmPattern[] = [
     difficulty: 2,
     beatsPerMeasure: 3,
     subdivisions: 2,
-    hits: [true, false, true, false, true, false]
+    hits: [true, false, true, false, true, false],
+    genreTags: ['country']
   },
   {
     name: 'Reggae Skank',
@@ -113,7 +128,8 @@ export const RHYTHM_PATTERNS: RhythmPattern[] = [
     difficulty: 2,
     beatsPerMeasure: 4,
     subdivisions: 2,
-    hits: [false, true, false, true, false, true, false, true]
+    hits: [false, true, false, true, false, true, false, true],
+    genreTags: ['general']
   },
   {
     name: 'Bo Diddley',
@@ -124,7 +140,8 @@ export const RHYTHM_PATTERNS: RhythmPattern[] = [
     hits: [
       true, false, false, true, false, false, true, false, false, false, true, false, true, false,
       false, false
-    ]
+    ],
+    genreTags: ['rock', 'blues']
   },
   {
     name: 'Shuffle',
@@ -132,6 +149,55 @@ export const RHYTHM_PATTERNS: RhythmPattern[] = [
     difficulty: 3,
     beatsPerMeasure: 4,
     subdivisions: 3,
-    hits: [true, false, true, true, false, true, true, false, true, true, false, true]
+    hits: [true, false, true, true, false, true, true, false, true, true, false, true],
+    genreTags: ['blues']
+  },
+  {
+    name: 'Pop Pulse',
+    description: 'Straight-ahead pop groove with a lifted upbeat push.',
+    difficulty: 1,
+    beatsPerMeasure: 4,
+    subdivisions: 2,
+    hits: [true, false, true, true, true, false, true, true],
+    genreTags: ['pop']
+  },
+  {
+    name: 'Muted Funk Chops',
+    description: 'Clipped sixteenth-note stabs that stay tight around the pocket.',
+    difficulty: 3,
+    beatsPerMeasure: 4,
+    subdivisions: 4,
+    hits: [
+      false, true, false, true, true, false, false, true, false, true, false, true, true, false,
+      false, true
+    ],
+    genreTags: ['funk']
+  },
+  {
+    name: 'Country Train Beat',
+    description: 'Snappy boom-chick motion that keeps the right hand driving.',
+    difficulty: 2,
+    beatsPerMeasure: 4,
+    subdivisions: 2,
+    hits: [true, false, true, true, true, false, true, true],
+    genreTags: ['country']
+  },
+  {
+    name: 'Alternating Bass',
+    description: 'Fingerpicked pulse that alternates bass notes with upper-string plucks.',
+    difficulty: 2,
+    beatsPerMeasure: 4,
+    subdivisions: 2,
+    hits: [true, true, true, true, true, true, true, true],
+    genreTags: ['fingerpicking']
+  },
+  {
+    name: 'Fingerpicked Arpeggio',
+    description: 'Broken-chord roll pattern for clean fingerpicking timing.',
+    difficulty: 2,
+    beatsPerMeasure: 4,
+    subdivisions: 4,
+    hits: [true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false],
+    genreTags: ['fingerpicking']
   }
 ]
