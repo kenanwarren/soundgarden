@@ -16,7 +16,17 @@ import {
   flangerProcessorUrl,
   distortionProcessorUrl,
   wahProcessorUrl,
-  pitchshiftProcessorUrl
+  pitchshiftProcessorUrl,
+  cleanboostProcessorUrl,
+  autoswellProcessorUrl,
+  limiterProcessorUrl,
+  ringmodProcessorUrl,
+  bitcrusherProcessorUrl,
+  octaverProcessorUrl,
+  rotaryProcessorUrl,
+  shimmerProcessorUrl,
+  harmonizerProcessorUrl,
+  looperProcessorUrl
 } from '../audio/worklet-urls'
 
 interface ManagedEffect {
@@ -38,7 +48,17 @@ const WORKLET_URLS: Record<string, string> = {
   flanger: flangerProcessorUrl,
   distortion: distortionProcessorUrl,
   wah: wahProcessorUrl,
-  pitchshift: pitchshiftProcessorUrl
+  pitchshift: pitchshiftProcessorUrl,
+  cleanboost: cleanboostProcessorUrl,
+  autoswell: autoswellProcessorUrl,
+  limiter: limiterProcessorUrl,
+  ringmod: ringmodProcessorUrl,
+  bitcrusher: bitcrusherProcessorUrl,
+  octaver: octaverProcessorUrl,
+  rotary: rotaryProcessorUrl,
+  shimmer: shimmerProcessorUrl,
+  harmonizer: harmonizerProcessorUrl,
+  looper: looperProcessorUrl
 }
 
 export function useEffectsChain() {
@@ -173,6 +193,13 @@ export function useEffectsChain() {
     }
   }
 
+  const sendLooperCommand = (effectId: string, command: string) => {
+    const managed = managedRef.current.get(effectId)
+    if (!managed || managed.config.type !== 'looper') return
+    const node = managed.internals.node as AudioWorkletNode
+    node.port.postMessage({ type: command })
+  }
+
   return {
     chain,
     addEffect: useEffectsStore.getState().addEffect,
@@ -181,7 +208,8 @@ export function useEffectsChain() {
     setParam: useEffectsStore.getState().setParam,
     reorderEffects: useEffectsStore.getState().reorderEffects,
     loadNamModel,
-    loadCabinetIR
+    loadCabinetIR,
+    sendLooperCommand
   }
 }
 
@@ -199,6 +227,16 @@ function createManagedEffect(ctx: AudioContext, effect: EffectConfig): ManagedEf
     case 'distortion':
     case 'wah':
     case 'pitchshift':
+    case 'cleanboost':
+    case 'autoswell':
+    case 'limiter':
+    case 'ringmod':
+    case 'bitcrusher':
+    case 'octaver':
+    case 'rotary':
+    case 'shimmer':
+    case 'harmonizer':
+    case 'looper':
       return createWorkletEffect(ctx, effect)
     case 'eq':
       return createEqEffect(ctx, effect)
@@ -206,6 +244,10 @@ function createManagedEffect(ctx: AudioContext, effect: EffectConfig): ManagedEf
       return createReverbEffect(ctx, effect)
     case 'cabinet':
       return createCabinetEffect(ctx, effect)
+    case 'graphiceq':
+      return createGraphicEqEffect(ctx, effect)
+    case 'parameq':
+      return createParametricEqEffect(ctx, effect)
     default:
       return null
   }
@@ -223,7 +265,17 @@ const WORKLET_NAMES: Record<string, string> = {
   flanger: 'flanger-processor',
   distortion: 'distortion-processor',
   wah: 'wah-processor',
-  pitchshift: 'pitchshift-processor'
+  pitchshift: 'pitchshift-processor',
+  cleanboost: 'cleanboost-processor',
+  autoswell: 'autoswell-processor',
+  limiter: 'limiter-processor',
+  ringmod: 'ringmod-processor',
+  bitcrusher: 'bitcrusher-processor',
+  octaver: 'octaver-processor',
+  rotary: 'rotary-processor',
+  shimmer: 'shimmer-processor',
+  harmonizer: 'harmonizer-processor',
+  looper: 'looper-processor'
 }
 
 let namWasmBytesCache: ArrayBuffer | null = null
@@ -252,6 +304,9 @@ function createWorkletEffect(ctx: AudioContext, config: EffectConfig): ManagedEf
     fetchNamWasmBytes().then((bytes) => {
       if (bytes) node.port.postMessage({ type: 'initWasm', wasmBytes: bytes })
     })
+  }
+  if (config.type === 'looper') {
+    node.port.start()
   }
 
   return {
@@ -391,6 +446,67 @@ function createCabinetEffect(ctx: AudioContext, config: EffectConfig): ManagedEf
   }
 }
 
+function createGraphicEqEffect(ctx: AudioContext, config: EffectConfig): ManagedEffect {
+  const bands = [
+    { freq: 60, type: 'lowshelf' as BiquadFilterType },
+    { freq: 250, type: 'peaking' as BiquadFilterType },
+    { freq: 1000, type: 'peaking' as BiquadFilterType },
+    { freq: 4000, type: 'peaking' as BiquadFilterType },
+    { freq: 8000, type: 'peaking' as BiquadFilterType },
+    { freq: 12000, type: 'highshelf' as BiquadFilterType }
+  ]
+  const nodes = bands.map(({ freq, type }) => {
+    const f = ctx.createBiquadFilter()
+    f.type = type
+    f.frequency.value = freq
+    if (type === 'peaking') f.Q.value = 1.4
+    return f
+  })
+  for (let i = 0; i < nodes.length - 1; i++) nodes[i].connect(nodes[i + 1])
+
+  return {
+    config,
+    pipelineNode: {
+      id: config.id,
+      enabled: config.enabled,
+      getInput: () => nodes[0],
+      getOutput: () => nodes[nodes.length - 1]
+    },
+    internals: { band60: nodes[0], band250: nodes[1], band1k: nodes[2], band4k: nodes[3], band8k: nodes[4], band12k: nodes[5] },
+    dispose: () => nodes.forEach((n) => n.disconnect())
+  }
+}
+
+function createParametricEqEffect(ctx: AudioContext, config: EffectConfig): ManagedEffect {
+  const defaults = [
+    { freq: 100, gain: 0, q: 1 },
+    { freq: 500, gain: 0, q: 1 },
+    { freq: 2000, gain: 0, q: 1 },
+    { freq: 8000, gain: 0, q: 1 }
+  ]
+  const nodes = defaults.map(({ freq, gain, q }) => {
+    const f = ctx.createBiquadFilter()
+    f.type = 'peaking'
+    f.frequency.value = freq
+    f.gain.value = gain
+    f.Q.value = q
+    return f
+  })
+  for (let i = 0; i < nodes.length - 1; i++) nodes[i].connect(nodes[i + 1])
+
+  return {
+    config,
+    pipelineNode: {
+      id: config.id,
+      enabled: config.enabled,
+      getInput: () => nodes[0],
+      getOutput: () => nodes[nodes.length - 1]
+    },
+    internals: { band1: nodes[0], band2: nodes[1], band3: nodes[2], band4: nodes[3] },
+    dispose: () => nodes.forEach((n) => n.disconnect())
+  }
+}
+
 function updateParams(managed: ManagedEffect, effect: EffectConfig, ctx: AudioContext): void {
   const t = ctx.currentTime
 
@@ -427,7 +543,17 @@ function updateParams(managed: ManagedEffect, effect: EffectConfig, ctx: AudioCo
     case 'flanger':
     case 'distortion':
     case 'wah':
-    case 'pitchshift': {
+    case 'pitchshift':
+    case 'cleanboost':
+    case 'autoswell':
+    case 'limiter':
+    case 'ringmod':
+    case 'bitcrusher':
+    case 'octaver':
+    case 'rotary':
+    case 'shimmer':
+    case 'harmonizer':
+    case 'looper': {
       const node = managed.internals.node as AudioWorkletNode
       for (const [param, value] of Object.entries(effect.params)) {
         node.parameters.get(param)?.setTargetAtTime(value, t, 0.01)
@@ -440,6 +566,23 @@ function updateParams(managed: ManagedEffect, effect: EffectConfig, ctx: AudioCo
       const mix = effect.params.mix ?? 0.8
       dry.gain.setTargetAtTime(1 - mix, t, 0.01)
       wet.gain.setTargetAtTime(mix, t, 0.01)
+      break
+    }
+    case 'graphiceq': {
+      const bandKeys = ['band60', 'band250', 'band1k', 'band4k', 'band8k', 'band12k'] as const
+      for (const key of bandKeys) {
+        const node = managed.internals[key] as BiquadFilterNode
+        node.gain.setTargetAtTime(effect.params[key] ?? 0, t, 0.01)
+      }
+      break
+    }
+    case 'parameq': {
+      for (let i = 1; i <= 4; i++) {
+        const node = managed.internals[`band${i}`] as BiquadFilterNode
+        node.frequency.setTargetAtTime(effect.params[`freq${i}`] ?? 1000, t, 0.01)
+        node.gain.setTargetAtTime(effect.params[`gain${i}`] ?? 0, t, 0.01)
+        node.Q.setTargetAtTime(effect.params[`q${i}`] ?? 1, t, 0.01)
+      }
       break
     }
     case 'nam': {

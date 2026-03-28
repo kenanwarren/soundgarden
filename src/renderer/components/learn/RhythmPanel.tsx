@@ -1,9 +1,43 @@
+import { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { RHYTHM_PATTERNS } from '../../utils/rhythm-patterns'
-import { useRhythmStore } from '../../stores/rhythm-store'
+import { useRhythmStore, type HitGrade, type TimingResult, type Sensitivity } from '../../stores/rhythm-store'
 import { useMetronomeStore } from '../../stores/metronome-store'
 import { useRhythmTrainer } from '../../hooks/useRhythmTrainer'
+
+const GRADE_CONFIG: Record<HitGrade, { label: string; color: string }> = {
+  perfect: { label: 'Perfect!', color: 'text-emerald-400' },
+  great: { label: 'Great!', color: 'text-green-400' },
+  good: { label: 'Good', color: 'text-yellow-400' },
+  miss: { label: 'Miss', color: 'text-red-400' },
+}
+
+function HitFeedback({ grade, time }: { grade: HitGrade | null; time: number }) {
+  const [visible, setVisible] = useState(false)
+  const [current, setCurrent] = useState<HitGrade | null>(null)
+
+  useEffect(() => {
+    if (!grade || time === 0) return
+    setCurrent(grade)
+    setVisible(true)
+    const id = setTimeout(() => setVisible(false), 600)
+    return () => clearTimeout(id)
+  }, [grade, time])
+
+  if (!current) return null
+  const cfg = GRADE_CONFIG[current]
+
+  return (
+    <div
+      className={`text-center text-2xl font-bold transition-opacity duration-300 h-10 ${
+        visible ? 'opacity-100' : 'opacity-0'
+      } ${cfg.color}`}
+    >
+      {cfg.label}
+    </div>
+  )
+}
 
 function DifficultyDots({ level }: { level: 1 | 2 | 3 }) {
   return (
@@ -20,10 +54,151 @@ function DifficultyDots({ level }: { level: 1 | 2 | 3 }) {
   )
 }
 
+function BeatGrid({
+  pattern,
+  isRunning,
+  currentSubdivision
+}: {
+  pattern: (typeof RHYTHM_PATTERNS)[number]
+  isRunning: boolean
+  currentSubdivision: number
+}) {
+  return (
+    <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
+      <div className="flex items-center gap-6 justify-center flex-wrap">
+        {Array.from({ length: pattern.beatsPerMeasure }, (_, beat) => {
+          const startIdx = beat * pattern.subdivisions
+          const subs = pattern.hits.slice(startIdx, startIdx + pattern.subdivisions)
+          return (
+            <div key={beat} className="flex flex-col items-center gap-2">
+              <div className="flex items-center gap-1">
+                {subs.map((isHit, subIdx) => {
+                  const globalIdx = startIdx + subIdx
+                  const isOnBeat = subIdx === 0
+                  const isDown = subIdx % 2 === 0
+                  const isCurrent = isRunning && globalIdx === currentSubdivision
+                  return (
+                    <div
+                      key={globalIdx}
+                      className={`rounded flex items-center justify-center transition-all ${
+                        isOnBeat ? 'w-12 h-12' : 'w-9 h-9'
+                      } ${
+                        isCurrent
+                          ? isHit
+                            ? 'bg-emerald-500 scale-110 ring-2 ring-emerald-300'
+                            : 'bg-zinc-500 scale-105 ring-2 ring-zinc-400'
+                          : isHit
+                            ? isDown
+                              ? 'bg-emerald-700/60 border-2 border-emerald-500'
+                              : 'bg-sky-700/50 border-2 border-sky-500'
+                            : 'bg-zinc-800/50 border border-zinc-700/50'
+                      }`}
+                    >
+                      {isHit ? (
+                        <span
+                          className={`font-bold ${isOnBeat ? 'text-base' : 'text-sm'} ${
+                            isCurrent ? 'text-white' : isDown ? 'text-emerald-300' : 'text-sky-300'
+                          }`}
+                        >
+                          {isDown ? '▼' : '▲'}
+                        </span>
+                      ) : (
+                        <span className="text-zinc-600 text-xs">·</span>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+              <span className="text-xs font-mono text-zinc-500">{beat + 1}</span>
+            </div>
+          )
+        })}
+      </div>
+      {pattern.subdivisions > 1 && (
+        <div className="flex items-center justify-center gap-4 mt-4 text-xs text-zinc-500">
+          <span className="flex items-center gap-1">
+            <span className="text-emerald-400">▼</span> downbeat
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="text-sky-400">▲</span> upbeat
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="text-zinc-600">·</span> rest
+          </span>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function StatsRow({ results, hitCount, missCount, streak, bestStreak }: {
+  results: TimingResult[]
+  hitCount: number
+  missCount: number
+  streak: number
+  bestStreak: number
+}) {
+  const { consistency, tendency } = useMemo(() => {
+    const hits = results.filter((r): r is Extract<TimingResult, { type: 'hit' }> => r.type === 'hit')
+    if (hits.length < 2) return { consistency: null, tendency: null }
+
+    const deltas = hits.map((r) => r.deltaMs)
+    const mean = deltas.reduce((s, d) => s + d, 0) / deltas.length
+    const variance = deltas.reduce((s, d) => s + (d - mean) ** 2, 0) / deltas.length
+    return {
+      consistency: Math.round(Math.sqrt(variance)),
+      tendency: Math.round(mean),
+    }
+  }, [results])
+
+  return (
+    <div className="flex flex-wrap gap-3">
+      <StatCard label="Hits" value={String(hitCount)} color="text-emerald-400" />
+      <StatCard label="Misses" value={String(missCount)} color={missCount > 0 ? 'text-red-400' : 'text-zinc-400'} />
+      <StatCard
+        label="Streak"
+        value={`${streak}${bestStreak > streak ? ` (best: ${bestStreak})` : ''}`}
+        color={streak > 0 ? 'text-emerald-400' : 'text-zinc-400'}
+      />
+      {consistency !== null && (
+        <StatCard
+          label="Consistency"
+          value={`${consistency}ms`}
+          color={consistency < 15 ? 'text-emerald-400' : consistency < 30 ? 'text-yellow-400' : 'text-red-400'}
+        />
+      )}
+      {tendency !== null && (
+        <StatCard
+          label="Tendency"
+          value={
+            Math.abs(tendency) < 5
+              ? 'On time'
+              : tendency < 0
+                ? `Rushing ${Math.abs(tendency)}ms`
+                : `Dragging ${tendency}ms`
+          }
+          color={Math.abs(tendency) < 5 ? 'text-emerald-400' : Math.abs(tendency) < 15 ? 'text-yellow-400' : 'text-red-400'}
+        />
+      )}
+    </div>
+  )
+}
+
+function StatCard({ label, value, color }: { label: string; value: string; color: string }) {
+  return (
+    <div className="bg-zinc-900 rounded-lg px-3 py-2 border border-zinc-800">
+      <span className="text-xs text-zinc-500 mr-2">{label}</span>
+      <span className={`font-mono text-sm font-medium ${color}`}>{value}</span>
+    </div>
+  )
+}
+
 export function RhythmPanel(): JSX.Element {
-  const { selectedPatternIndex, isRunning, results, accuracy, currentSubdivision } =
-    useRhythmStore()
-  const { setPatternIndex } = useRhythmStore()
+  const {
+    selectedPatternIndex, isRunning, sensitivity, results, accuracy, currentSubdivision,
+    hitCount, missCount, streak, bestStreak, lastHitGrade, lastHitTime,
+  } = useRhythmStore()
+  const { setPatternIndex, setSensitivity } = useRhythmStore()
   const { bpm, setBpm } = useMetronomeStore()
   const { start, stop, isConnected } = useRhythmTrainer()
 
@@ -69,6 +244,24 @@ export function RhythmPanel(): JSX.Element {
         />
       </div>
 
+      {/* Sensitivity */}
+      <div className="flex items-center gap-3">
+        <span className="text-sm text-zinc-400 uppercase tracking-wider">Sensitivity</span>
+        {(['low', 'mid', 'high'] as Sensitivity[]).map((level) => (
+          <button
+            key={level}
+            onClick={() => setSensitivity(level)}
+            className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+              sensitivity === level
+                ? 'bg-emerald-600 text-white'
+                : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
+            }`}
+          >
+            {level}
+          </button>
+        ))}
+      </div>
+
       {/* Pattern selector */}
       <div className="flex flex-col gap-2">
         <span className="text-sm text-zinc-400 uppercase tracking-wider">Pattern</span>
@@ -93,71 +286,11 @@ export function RhythmPanel(): JSX.Element {
         </div>
       </div>
 
+      {/* Per-hit feedback */}
+      <HitFeedback grade={lastHitGrade} time={lastHitTime} />
+
       {/* Beat grid visualization */}
-      <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
-        <div className="flex items-center gap-6 justify-center flex-wrap">
-          {Array.from({ length: pattern.beatsPerMeasure }, (_, beat) => {
-            const startIdx = beat * pattern.subdivisions
-            const subs = pattern.hits.slice(startIdx, startIdx + pattern.subdivisions)
-            return (
-              <div key={beat} className="flex flex-col items-center gap-2">
-                <div className="flex items-center gap-1">
-                  {subs.map((isHit, subIdx) => {
-                    const globalIdx = startIdx + subIdx
-                    const isOnBeat = subIdx === 0
-                    const isDown = subIdx % 2 === 0
-                    const isCurrent = isRunning && globalIdx === currentSubdivision
-                    return (
-                      <div
-                        key={globalIdx}
-                        className={`rounded flex items-center justify-center transition-all ${
-                          isOnBeat ? 'w-12 h-12' : 'w-9 h-9'
-                        } ${
-                          isCurrent
-                            ? isHit
-                              ? 'bg-emerald-500 scale-110 ring-2 ring-emerald-300'
-                              : 'bg-zinc-500 scale-105 ring-2 ring-zinc-400'
-                            : isHit
-                              ? isDown
-                                ? 'bg-emerald-700/60 border-2 border-emerald-500'
-                                : 'bg-sky-700/50 border-2 border-sky-500'
-                              : 'bg-zinc-800/50 border border-zinc-700/50'
-                        }`}
-                      >
-                        {isHit ? (
-                          <span
-                            className={`font-bold ${isOnBeat ? 'text-base' : 'text-sm'} ${
-                              isCurrent ? 'text-white' : isDown ? 'text-emerald-300' : 'text-sky-300'
-                            }`}
-                          >
-                            {isDown ? '▼' : '▲'}
-                          </span>
-                        ) : (
-                          <span className="text-zinc-600 text-xs">·</span>
-                        )}
-                      </div>
-                    )
-                  })}
-                </div>
-                <span className="text-xs font-mono text-zinc-500">{beat + 1}</span>
-              </div>
-            )
-          })}
-        </div>
-        {pattern.subdivisions > 1 && (
-          <div className="flex items-center justify-center gap-4 mt-4 text-xs text-zinc-500">
-            <span className="flex items-center gap-1">
-              <span className="text-emerald-400">▼</span> downbeat
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="text-sky-400">▲</span> upbeat
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="text-zinc-600">·</span> rest
-            </span>
-          </div>
-        )}
-      </div>
+      <BeatGrid pattern={pattern} isRunning={isRunning} currentSubdivision={currentSubdivision} />
 
       {/* Controls and results */}
       <div className="flex items-center gap-4">
@@ -177,27 +310,33 @@ export function RhythmPanel(): JSX.Element {
         )}
 
         {accuracy !== null && (
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-zinc-400">
-              Hits: <span className="text-white font-mono">{results.length}</span>
+          <span className="text-sm text-zinc-400">
+            Accuracy:{' '}
+            <span
+              className={`font-mono font-bold ${
+                accuracy >= 80
+                  ? 'text-emerald-400'
+                  : accuracy >= 50
+                    ? 'text-yellow-400'
+                    : 'text-red-400'
+              }`}
+            >
+              {Math.round(accuracy)}%
             </span>
-            <span className="text-sm text-zinc-400">
-              Accuracy:{' '}
-              <span
-                className={`font-mono font-bold ${
-                  accuracy >= 80
-                    ? 'text-emerald-400'
-                    : accuracy >= 50
-                      ? 'text-yellow-400'
-                      : 'text-red-400'
-                }`}
-              >
-                {Math.round(accuracy)}%
-              </span>
-            </span>
-          </div>
+          </span>
         )}
       </div>
+
+      {/* Stats row */}
+      {(hitCount > 0 || missCount > 0) && (
+        <StatsRow
+          results={results}
+          hitCount={hitCount}
+          missCount={missCount}
+          streak={streak}
+          bestStreak={bestStreak}
+        />
+      )}
 
       {/* Timing feedback */}
       {results.length > 0 && (
@@ -212,6 +351,17 @@ export function RhythmPanel(): JSX.Element {
           </div>
           <div className="flex gap-1 items-center h-20 overflow-x-auto">
             {results.slice(-30).map((r, i) => {
+              if (r.type === 'miss') {
+                return (
+                  <div
+                    key={i}
+                    className="flex flex-col items-center justify-center w-3 h-full"
+                    title="Miss"
+                  >
+                    <span className="text-red-500 text-xs font-bold">X</span>
+                  </div>
+                )
+              }
               const clamped = Math.max(-50, Math.min(50, r.deltaMs))
               const pct = Math.abs(clamped)
               const isEarly = clamped < 0

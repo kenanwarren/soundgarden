@@ -40,6 +40,22 @@ export function useAudioEngineInit() {
         const updated = await engine.enumerateDevices()
         setDevices(updated)
       })
+
+      const { inputDeviceId, setInputDeviceId, setConnected } = useAudioStore.getState()
+      if (inputDeviceId) {
+        const inputDevices = devices.filter((d) => d.kind === 'audioinput')
+        const stillAvailable = inputDevices.some((d) => d.id === inputDeviceId)
+        if (stillAvailable) {
+          try {
+            await engine.connectInput(inputDeviceId)
+            setConnected(true)
+          } catch {
+            setInputDeviceId(null)
+          }
+        } else {
+          setInputDeviceId(null)
+        }
+      }
     })
 
     return () => {

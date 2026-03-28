@@ -92,6 +92,8 @@ function matchTemplate(chromagram: Float32Array, root: number, template: number[
 
   const coverage = templateEnergy / total
   const parsimony = 1 - (template.length - 2) * 0.05
+  const rootEnergy = chromagram[root % 12]
+  const rootDominance = rootEnergy / templateEnergy
 
-  return coverage * parsimony
+  return coverage * parsimony + rootDominance * 0.05
 }

@@ -1,9 +1,9 @@
-import { useCallback, useRef } from 'react'
+import { useCallback } from 'react'
 import { useEarTrainingStore } from '../stores/ear-training-store'
 import { usePitchDetection } from './usePitchDetection'
-import { NOTE_NAMES } from '../utils/constants'
 import { noteToFrequency } from '../utils/note-utils'
-import { INTERVALS } from '../utils/interval-data'
+import { getPlaybackContext } from '../utils/playback-context'
+import { generateChallenge } from '../utils/ear-training-challenge'
 
 const TONE_DURATION = 0.8
 const TONE_GAP = 0.3
@@ -18,18 +18,9 @@ export function useEarTraining() {
     recordResult
   } = useEarTrainingStore()
 
-  const audioCtxRef = useRef<AudioContext | null>(null)
-
-  const getAudioCtx = useCallback(() => {
-    if (!audioCtxRef.current) {
-      audioCtxRef.current = new AudioContext({ sampleRate: 48000 })
-    }
-    return audioCtxRef.current
-  }, [])
-
   const playTone = useCallback(
     (frequency: number, startTime: number, duration: number) => {
-      const ctx = getAudioCtx()
+      const ctx = getPlaybackContext()
       const osc = ctx.createOscillator()
       const gain = ctx.createGain()
       osc.type = 'sine'
@@ -43,51 +34,14 @@ export function useEarTraining() {
       osc.start(startTime)
       osc.stop(startTime + duration)
     },
-    [getAudioCtx]
+    []
   )
-
-  const generateChallenge = useCallback(() => {
-    const referenceNoteIndex = Math.floor(Math.random() * 12)
-    const referenceOctave = 3 + Math.floor(Math.random() * 2)
-    const referenceNote = NOTE_NAMES[referenceNoteIndex]
-
-    let targetNote: string
-    let targetOctave: number
-    let intervalSemitones: number
-    let intervalName: string
-
-    if (mode === 'note') {
-      targetNote = referenceNote
-      targetOctave = referenceOctave
-      intervalSemitones = 0
-      intervalName = 'Unison'
-    } else {
-      const availableIntervals = INTERVALS.filter((i) => i.semitones > 0 && i.semitones <= 12)
-      const interval = availableIntervals[Math.floor(Math.random() * availableIntervals.length)]
-      intervalSemitones = interval.semitones
-      intervalName = interval.name
-      const targetIndex = (referenceNoteIndex + intervalSemitones) % 12
-      targetNote = NOTE_NAMES[targetIndex]
-      targetOctave = referenceOctave + Math.floor((referenceNoteIndex + intervalSemitones) / 12)
-    }
-
-    const challenge = {
-      referenceNote,
-      referenceOctave,
-      targetNote,
-      targetOctave,
-      intervalSemitones,
-      intervalName
-    }
-    setChallenge(challenge)
-    return challenge
-  }, [mode, setChallenge])
 
   const playChallenge = useCallback(
     async (challenge = currentChallenge) => {
       if (!challenge) return
 
-      const ctx = getAudioCtx()
+      const ctx = getPlaybackContext()
       if (ctx.state === 'suspended') await ctx.resume()
 
       const refFreq = noteToFrequency(challenge.referenceNote, challenge.referenceOctave)
@@ -101,7 +55,7 @@ export function useEarTraining() {
         playTone(targetFreq, now + TONE_DURATION + TONE_GAP, TONE_DURATION)
       }
     },
-    [mode, currentChallenge, getAudioCtx, playTone]
+    [mode, currentChallenge, playTone]
   )
 
   const onPitch = useCallback(
@@ -126,9 +80,10 @@ export function useEarTraining() {
   })
 
   const newRound = useCallback(async () => {
-    const challenge = generateChallenge()
+    const challenge = generateChallenge(mode)
+    setChallenge(challenge)
     await playChallenge(challenge)
-  }, [generateChallenge, playChallenge])
+  }, [mode, setChallenge, playChallenge])
 
   const listen = useCallback(async () => {
     setListening(true)

@@ -4,41 +4,38 @@ import { useMetronomeStore } from '../stores/metronome-store'
 import { RHYTHM_PATTERNS } from '../utils/rhythm-patterns'
 import { getEngine } from './useAudioEngine'
 import { useAudioStore } from '../stores/audio-store'
+import { getPlaybackContext } from '../utils/playback-context'
 
-const ONSET_THRESHOLD = 0.05
-const DEAD_ZONE_MS = 80
+const DEAD_ZONE_MS = 120
 const SCHEDULE_AHEAD = 0.1
 const LOOKAHEAD_MS = 25
 
+const SENSITIVITY_THRESHOLDS: Record<string, number> = {
+  low: 0.012,
+  mid: 0.006,
+  high: 0.003,
+}
+
 export function useRhythmTrainer() {
   const isConnected = useAudioStore((s) => s.isConnected)
-  const { selectedPatternIndex, isRunning, setRunning, addResult, setCurrentSubdivision, reset } =
+  const { selectedPatternIndex, isRunning, sensitivity, setRunning, addResult, setCurrentSubdivision, reset } =
     useRhythmStore()
   const { bpm } = useMetronomeStore()
 
   const pattern = RHYTHM_PATTERNS[selectedPatternIndex]
 
-  const ctxRef = useRef<AudioContext | null>(null)
   const analyserRef = useRef<AnalyserNode | null>(null)
   const schedulerRef = useRef<number | null>(null)
   const onsetDetectorRef = useRef<number | null>(null)
   const lastOnsetRef = useRef(0)
-  const wasAboveRef = useRef(false)
 
   const nextNoteTimeRef = useRef(0)
   const currentSubRef = useRef(0)
   const beatTimesRef = useRef<{ time: number; isHit: boolean }[]>([])
 
-  const getContext = useCallback(() => {
-    if (!ctxRef.current) {
-      ctxRef.current = new AudioContext({ sampleRate: 48000 })
-    }
-    return ctxRef.current
-  }, [])
-
   const scheduleClick = useCallback(
     (time: number, type: 'downbeat' | 'beat' | 'hit') => {
-      const ctx = getContext()
+      const ctx = getPlaybackContext()
       const osc = ctx.createOscillator()
       const gain = ctx.createGain()
       osc.connect(gain)
@@ -58,7 +55,7 @@ export function useRhythmTrainer() {
       osc.start(time)
       osc.stop(time + 0.05)
     },
-    [getContext]
+    []
   )
 
   const start = useCallback(async () => {
@@ -71,12 +68,12 @@ export function useRhythmTrainer() {
     const pipeline = engine.getPipeline()
     if (!audioCtx || !pipeline) return
 
-    const metCtx = getContext()
+    const metCtx = getPlaybackContext()
     if (metCtx.state === 'suspended') await metCtx.resume()
 
     const analyser = audioCtx.createAnalyser()
     analyser.fftSize = 2048
-    pipeline.getMasterGainNode().connect(analyser)
+    pipeline.addTap(analyser)
     analyserRef.current = analyser
 
     const secondsPerSubdivision = 60 / bpm / pattern.subdivisions
@@ -108,6 +105,11 @@ export function useRhythmTrainer() {
     schedulerRef.current = window.setInterval(scheduler, LOOKAHEAD_MS)
 
     const timeDomainData = new Float32Array(analyser.fftSize)
+    const startWall = performance.now() / 1000
+    const startMet = metCtx.currentTime
+    let prevRms = 0
+    const derivThreshold = SENSITIVITY_THRESHOLDS[sensitivity] ?? SENSITIVITY_THRESHOLDS.mid
+
     const detectOnsets = () => {
       analyser.getFloatTimeDomainData(timeDomainData)
 
@@ -117,44 +119,58 @@ export function useRhythmTrainer() {
       }
       rms = Math.sqrt(rms / timeDomainData.length)
 
-      const now = metCtx.currentTime
-      const nowMs = now * 1000
+      const delta = rms - prevRms
+      prevRms = rms
+      const isOnset = delta > derivThreshold
 
-      if (rms > ONSET_THRESHOLD && !wasAboveRef.current) {
-        if (nowMs - lastOnsetRef.current > DEAD_ZONE_MS) {
-          lastOnsetRef.current = nowMs
+      const wallNow = performance.now() / 1000
+      const now = startMet + (wallNow - startWall)
+      const nowMs = wallNow * 1000
 
-          const pendingHits = beatTimesRef.current.filter((b) => b.isHit)
-          if (pendingHits.length > 0) {
-            let closest = pendingHits[0]
-            let minDist = Math.abs(now - closest.time)
-            for (const b of pendingHits) {
-              const dist = Math.abs(now - b.time)
-              if (dist < minDist) {
-                minDist = dist
-                closest = b
-              }
+      const expired: { time: number }[] = []
+      beatTimesRef.current = beatTimesRef.current.filter((b) => {
+        if (now - b.time > secondsPerSubdivision + 0.2) {
+          if (b.isHit) expired.push(b)
+          return false
+        }
+        return true
+      })
+      for (const b of expired) {
+        addResult({ type: 'miss', expectedTime: b.time })
+      }
+
+      if (isOnset && nowMs - lastOnsetRef.current > DEAD_ZONE_MS) {
+        lastOnsetRef.current = nowMs
+
+        const pendingHits = beatTimesRef.current.filter((b) => b.isHit)
+        if (pendingHits.length > 0) {
+          let closest = pendingHits[0]
+          let minDist = Math.abs(now - closest.time)
+          for (const b of pendingHits) {
+            const dist = Math.abs(now - b.time)
+            if (dist < minDist) {
+              minDist = dist
+              closest = b
             }
+          }
 
-            const deltaMs = (now - closest.time) * 1000
-            if (Math.abs(deltaMs) < 500) {
-              addResult({
-                expectedTime: closest.time,
-                actualTime: now,
-                deltaMs
-              })
-              beatTimesRef.current = beatTimesRef.current.filter((b) => b !== closest)
-            }
+          const deltaMs = (now - closest.time) * 1000
+          if (Math.abs(deltaMs) < 500) {
+            addResult({
+              type: 'hit',
+              expectedTime: closest.time,
+              actualTime: now,
+              deltaMs
+            })
+            beatTimesRef.current = beatTimesRef.current.filter((b) => b !== closest)
           }
         }
       }
-
-      wasAboveRef.current = rms > ONSET_THRESHOLD
     }
 
     onsetDetectorRef.current = window.setInterval(detectOnsets, 10)
     setRunning(true)
-  }, [bpm, pattern, getContext, scheduleClick, reset, setRunning, addResult, setCurrentSubdivision])
+  }, [bpm, pattern, sensitivity, scheduleClick, reset, setRunning, addResult, setCurrentSubdivision])
 
   const stop = useCallback(() => {
     if (schedulerRef.current !== null) {
@@ -166,10 +182,12 @@ export function useRhythmTrainer() {
       onsetDetectorRef.current = null
     }
     if (analyserRef.current) {
-      try {
-        analyserRef.current.disconnect()
-      } catch {
-        /* */
+      const engine = getEngine()
+      const pipeline = engine?.getPipeline()
+      if (pipeline) {
+        pipeline.removeTap(analyserRef.current)
+      } else {
+        try { analyserRef.current.disconnect() } catch { /* */ }
       }
       analyserRef.current = null
     }

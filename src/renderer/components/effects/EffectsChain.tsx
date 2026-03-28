@@ -1,31 +1,118 @@
-import { Plus } from 'lucide-react'
-import { useState, useRef } from 'react'
+import { Plus, X } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
 import { EffectPedal } from './EffectPedal'
 import { useEffectsChain } from '../../hooks/useEffectsChain'
 import type { AudioProcessorType } from '../../audio/types'
 
-const AVAILABLE_EFFECTS: { type: AudioProcessorType; label: string }[] = [
-  { type: 'noisegate', label: 'Noise Gate' },
-  { type: 'compressor', label: 'Compressor' },
-  { type: 'gain', label: 'Gain / Drive' },
-  { type: 'distortion', label: 'Distortion' },
-  { type: 'eq', label: 'EQ' },
-  { type: 'wah', label: 'Wah' },
-  { type: 'chorus', label: 'Chorus' },
-  { type: 'tremolo', label: 'Tremolo' },
-  { type: 'phaser', label: 'Phaser' },
-  { type: 'flanger', label: 'Flanger' },
-  { type: 'reverb', label: 'Reverb' },
-  { type: 'delay', label: 'Delay' },
-  { type: 'pitchshift', label: 'Pitch Shifter' },
-  { type: 'cabinet', label: 'Cabinet Sim' },
-  { type: 'nam', label: 'NAM Capture' }
+const EFFECT_CATEGORIES: { name: string; effects: { type: AudioProcessorType; label: string }[] }[] = [
+  {
+    name: 'Dynamics',
+    effects: [
+      { type: 'noisegate', label: 'Noise Gate' },
+      { type: 'compressor', label: 'Compressor' },
+      { type: 'limiter', label: 'Limiter' },
+    ],
+  },
+  {
+    name: 'Drive',
+    effects: [
+      { type: 'cleanboost', label: 'Clean Boost' },
+      { type: 'gain', label: 'Gain / Drive' },
+      { type: 'distortion', label: 'Distortion' },
+    ],
+  },
+  {
+    name: 'EQ',
+    effects: [
+      { type: 'eq', label: 'EQ' },
+      { type: 'graphiceq', label: 'Graphic EQ' },
+      { type: 'parameq', label: 'Parametric EQ' },
+    ],
+  },
+  {
+    name: 'Pitch',
+    effects: [
+      { type: 'octaver', label: 'Octaver' },
+      { type: 'harmonizer', label: 'Harmonizer' },
+      { type: 'pitchshift', label: 'Pitch Shifter' },
+    ],
+  },
+  {
+    name: 'Modulation',
+    effects: [
+      { type: 'wah', label: 'Wah' },
+      { type: 'chorus', label: 'Chorus' },
+      { type: 'tremolo', label: 'Tremolo' },
+      { type: 'phaser', label: 'Phaser' },
+      { type: 'flanger', label: 'Flanger' },
+      { type: 'rotary', label: 'Rotary Speaker' },
+      { type: 'ringmod', label: 'Ring Mod' },
+      { type: 'bitcrusher', label: 'Bitcrusher' },
+    ],
+  },
+  {
+    name: 'Space',
+    effects: [
+      { type: 'reverb', label: 'Reverb' },
+      { type: 'shimmer', label: 'Shimmer Reverb' },
+      { type: 'delay', label: 'Delay' },
+    ],
+  },
+  {
+    name: 'Utility',
+    effects: [
+      { type: 'autoswell', label: 'Auto-Swell' },
+      { type: 'looper', label: 'Looper' },
+      { type: 'cabinet', label: 'Cabinet Sim' },
+      { type: 'nam', label: 'NAM Capture' },
+    ],
+  },
 ]
 
+const TILE_COLORS: Record<string, string> = {
+  noisegate:  'border-red-600 bg-red-600/10 hover:bg-red-600/25',
+  compressor: 'border-yellow-600 bg-yellow-600/10 hover:bg-yellow-600/25',
+  limiter:    'border-red-500 bg-red-500/10 hover:bg-red-500/25',
+  cleanboost: 'border-emerald-600 bg-emerald-600/10 hover:bg-emerald-600/25',
+  gain:       'border-orange-600 bg-orange-600/10 hover:bg-orange-600/25',
+  distortion: 'border-rose-600 bg-rose-600/10 hover:bg-rose-600/25',
+  eq:         'border-blue-600 bg-blue-600/10 hover:bg-blue-600/25',
+  graphiceq:  'border-sky-600 bg-sky-600/10 hover:bg-sky-600/25',
+  parameq:    'border-blue-600 bg-blue-600/10 hover:bg-blue-600/25',
+  octaver:    'border-blue-500 bg-blue-500/10 hover:bg-blue-500/25',
+  harmonizer: 'border-violet-500 bg-violet-500/10 hover:bg-violet-500/25',
+  pitchshift: 'border-sky-600 bg-sky-600/10 hover:bg-sky-600/25',
+  wah:        'border-teal-600 bg-teal-600/10 hover:bg-teal-600/25',
+  chorus:     'border-pink-600 bg-pink-600/10 hover:bg-pink-600/25',
+  tremolo:    'border-lime-600 bg-lime-600/10 hover:bg-lime-600/25',
+  phaser:     'border-violet-600 bg-violet-600/10 hover:bg-violet-600/25',
+  flanger:    'border-fuchsia-600 bg-fuchsia-600/10 hover:bg-fuchsia-600/25',
+  rotary:     'border-yellow-500 bg-yellow-500/10 hover:bg-yellow-500/25',
+  ringmod:    'border-indigo-600 bg-indigo-600/10 hover:bg-indigo-600/25',
+  bitcrusher: 'border-green-600 bg-green-600/10 hover:bg-green-600/25',
+  reverb:     'border-purple-600 bg-purple-600/10 hover:bg-purple-600/25',
+  shimmer:    'border-purple-500 bg-purple-500/10 hover:bg-purple-500/25',
+  delay:      'border-cyan-600 bg-cyan-600/10 hover:bg-cyan-600/25',
+  autoswell:  'border-amber-600 bg-amber-600/10 hover:bg-amber-600/25',
+  looper:     'border-red-600 bg-red-600/10 hover:bg-red-600/25',
+  cabinet:    'border-stone-500 bg-stone-500/10 hover:bg-stone-500/25',
+  nam:        'border-amber-500 bg-amber-500/10 hover:bg-amber-500/25',
+}
+
 export function EffectsChainPanel(): JSX.Element {
-  const { chain, addEffect, removeEffect, toggleEffect, setParam, reorderEffects, loadNamModel, loadCabinetIR } =
+  const { chain, addEffect, removeEffect, toggleEffect, setParam, reorderEffects, loadNamModel, loadCabinetIR, sendLooperCommand } =
     useEffectsChain()
   const [showMenu, setShowMenu] = useState(false)
+
+  useEffect(() => {
+    if (!showMenu) return
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowMenu(false)
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [showMenu])
+
   const dragIdx = useRef<number | null>(null)
   const [dragOverIdx, setDragOverIdx] = useState<number | null>(null)
 
@@ -71,35 +158,63 @@ export function EffectsChainPanel(): JSX.Element {
               onDragStart={(e) => handleDragStart(e, idx)}
               onLoadNamModel={effect.type === 'nam' ? (data) => loadNamModel(effect.id, data) : undefined}
               onLoadCabinetIR={effect.type === 'cabinet' ? (data) => loadCabinetIR(effect.id, data) : undefined}
+              onLooperCommand={effect.type === 'looper' ? (cmd) => sendLooperCommand(effect.id, cmd) : undefined}
             />
           </div>
         ))}
 
-        <div className="relative">
-          <button
-            onClick={() => setShowMenu(!showMenu)}
-            className="w-16 h-16 flex items-center justify-center rounded-lg border-2 border-dashed border-zinc-700 text-zinc-500 hover:border-emerald-500 hover:text-emerald-400 transition-colors"
-          >
-            <Plus size={24} />
-          </button>
+        <button
+          onClick={() => setShowMenu(true)}
+          className="w-16 h-16 flex items-center justify-center rounded-lg border-2 border-dashed border-zinc-700 text-zinc-500 hover:border-emerald-500 hover:text-emerald-400 transition-colors"
+        >
+          <Plus size={24} />
+        </button>
 
-          {showMenu && (
-            <div className="absolute top-full mt-2 left-0 bg-zinc-800 border border-zinc-700 rounded-lg shadow-xl z-10 py-1 min-w-40">
-              {AVAILABLE_EFFECTS.map(({ type, label }) => (
+        {showMenu && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+            onClick={() => setShowMenu(false)}
+          >
+            <div
+              className="bg-zinc-900 border border-zinc-700 rounded-2xl shadow-2xl p-6 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-5">
+                <h2 className="text-lg font-semibold text-white">Add Effect</h2>
                 <button
-                  key={type}
-                  onClick={() => {
-                    addEffect(type)
-                    setShowMenu(false)
-                  }}
-                  className="w-full text-left px-4 py-2 text-sm text-zinc-300 hover:bg-zinc-700 hover:text-white transition-colors"
+                  onClick={() => setShowMenu(false)}
+                  className="text-zinc-500 hover:text-white transition-colors"
                 >
-                  {label}
+                  <X size={20} />
                 </button>
-              ))}
+              </div>
+
+              <div className="space-y-5">
+                {EFFECT_CATEGORIES.map((category) => (
+                  <div key={category.name}>
+                    <h3 className="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-2">
+                      {category.name}
+                    </h3>
+                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                      {category.effects.map(({ type, label }) => (
+                        <button
+                          key={type}
+                          onClick={() => {
+                            addEffect(type)
+                            setShowMenu(false)
+                          }}
+                          className={`px-3 py-2.5 rounded-lg border-2 text-sm font-medium text-white hover:scale-[1.03] transition-all duration-150 text-left ${TILE_COLORS[type] ?? 'border-zinc-700 bg-zinc-700/10 hover:bg-zinc-700/25'}`}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {chain.length === 0 && (

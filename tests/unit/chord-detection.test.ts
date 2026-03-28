@@ -116,4 +116,111 @@ describe('detectChord', () => {
     expect(result!.root).toBe('E')
     expect(result!.quality).toBe('5')
   })
+
+  // Parametric: all 12 roots for major
+  describe('detects major chord for all 12 roots', () => {
+    const majorIntervals = [0, 4, 7]
+    for (let root = 0; root < 12; root++) {
+      const rootName = NOTE_NAMES[root]
+      const notes = majorIntervals.map((i) => NOTE_NAMES[(root + i) % 12])
+      it(`${rootName} major`, () => {
+        const result = detectChord(makeChromagram(notes))
+        expect(result).not.toBeNull()
+        expect(result!.root).toBe(rootName)
+        expect(result!.quality).toBe('major')
+      })
+    }
+  })
+
+  // Parametric: all 12 roots for minor
+  describe('detects minor chord for all 12 roots', () => {
+    const minorIntervals = [0, 3, 7]
+    for (let root = 0; root < 12; root++) {
+      const rootName = NOTE_NAMES[root]
+      const notes = minorIntervals.map((i) => NOTE_NAMES[(root + i) % 12])
+      it(`${rootName} minor`, () => {
+        const result = detectChord(makeChromagram(notes))
+        expect(result).not.toBeNull()
+        expect(result!.root).toBe(rootName)
+        expect(result!.quality).toBe('minor')
+      })
+    }
+  })
+
+  // Dominant root energy
+  it('detects chord with doubled root energy', () => {
+    const chroma = makeChromagram(['C', 'E', 'G'])
+    chroma[NOTE_NAMES.indexOf('C')] = 2.0
+    const result = detectChord(chroma)
+    expect(result).not.toBeNull()
+    expect(result!.root).toBe('C')
+    expect(result!.quality).toBe('major')
+  })
+
+  // Ambiguous input
+  it('returns null or low confidence for uniform energy', () => {
+    const chroma = new Float32Array(12).fill(1.0)
+    const result = detectChord(chroma)
+    if (result !== null) {
+      expect(result.confidence).toBeLessThan(0.5)
+    }
+  })
+
+  // Confidence ordering
+  it('clean triad has higher confidence than noisy one', () => {
+    const clean = detectChord(makeChromagram(['C', 'E', 'G']))
+    const noisy = makeChromagram(['C', 'E', 'G'])
+    for (let i = 0; i < 12; i++) noisy[i] += 0.3
+    const noisyResult = detectChord(noisy)
+
+    expect(clean).not.toBeNull()
+    expect(noisyResult).not.toBeNull()
+    expect(clean!.confidence).toBeGreaterThan(noisyResult!.confidence)
+  })
+
+  // Diminished and augmented
+  it('detects B diminished', () => {
+    const result = detectChord(makeChromagram(['B', 'D', 'F']))
+    expect(result).not.toBeNull()
+    expect(result!.root).toBe('B')
+    expect(result!.quality).toBe('dim')
+  })
+
+  it('detects C augmented', () => {
+    const result = detectChord(makeChromagram(['C', 'E', 'G#']))
+    expect(result).not.toBeNull()
+    expect(result!.root).toBe('C')
+    expect(result!.quality).toBe('aug')
+  })
+
+  // Sus chords
+  it('detects Dsus2', () => {
+    const result = detectChord(makeChromagram(['D', 'E', 'A']))
+    expect(result).not.toBeNull()
+    expect(result!.root).toBe('D')
+    expect(result!.quality).toBe('sus2')
+  })
+
+  it('detects Csus4', () => {
+    const result = detectChord(makeChromagram(['C', 'F', 'G']))
+    expect(result).not.toBeNull()
+    expect(result!.quality).toBe('sus4')
+  })
+
+  it('disambiguates sus4 vs sus2 by root energy', () => {
+    // A-D-E: Asus4 when A is dominant, Dsus2 when D is dominant
+    const chroma = makeChromagram(['A', 'D', 'E'])
+    chroma[NOTE_NAMES.indexOf('A')] = 2.0
+    const result = detectChord(chroma)
+    expect(result).not.toBeNull()
+    expect(result!.root).toBe('A')
+    expect(result!.quality).toBe('sus4')
+
+    const chroma2 = makeChromagram(['A', 'D', 'E'])
+    chroma2[NOTE_NAMES.indexOf('D')] = 2.0
+    const result2 = detectChord(chroma2)
+    expect(result2).not.toBeNull()
+    expect(result2!.root).toBe('D')
+    expect(result2!.quality).toBe('sus2')
+  })
 })

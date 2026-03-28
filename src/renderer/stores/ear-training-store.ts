@@ -1,15 +1,7 @@
 import { create } from 'zustand'
+import type { Challenge } from '../utils/ear-training-challenge'
 
 export type EarTrainingMode = 'note' | 'interval'
-
-interface Challenge {
-  referenceNote: string
-  referenceOctave: number
-  targetNote: string
-  targetOctave: number
-  intervalSemitones: number
-  intervalName: string
-}
 
 interface EarTrainingState {
   mode: EarTrainingMode

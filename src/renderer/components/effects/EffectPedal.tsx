@@ -11,6 +11,7 @@ interface EffectPedalProps {
   onDragStart: (e: React.DragEvent) => void
   onLoadNamModel?: (data: Record<string, unknown>) => Promise<{ success: boolean; error?: string }>
   onLoadCabinetIR?: (data: ArrayBuffer) => Promise<{ success: boolean; error?: string }>
+  onLooperCommand?: (command: string) => void
 }
 
 const EFFECT_LABELS: Record<string, string> = {
@@ -28,7 +29,19 @@ const EFFECT_LABELS: Record<string, string> = {
   distortion: 'Distortion',
   wah: 'Wah',
   pitchshift: 'Pitch Shifter',
-  cabinet: 'Cabinet Sim'
+  cabinet: 'Cabinet Sim',
+  cleanboost: 'Clean Boost',
+  autoswell: 'Auto-Swell',
+  limiter: 'Limiter',
+  ringmod: 'Ring Mod',
+  bitcrusher: 'Bitcrusher',
+  octaver: 'Octaver',
+  rotary: 'Rotary Speaker',
+  graphiceq: 'Graphic EQ',
+  parameq: 'Parametric EQ',
+  shimmer: 'Shimmer Reverb',
+  harmonizer: 'Harmonizer',
+  looper: 'Looper'
 }
 
 const EFFECT_COLORS: Record<string, string> = {
@@ -46,7 +59,19 @@ const EFFECT_COLORS: Record<string, string> = {
   distortion: 'border-rose-600',
   wah: 'border-teal-600',
   pitchshift: 'border-sky-600',
-  cabinet: 'border-stone-500'
+  cabinet: 'border-stone-500',
+  cleanboost: 'border-emerald-600',
+  autoswell: 'border-amber-600',
+  limiter: 'border-red-500',
+  ringmod: 'border-indigo-600',
+  bitcrusher: 'border-green-600',
+  octaver: 'border-blue-500',
+  rotary: 'border-yellow-500',
+  graphiceq: 'border-sky-600',
+  parameq: 'border-blue-600',
+  shimmer: 'border-purple-500',
+  harmonizer: 'border-violet-500',
+  looper: 'border-red-600'
 }
 
 export function EffectPedal({
@@ -56,7 +81,8 @@ export function EffectPedal({
   onParamChange,
   onDragStart,
   onLoadNamModel,
-  onLoadCabinetIR
+  onLoadCabinetIR,
+  onLooperCommand
 }: EffectPedalProps): JSX.Element {
   return (
     <div
@@ -96,7 +122,7 @@ export function EffectPedal({
       </div>
 
       <div className="flex gap-3 justify-center">
-        <EffectKnobs effect={effect} onParamChange={onParamChange} onLoadNamModel={onLoadNamModel} onLoadCabinetIR={onLoadCabinetIR} />
+        <EffectKnobs effect={effect} onParamChange={onParamChange} onLoadNamModel={onLoadNamModel} onLoadCabinetIR={onLoadCabinetIR} onLooperCommand={onLooperCommand} />
       </div>
     </div>
   )
@@ -106,12 +132,14 @@ function EffectKnobs({
   effect,
   onParamChange,
   onLoadNamModel,
-  onLoadCabinetIR
+  onLoadCabinetIR,
+  onLooperCommand
 }: {
   effect: EffectConfig
   onParamChange: (param: string, value: number) => void
   onLoadNamModel?: (data: Record<string, unknown>) => void
   onLoadCabinetIR?: (data: ArrayBuffer) => Promise<{ success: boolean; error?: string }>
+  onLooperCommand?: (command: string) => void
 }): JSX.Element {
   const p = effect.params
   const set = onParamChange
@@ -221,6 +249,99 @@ function EffectKnobs({
           <Knob label="Mix" value={p.mix ?? 1} min={0} max={1} step={0.01} onChange={(v) => set('mix', v)} />
         </>
       )
+    case 'cleanboost':
+      return (
+        <Knob label="Level" value={p.level ?? 1} min={0} max={4} step={0.1} onChange={(v) => set('level', v)} />
+      )
+    case 'autoswell':
+      return (
+        <>
+          <Knob label="Attack" value={p.attack ?? 200} min={10} max={2000} step={10} unit="ms" onChange={(v) => set('attack', v)} />
+          <Knob label="Sens" value={p.sensitivity ?? -30} min={-60} max={0} step={1} unit="dB" onChange={(v) => set('sensitivity', v)} />
+          <Knob label="Depth" value={p.depth ?? 1} min={0} max={1} step={0.01} onChange={(v) => set('depth', v)} />
+        </>
+      )
+    case 'limiter':
+      return (
+        <>
+          <Knob label="Thresh" value={p.threshold ?? -1} min={-20} max={0} step={0.5} unit="dB" onChange={(v) => set('threshold', v)} />
+          <Knob label="Release" value={p.release ?? 100} min={10} max={1000} step={5} unit="ms" onChange={(v) => set('release', v)} />
+        </>
+      )
+    case 'ringmod':
+      return (
+        <>
+          <Knob label="Freq" value={p.frequency ?? 200} min={20} max={2000} step={1} unit="Hz" onChange={(v) => set('frequency', v)} />
+          <Knob label="Mix" value={p.mix ?? 1} min={0} max={1} step={0.01} onChange={(v) => set('mix', v)} />
+        </>
+      )
+    case 'bitcrusher':
+      return (
+        <>
+          <Knob label="Bits" value={p.bitDepth ?? 16} min={1} max={16} step={1} onChange={(v) => set('bitDepth', v)} />
+          <Knob label="Down" value={p.downsample ?? 1} min={1} max={50} step={1} onChange={(v) => set('downsample', v)} />
+          <Knob label="Mix" value={p.mix ?? 1} min={0} max={1} step={0.01} onChange={(v) => set('mix', v)} />
+        </>
+      )
+    case 'octaver':
+      return (
+        <>
+          <Knob label="Sub" value={p.subLevel ?? 0.5} min={0} max={1} step={0.01} onChange={(v) => set('subLevel', v)} />
+          <Knob label="Upper" value={p.upperLevel ?? 0} min={0} max={1} step={0.01} onChange={(v) => set('upperLevel', v)} />
+          <Knob label="Dry" value={p.dry ?? 1} min={0} max={1} step={0.01} onChange={(v) => set('dry', v)} />
+        </>
+      )
+    case 'rotary':
+      return (
+        <>
+          <Knob label="Speed" value={p.speed ?? 0} min={0} max={1} step={0.01} onChange={(v) => set('speed', v)} />
+          <Knob label="Depth" value={p.depth ?? 0.5} min={0} max={1} step={0.01} onChange={(v) => set('depth', v)} />
+          <Knob label="Mix" value={p.mix ?? 0.7} min={0} max={1} step={0.01} onChange={(v) => set('mix', v)} />
+        </>
+      )
+    case 'graphiceq':
+      return (
+        <>
+          <Knob label="60" value={p.band60 ?? 0} min={-12} max={12} step={0.5} unit="dB" onChange={(v) => set('band60', v)} />
+          <Knob label="250" value={p.band250 ?? 0} min={-12} max={12} step={0.5} unit="dB" onChange={(v) => set('band250', v)} />
+          <Knob label="1k" value={p.band1k ?? 0} min={-12} max={12} step={0.5} unit="dB" onChange={(v) => set('band1k', v)} />
+          <Knob label="4k" value={p.band4k ?? 0} min={-12} max={12} step={0.5} unit="dB" onChange={(v) => set('band4k', v)} />
+          <Knob label="8k" value={p.band8k ?? 0} min={-12} max={12} step={0.5} unit="dB" onChange={(v) => set('band8k', v)} />
+          <Knob label="12k" value={p.band12k ?? 0} min={-12} max={12} step={0.5} unit="dB" onChange={(v) => set('band12k', v)} />
+        </>
+      )
+    case 'parameq':
+      return (
+        <div className="flex flex-wrap gap-3 max-w-80">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="flex gap-2 items-end">
+              <Knob label={`F${i}`} value={p[`freq${i}`] ?? 1000} min={20} max={20000} step={10} unit="Hz" onChange={(v) => set(`freq${i}`, v)} />
+              <Knob label={`G${i}`} value={p[`gain${i}`] ?? 0} min={-12} max={12} step={0.5} unit="dB" onChange={(v) => set(`gain${i}`, v)} />
+              <Knob label={`Q${i}`} value={p[`q${i}`] ?? 1} min={0.1} max={18} step={0.1} onChange={(v) => set(`q${i}`, v)} />
+            </div>
+          ))}
+        </div>
+      )
+    case 'shimmer':
+      return (
+        <>
+          <Knob label="Decay" value={p.decay ?? 0.7} min={0} max={0.95} step={0.01} onChange={(v) => set('decay', v)} />
+          <Knob label="Shimmer" value={p.shimmer ?? 0.5} min={0} max={1} step={0.01} onChange={(v) => set('shimmer', v)} />
+          <Knob label="Damp" value={p.damping ?? 0.5} min={0} max={1} step={0.01} onChange={(v) => set('damping', v)} />
+          <Knob label="Mix" value={p.mix ?? 0.4} min={0} max={1} step={0.01} onChange={(v) => set('mix', v)} />
+        </>
+      )
+    case 'harmonizer':
+      return (
+        <>
+          <Knob label="Key" value={p.key ?? 0} min={0} max={11} step={1} onChange={(v) => set('key', v)} />
+          <Knob label="Scale" value={p.scale ?? 0} min={0} max={3} step={1} onChange={(v) => set('scale', v)} />
+          <Knob label="Intv" value={p.interval ?? 3} min={-7} max={7} step={1} onChange={(v) => set('interval', v)} />
+          <Knob label="Mix" value={p.mix ?? 0.5} min={0} max={1} step={0.01} onChange={(v) => set('mix', v)} />
+        </>
+      )
+    case 'looper':
+      return <LooperControls params={p} onParamChange={set} onCommand={onLooperCommand} />
     case 'cabinet':
       return <CabinetControls params={p} onParamChange={set} onLoadIR={onLoadCabinetIR} />
     case 'nam':
@@ -228,6 +349,62 @@ function EffectKnobs({
     default:
       return <span className="text-xs text-zinc-500">No parameters</span>
   }
+}
+
+function LooperControls({
+  params,
+  onParamChange,
+  onCommand
+}: {
+  params: Record<string, number>
+  onParamChange: (param: string, value: number) => void
+  onCommand?: (command: string) => void
+}): JSX.Element {
+  const [loopState, setLoopState] = useState<string>('idle')
+
+  const send = (cmd: string) => {
+    onCommand?.(cmd)
+    if (cmd === 'record') setLoopState('recording')
+    else if (cmd === 'play') setLoopState('playing')
+    else if (cmd === 'overdub') setLoopState('overdubbing')
+    else if (cmd === 'stop') setLoopState('stopped')
+    else if (cmd === 'clear') setLoopState('idle')
+  }
+
+  const btnClass = (active: boolean, color: string) =>
+    `px-2 py-1 text-xs rounded border transition-colors ${
+      active ? `${color} text-white` : 'border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500'
+    }`
+
+  return (
+    <div className="flex flex-col gap-3 items-center">
+      <div className="flex gap-1.5 flex-wrap justify-center">
+        <button onClick={() => send('record')} className={btnClass(loopState === 'recording', 'bg-red-600 border-red-600')}>
+          Rec
+        </button>
+        <button onClick={() => send('play')} className={btnClass(loopState === 'playing', 'bg-green-600 border-green-600')}>
+          Play
+        </button>
+        <button onClick={() => send('overdub')} className={btnClass(loopState === 'overdubbing', 'bg-orange-600 border-orange-600')}>
+          Ovr
+        </button>
+        <button onClick={() => send('stop')} className={btnClass(loopState === 'stopped', 'bg-zinc-600 border-zinc-600')}>
+          Stop
+        </button>
+        <button onClick={() => send('clear')} className={btnClass(false, '')}>
+          Clr
+        </button>
+        <button onClick={() => onCommand?.('undo')} className={btnClass(false, '')}>
+          Undo
+        </button>
+      </div>
+      <div className="flex gap-3">
+        <Knob label="In" value={params.inputLevel ?? 1} min={0} max={2} step={0.1} onChange={(v) => onParamChange('inputLevel', v)} />
+        <Knob label="Loop" value={params.loopLevel ?? 1} min={0} max={1} step={0.01} onChange={(v) => onParamChange('loopLevel', v)} />
+        <Knob label="Ovr" value={params.overdubLevel ?? 0.8} min={0} max={1} step={0.01} onChange={(v) => onParamChange('overdubLevel', v)} />
+      </div>
+    </div>
+  )
 }
 
 function CabinetControls({
