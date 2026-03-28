@@ -120,6 +120,18 @@ export interface SongNotation {
   measures: NotationMeasure[]
 }
 
+export interface SongArrangement {
+  id: string
+  label: string
+  isDefault: boolean
+  difficulty: PracticeDifficulty
+  key: string
+  chords: string[]
+  attribution: string
+  lines: string[]
+  notation?: SongNotation
+}
+
 export interface SongDefinition {
   id: string
   title: string
@@ -130,6 +142,9 @@ export interface SongDefinition {
   attribution: string
   lines: string[]
   notation?: SongNotation
+  variantOf?: string
+  variantLabel?: string
+  arrangements?: SongArrangement[]
 }
 
 interface BaseSessionSummary {

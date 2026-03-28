@@ -99,7 +99,9 @@ function createTabTickable(note: NotationNote): Tickable {
   }
 
   const tabNote = new TabNote({
-    positions: note.tab ? [{ str: note.tab.string + 1, fret: note.tab.fret }] : [{ str: 1, fret: 0 }],
+    positions: note.tab
+      ? [{ str: note.tab.string + 1, fret: note.tab.fret }]
+      : [{ str: 1, fret: 0 }],
     duration: DURATION_MAP[note.duration]
   })
 
@@ -167,13 +169,12 @@ function renderNotation(
     )
   }
 
-  const totalWidth =
-    Math.max(
-      ...systems.map(
-        (system) => STAVE_X_START + system.reduce((sum, measure) => sum + measure.width, 0) + 20
-      ),
-      STAVE_X_START + 20
-    )
+  const totalWidth = Math.max(
+    ...systems.map(
+      (system) => STAVE_X_START + system.reduce((sum, measure) => sum + measure.width, 0) + 20
+    ),
+    STAVE_X_START + 20
+  )
   let systemHeight = 0
   if (showStaff) systemHeight += 130
   if (showTab) systemHeight += 130
@@ -238,13 +239,23 @@ function renderNotation(
         if (showTab) tabTickables.push(createTabTickable(note))
       }
 
-      if (showStaff && showTab && stave && tabStave && staveNotes.length > 0 && tabTickables.length > 0) {
+      if (
+        showStaff &&
+        showTab &&
+        stave &&
+        tabStave &&
+        staveNotes.length > 0 &&
+        tabTickables.length > 0
+      ) {
         const voice = buildMeasureVoice(measure)
         const tabVoice = buildMeasureVoice(measure)
         voice.addTickables(staveNotes)
         tabVoice.addTickables(tabTickables)
         tabStave.setNoteStartX(stave.getNoteStartX())
-        new Formatter().joinVoices([voice]).joinVoices([tabVoice]).formatToStave([voice, tabVoice], stave)
+        new Formatter()
+          .joinVoices([voice])
+          .joinVoices([tabVoice])
+          .formatToStave([voice, tabVoice], stave)
         const beams = Beam.generateBeams(staveNotes)
         voice.draw(context, stave)
         tabVoice.draw(context, tabStave)

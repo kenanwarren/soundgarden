@@ -7,9 +7,7 @@
     "scaleName": "Blues",
     "sequenceType": "ascending",
     "loops": 2,
-    "genreTags": [
-      "blues"
-    ]
+    "genreTags": ["blues"]
   },
   {
     "id": "rock-pentatonic-drive",
@@ -19,9 +17,7 @@
     "scaleName": "Minor Pentatonic",
     "sequenceType": "ascending",
     "loops": 2,
-    "genreTags": [
-      "rock"
-    ]
+    "genreTags": ["rock"]
   },
   {
     "id": "pop-major-hooks",
@@ -31,9 +27,7 @@
     "scaleName": "Major",
     "sequenceType": "ascending",
     "loops": 2,
-    "genreTags": [
-      "pop"
-    ]
+    "genreTags": ["pop"]
   },
   {
     "id": "funk-mixolydian-pocket",
@@ -43,9 +37,7 @@
     "scaleName": "Mixolydian",
     "sequenceType": "thirds",
     "loops": 2,
-    "genreTags": [
-      "funk"
-    ]
+    "genreTags": ["funk"]
   },
   {
     "id": "country-major-pentatonic-roll",
@@ -55,9 +47,7 @@
     "scaleName": "Major Pentatonic",
     "sequenceType": "descending",
     "loops": 2,
-    "genreTags": [
-      "country"
-    ]
+    "genreTags": ["country"]
   },
   {
     "id": "fingerpicked-arpeggio-map",
@@ -67,8 +57,6 @@
     "scaleName": "Major",
     "sequenceType": "descending",
     "loops": 2,
-    "genreTags": [
-      "fingerpicking"
-    ]
+    "genreTags": ["fingerpicking"]
   }
 ]

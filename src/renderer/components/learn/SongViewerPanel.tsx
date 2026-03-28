@@ -1,15 +1,26 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Play, Square } from 'lucide-react'
 import { PageHeader } from '../layout/PageHeader'
 import { ChordDiagram } from '../common/ChordDiagram'
 import { StaffRenderer } from '../common/StaffRenderer'
 import { Tag } from './Tag'
-import { SONGS } from '../../utils/songs'
+import {
+  getPreferredSongArrangement,
+  getSongArrangements,
+  getSongDifficultyLabel,
+  SONGS,
+  songMatchesDifficulty
+} from '../../utils/songs'
 import { CHORD_VOICINGS } from '../../utils/chord-voicings'
 import { getVisibleGenres } from '../../utils/learn-data'
 import { parseSongLine } from '../../utils/song-parser'
 import { useNotationPlayback } from '../../hooks/useNotationPlayback'
-import type { GenreId, PracticeDifficulty, SongDefinition } from '../../utils/learn-types'
+import type {
+  GenreId,
+  PracticeDifficulty,
+  SongArrangement,
+  SongDefinition
+} from '../../utils/learn-types'
 
 type SongViewMode = 'lyrics' | 'staff' | 'tab' | 'staff+tab'
 
@@ -31,6 +42,9 @@ function SongCard({
   selected: boolean
   onClick: () => void
 }): JSX.Element {
+  const arrangementCount = getSongArrangements(song).length
+  const difficultyLabel = getSongDifficultyLabel(song)
+
   return (
     <button
       onClick={onClick}
@@ -44,7 +58,13 @@ function SongCard({
       <div className="mt-1 flex items-center gap-2">
         <span className="text-xs text-zinc-500">Key: {song.key}</span>
         <span className="text-xs text-zinc-600">·</span>
-        <span className="text-xs text-zinc-500">{song.difficulty}</span>
+        <span className="text-xs text-zinc-500">{difficultyLabel}</span>
+        {arrangementCount > 1 && (
+          <>
+            <span className="text-xs text-zinc-600">·</span>
+            <span className="text-xs text-zinc-500">{arrangementCount} arrangements</span>
+          </>
+        )}
       </div>
       <div className="mt-2 flex flex-wrap gap-1">
         {song.genres.map((g) => (
@@ -55,8 +75,8 @@ function SongCard({
   )
 }
 
-function SongLyrics({ song }: { song: SongDefinition }): JSX.Element {
-  const parsed = useMemo(() => song.lines.map(parseSongLine), [song])
+function SongLyrics({ lines }: { lines: SongArrangement['lines'] }): JSX.Element {
+  const parsed = useMemo(() => lines.map(parseSongLine), [lines])
 
   return (
     <div className="space-y-1 font-mono text-sm leading-relaxed">
@@ -120,14 +140,15 @@ export function SongViewerPanel(): JSX.Element {
   const [filterGenre, setFilterGenre] = useState<GenreId | 'all'>('all')
   const [filterDifficulty, setFilterDifficulty] = useState<PracticeDifficulty | 'all'>('all')
   const [selectedSongId, setSelectedSongId] = useState<string | null>(null)
+  const [selectedArrangementId, setSelectedArrangementId] = useState<string | null>(null)
   const [viewMode, setViewMode] = useState<SongViewMode>('lyrics')
-  const playback = useNotationPlayback()
+  const { isPlaying, play, stop } = useNotationPlayback()
 
   const filtered = useMemo(
     () =>
       SONGS.filter((s) => {
         if (filterGenre !== 'all' && !s.genres.includes(filterGenre)) return false
-        if (filterDifficulty !== 'all' && s.difficulty !== filterDifficulty) return false
+        if (!songMatchesDifficulty(s, filterDifficulty)) return false
         return true
       }),
     [filterGenre, filterDifficulty]
@@ -138,11 +159,28 @@ export function SongViewerPanel(): JSX.Element {
     [selectedSongId]
   )
 
+  const arrangements = useMemo(
+    () => (selectedSong ? getSongArrangements(selectedSong) : []),
+    [selectedSong]
+  )
+
+  const selectedArrangement = useMemo(
+    () =>
+      selectedSong
+        ? getPreferredSongArrangement(selectedSong, filterDifficulty, selectedArrangementId)
+        : null,
+    [filterDifficulty, selectedArrangementId, selectedSong]
+  )
+
+  useEffect(() => {
+    stop()
+  }, [selectedArrangement?.id, selectedSongId, stop])
+
   return (
     <div className="flex h-full flex-col gap-6 p-6">
       <PageHeader
         title="Song Viewer"
-        description="Browse public domain songs with chord charts and lyrics. Pick a song to see chords placed above the lyrics."
+        description="Browse public domain songs with chord charts, lyrics, and arrangement variants that can scale up in difficulty."
         backTo="/learn"
       />
 
@@ -219,7 +257,10 @@ export function SongViewerPanel(): JSX.Element {
               key={song.id}
               song={song}
               selected={selectedSongId === song.id}
-              onClick={() => setSelectedSongId(song.id)}
+              onClick={() => {
+                setSelectedSongId(song.id)
+                setSelectedArrangementId(null)
+              }}
             />
           ))}
         </div>
@@ -230,15 +271,45 @@ export function SongViewerPanel(): JSX.Element {
               <div className="rounded-3xl border border-zinc-800 bg-zinc-900/80 p-6">
                 <div className="mb-1 flex items-center gap-3">
                   <h2 className="text-xl font-semibold text-white">{selectedSong.title}</h2>
-                  <Tag label={selectedSong.key} tone="accent" />
-                  <Tag label={selectedSong.difficulty} />
+                  {selectedArrangement && (
+                    <>
+                      <Tag label={selectedArrangement.key} tone="accent" />
+                      <Tag label={selectedArrangement.difficulty} />
+                      {!selectedArrangement.isDefault && <Tag label={selectedArrangement.label} />}
+                    </>
+                  )}
                 </div>
-                <div className="mb-4 text-xs text-zinc-500">{selectedSong.attribution}</div>
+                <div className="mb-4 text-xs text-zinc-500">
+                  {selectedArrangement?.attribution ?? selectedSong.attribution}
+                </div>
+
+                {arrangements.length > 1 && selectedArrangement && (
+                  <div className="mb-5">
+                    <div className="mb-2 text-xs font-medium uppercase tracking-[0.18em] text-zinc-500">
+                      Arrangement
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {arrangements.map((arrangement) => (
+                        <button
+                          key={arrangement.id}
+                          onClick={() => setSelectedArrangementId(arrangement.id)}
+                          className={`rounded-xl px-3 py-1.5 text-xs font-medium transition-colors ${
+                            selectedArrangement.id === arrangement.id
+                              ? 'bg-emerald-600 text-white'
+                              : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                          }`}
+                        >
+                          {arrangement.label} · {arrangement.difficulty}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 <div className="mb-5 flex flex-wrap items-center gap-2">
                   {VIEW_MODES.map(({ value, label }) => {
                     const needsNotation = value !== 'lyrics'
-                    const disabled = needsNotation && !selectedSong.notation
+                    const disabled = needsNotation && !selectedArrangement?.notation
                     return (
                       <button
                         key={value}
@@ -257,18 +328,16 @@ export function SongViewerPanel(): JSX.Element {
                     )
                   })}
 
-                  {selectedSong.notation && (
+                  {selectedArrangement?.notation && (
                     <button
-                      onClick={() =>
-                        playback.isPlaying ? playback.stop() : playback.play(selectedSong.notation!)
-                      }
+                      onClick={() => (isPlaying ? stop() : play(selectedArrangement.notation!))}
                       className={`ml-2 inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium transition-colors ${
-                        playback.isPlaying
+                        isPlaying
                           ? 'bg-red-600 text-white hover:bg-red-500'
                           : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
                       }`}
                     >
-                      {playback.isPlaying ? (
+                      {isPlaying ? (
                         <>
                           <Square size={10} />
                           Stop
@@ -284,18 +353,18 @@ export function SongViewerPanel(): JSX.Element {
                 </div>
 
                 {viewMode === 'lyrics' ? (
-                  <SongLyrics song={selectedSong} />
-                ) : selectedSong.notation ? (
+                  <SongLyrics lines={selectedArrangement?.lines ?? selectedSong.lines} />
+                ) : selectedArrangement?.notation ? (
                   <StaffRenderer
-                    notation={selectedSong.notation}
-                    songKey={selectedSong.key}
+                    notation={selectedArrangement.notation}
+                    songKey={selectedArrangement.key}
                     viewMode={viewMode}
                   />
                 ) : (
-                  <SongLyrics song={selectedSong} />
+                  <SongLyrics lines={selectedArrangement?.lines ?? selectedSong.lines} />
                 )}
               </div>
-              <ChordReference chordNames={selectedSong.chords} />
+              <ChordReference chordNames={selectedArrangement?.chords ?? selectedSong.chords} />
             </>
           ) : (
             <div className="flex flex-1 items-center justify-center rounded-3xl border border-zinc-800 bg-zinc-900/80">

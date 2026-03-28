@@ -5,15 +5,8 @@
     "difficulty": 1,
     "beatsPerMeasure": 4,
     "subdivisions": 1,
-    "hits": [
-      true,
-      false,
-      false,
-      false
-    ],
-    "genreTags": [
-      "general"
-    ]
+    "hits": [true, false, false, false],
+    "genreTags": ["general"]
   },
   {
     "name": "Quarter Notes",
@@ -21,18 +14,8 @@
     "difficulty": 1,
     "beatsPerMeasure": 4,
     "subdivisions": 1,
-    "hits": [
-      true,
-      true,
-      true,
-      true
-    ],
-    "genreTags": [
-      "general",
-      "rock",
-      "pop",
-      "country"
-    ]
+    "hits": [true, true, true, true],
+    "genreTags": ["general", "rock", "pop", "country"]
   },
   {
     "name": "Half Notes",
@@ -40,16 +23,8 @@
     "difficulty": 1,
     "beatsPerMeasure": 4,
     "subdivisions": 1,
-    "hits": [
-      true,
-      false,
-      true,
-      false
-    ],
-    "genreTags": [
-      "general",
-      "country"
-    ]
+    "hits": [true, false, true, false],
+    "genreTags": ["general", "country"]
   },
   {
     "name": "Eighth Notes",
@@ -57,22 +32,8 @@
     "difficulty": 1,
     "beatsPerMeasure": 4,
     "subdivisions": 2,
-    "hits": [
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true
-    ],
-    "genreTags": [
-      "general",
-      "rock",
-      "pop",
-      "country"
-    ]
+    "hits": [true, true, true, true, true, true, true, true],
+    "genreTags": ["general", "rock", "pop", "country"]
   },
   {
     "name": "Eighth Rest Start",
@@ -80,19 +41,8 @@
     "difficulty": 2,
     "beatsPerMeasure": 4,
     "subdivisions": 2,
-    "hits": [
-      false,
-      true,
-      false,
-      true,
-      false,
-      true,
-      false,
-      true
-    ],
-    "genreTags": [
-      "funk"
-    ]
+    "hits": [false, true, false, true, false, true, false, true],
+    "genreTags": ["funk"]
   },
   {
     "name": "Basic Syncopation",
@@ -100,20 +50,8 @@
     "difficulty": 2,
     "beatsPerMeasure": 4,
     "subdivisions": 2,
-    "hits": [
-      true,
-      false,
-      true,
-      true,
-      true,
-      false,
-      true,
-      true
-    ],
-    "genreTags": [
-      "funk",
-      "pop"
-    ]
+    "hits": [true, false, true, true, true, false, true, true],
+    "genreTags": ["funk", "pop"]
   },
   {
     "name": "Rock Beat",
@@ -121,19 +59,8 @@
     "difficulty": 2,
     "beatsPerMeasure": 4,
     "subdivisions": 2,
-    "hits": [
-      true,
-      false,
-      false,
-      true,
-      true,
-      false,
-      false,
-      true
-    ],
-    "genreTags": [
-      "rock"
-    ]
+    "hits": [true, false, false, true, true, false, false, true],
+    "genreTags": ["rock"]
   },
   {
     "name": "Folk Strum",
@@ -141,20 +68,8 @@
     "difficulty": 2,
     "beatsPerMeasure": 4,
     "subdivisions": 2,
-    "hits": [
-      true,
-      false,
-      true,
-      true,
-      false,
-      true,
-      true,
-      false
-    ],
-    "genreTags": [
-      "pop",
-      "country"
-    ]
+    "hits": [true, false, true, true, false, true, true, false],
+    "genreTags": ["pop", "country"]
   },
   {
     "name": "Sixteenth Notes",
@@ -180,10 +95,7 @@
       true,
       true
     ],
-    "genreTags": [
-      "rock",
-      "funk"
-    ]
+    "genreTags": ["rock", "funk"]
   },
   {
     "name": "Sixteenth Funk",
@@ -209,9 +121,7 @@
       false,
       true
     ],
-    "genreTags": [
-      "funk"
-    ]
+    "genreTags": ["funk"]
   },
   {
     "name": "Waltz",
@@ -219,14 +129,8 @@
     "difficulty": 1,
     "beatsPerMeasure": 3,
     "subdivisions": 1,
-    "hits": [
-      true,
-      true,
-      true
-    ],
-    "genreTags": [
-      "country"
-    ]
+    "hits": [true, true, true],
+    "genreTags": ["country"]
   },
   {
     "name": "Waltz Eighth",
@@ -234,17 +138,8 @@
     "difficulty": 2,
     "beatsPerMeasure": 3,
     "subdivisions": 2,
-    "hits": [
-      true,
-      false,
-      true,
-      false,
-      true,
-      false
-    ],
-    "genreTags": [
-      "country"
-    ]
+    "hits": [true, false, true, false, true, false],
+    "genreTags": ["country"]
   },
   {
     "name": "Reggae Skank",
@@ -252,19 +147,8 @@
     "difficulty": 2,
     "beatsPerMeasure": 4,
     "subdivisions": 2,
-    "hits": [
-      false,
-      true,
-      false,
-      true,
-      false,
-      true,
-      false,
-      true
-    ],
-    "genreTags": [
-      "general"
-    ]
+    "hits": [false, true, false, true, false, true, false, true],
+    "genreTags": ["general"]
   },
   {
     "name": "Bo Diddley",
@@ -290,10 +174,7 @@
       false,
       false
     ],
-    "genreTags": [
-      "rock",
-      "blues"
-    ]
+    "genreTags": ["rock", "blues"]
   },
   {
     "name": "Shuffle",
@@ -301,23 +182,8 @@
     "difficulty": 3,
     "beatsPerMeasure": 4,
     "subdivisions": 3,
-    "hits": [
-      true,
-      false,
-      true,
-      true,
-      false,
-      true,
-      true,
-      false,
-      true,
-      true,
-      false,
-      true
-    ],
-    "genreTags": [
-      "blues"
-    ]
+    "hits": [true, false, true, true, false, true, true, false, true, true, false, true],
+    "genreTags": ["blues"]
   },
   {
     "name": "Pop Pulse",
@@ -325,19 +191,8 @@
     "difficulty": 1,
     "beatsPerMeasure": 4,
     "subdivisions": 2,
-    "hits": [
-      true,
-      false,
-      true,
-      true,
-      true,
-      false,
-      true,
-      true
-    ],
-    "genreTags": [
-      "pop"
-    ]
+    "hits": [true, false, true, true, true, false, true, true],
+    "genreTags": ["pop"]
   },
   {
     "name": "Muted Funk Chops",
@@ -363,9 +218,7 @@
       false,
       true
     ],
-    "genreTags": [
-      "funk"
-    ]
+    "genreTags": ["funk"]
   },
   {
     "name": "Country Train Beat",
@@ -373,19 +226,8 @@
     "difficulty": 2,
     "beatsPerMeasure": 4,
     "subdivisions": 2,
-    "hits": [
-      true,
-      false,
-      true,
-      true,
-      true,
-      false,
-      true,
-      true
-    ],
-    "genreTags": [
-      "country"
-    ]
+    "hits": [true, false, true, true, true, false, true, true],
+    "genreTags": ["country"]
   },
   {
     "name": "Alternating Bass",
@@ -393,19 +235,8 @@
     "difficulty": 2,
     "beatsPerMeasure": 4,
     "subdivisions": 2,
-    "hits": [
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true
-    ],
-    "genreTags": [
-      "fingerpicking"
-    ]
+    "hits": [true, true, true, true, true, true, true, true],
+    "genreTags": ["fingerpicking"]
   },
   {
     "name": "Fingerpicked Arpeggio",
@@ -431,8 +262,6 @@
       true,
       false
     ],
-    "genreTags": [
-      "fingerpicking"
-    ]
+    "genreTags": ["fingerpicking"]
   }
 ]

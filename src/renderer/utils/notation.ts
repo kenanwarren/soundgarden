@@ -40,7 +40,10 @@ export function getMeasureDurationBeats(measure: Pick<NotationMeasure, 'notes'>)
   return getMeasureDurationUnits(measure) / 8
 }
 
-export function getTimeSignatureUnits([numBeats, beatValue]: SongNotation['timeSignature']): number {
+export function getTimeSignatureUnits([
+  numBeats,
+  beatValue
+]: SongNotation['timeSignature']): number {
   return (numBeats * 32) / beatValue
 }
 

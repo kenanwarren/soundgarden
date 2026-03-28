@@ -60,7 +60,9 @@ describe('normalizeSongNotation', () => {
 
     expect(middleMeasure.notes).toHaveLength(5)
     expect(middleMeasure.notes.at(-1)).toMatchObject({ pitch: 'rest', duration: 'quarter' })
-    expect(getMeasureDurationUnits(middleMeasure)).toBe(getTimeSignatureUnits(notation.timeSignature))
+    expect(getMeasureDurationUnits(middleMeasure)).toBe(
+      getTimeSignatureUnits(notation.timeSignature)
+    )
   })
 })
 

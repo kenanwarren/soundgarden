@@ -92,7 +92,27 @@ export const useAppSettingsStore = create<AppSettingsState>()(
     }),
     {
       name: 'soundgarden-app-settings',
-      storage: zustandStorage
+      storage: zustandStorage,
+      merge: (persistedState, currentState) => {
+        const persisted = (persistedState as Partial<AppSettingsState> | undefined) ?? {}
+
+        return {
+          ...currentState,
+          ...persisted,
+          audio: {
+            ...currentState.audio,
+            ...persisted.audio
+          },
+          practice: {
+            ...currentState.practice,
+            ...persisted.practice
+          },
+          interface: {
+            ...currentState.interface,
+            ...persisted.interface
+          }
+        }
+      }
     }
   )
 )

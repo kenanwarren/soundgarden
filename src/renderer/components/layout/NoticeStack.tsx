@@ -52,9 +52,7 @@ function NoticeItem({
         <span className="mt-0.5">{style.icon}</span>
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium">{notice.title}</p>
-          {notice.description && (
-            <p className="mt-1 text-sm text-white/80">{notice.description}</p>
-          )}
+          {notice.description && <p className="mt-1 text-sm text-white/80">{notice.description}</p>}
         </div>
         <button
           onClick={() => onDismiss(notice.id)}
