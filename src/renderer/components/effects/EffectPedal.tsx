@@ -10,6 +10,7 @@ interface EffectPedalProps {
   onParamChange: (param: string, value: number) => void
   onDragStart: (e: React.DragEvent) => void
   onLoadNamModel?: (data: Record<string, unknown>) => Promise<{ success: boolean; error?: string }>
+  onLoadCabinetIR?: (data: ArrayBuffer) => Promise<{ success: boolean; error?: string }>
 }
 
 const EFFECT_LABELS: Record<string, string> = {
@@ -20,7 +21,14 @@ const EFFECT_LABELS: Record<string, string> = {
   chorus: 'Chorus',
   compressor: 'Compressor',
   noisegate: 'Noise Gate',
-  nam: 'NAM Capture'
+  nam: 'NAM Capture',
+  tremolo: 'Tremolo',
+  phaser: 'Phaser',
+  flanger: 'Flanger',
+  distortion: 'Distortion',
+  wah: 'Wah',
+  pitchshift: 'Pitch Shifter',
+  cabinet: 'Cabinet Sim'
 }
 
 const EFFECT_COLORS: Record<string, string> = {
@@ -31,7 +39,14 @@ const EFFECT_COLORS: Record<string, string> = {
   chorus: 'border-pink-600',
   compressor: 'border-yellow-600',
   noisegate: 'border-red-600',
-  nam: 'border-amber-500'
+  nam: 'border-amber-500',
+  tremolo: 'border-lime-600',
+  phaser: 'border-violet-600',
+  flanger: 'border-fuchsia-600',
+  distortion: 'border-rose-600',
+  wah: 'border-teal-600',
+  pitchshift: 'border-sky-600',
+  cabinet: 'border-stone-500'
 }
 
 export function EffectPedal({
@@ -40,7 +55,8 @@ export function EffectPedal({
   onRemove,
   onParamChange,
   onDragStart,
-  onLoadNamModel
+  onLoadNamModel,
+  onLoadCabinetIR
 }: EffectPedalProps): JSX.Element {
   return (
     <div
@@ -80,7 +96,7 @@ export function EffectPedal({
       </div>
 
       <div className="flex gap-3 justify-center">
-        <EffectKnobs effect={effect} onParamChange={onParamChange} onLoadNamModel={onLoadNamModel} />
+        <EffectKnobs effect={effect} onParamChange={onParamChange} onLoadNamModel={onLoadNamModel} onLoadCabinetIR={onLoadCabinetIR} />
       </div>
     </div>
   )
@@ -89,11 +105,13 @@ export function EffectPedal({
 function EffectKnobs({
   effect,
   onParamChange,
-  onLoadNamModel
+  onLoadNamModel,
+  onLoadCabinetIR
 }: {
   effect: EffectConfig
   onParamChange: (param: string, value: number) => void
   onLoadNamModel?: (data: Record<string, unknown>) => void
+  onLoadCabinetIR?: (data: ArrayBuffer) => Promise<{ success: boolean; error?: string }>
 }): JSX.Element {
   const p = effect.params
   const set = onParamChange
@@ -152,11 +170,124 @@ function EffectKnobs({
           <Knob label="Rel" value={p.release ?? 50} min={10} max={500} step={5} unit="ms" onChange={(v) => set('release', v)} />
         </>
       )
+    case 'tremolo':
+      return (
+        <>
+          <Knob label="Rate" value={p.rate ?? 4} min={0.5} max={20} step={0.5} unit="Hz" onChange={(v) => set('rate', v)} />
+          <Knob label="Depth" value={p.depth ?? 0.5} min={0} max={1} step={0.01} onChange={(v) => set('depth', v)} />
+          <Knob label="Wave" value={p.wave ?? 0} min={0} max={1} step={1} onChange={(v) => set('wave', v)} />
+        </>
+      )
+    case 'phaser':
+      return (
+        <>
+          <Knob label="Rate" value={p.rate ?? 0.5} min={0.05} max={5} step={0.05} unit="Hz" onChange={(v) => set('rate', v)} />
+          <Knob label="Depth" value={p.depth ?? 0.7} min={0} max={1} step={0.01} onChange={(v) => set('depth', v)} />
+          <Knob label="Stgs" value={p.stages ?? 4} min={2} max={12} step={2} onChange={(v) => set('stages', v)} />
+          <Knob label="Fdbk" value={p.feedback ?? 0.5} min={-0.95} max={0.95} step={0.05} onChange={(v) => set('feedback', v)} />
+          <Knob label="Mix" value={p.mix ?? 0.5} min={0} max={1} step={0.01} onChange={(v) => set('mix', v)} />
+        </>
+      )
+    case 'flanger':
+      return (
+        <>
+          <Knob label="Rate" value={p.rate ?? 0.5} min={0.05} max={5} step={0.05} unit="Hz" onChange={(v) => set('rate', v)} />
+          <Knob label="Depth" value={p.depth ?? 0.7} min={0} max={1} step={0.01} onChange={(v) => set('depth', v)} />
+          <Knob label="Fdbk" value={p.feedback ?? 0.5} min={-0.95} max={0.95} step={0.05} onChange={(v) => set('feedback', v)} />
+          <Knob label="Mix" value={p.mix ?? 0.5} min={0} max={1} step={0.01} onChange={(v) => set('mix', v)} />
+        </>
+      )
+    case 'distortion':
+      return (
+        <>
+          <Knob label="Gain" value={p.gain ?? 3} min={0.5} max={10} step={0.1} onChange={(v) => set('gain', v)} />
+          <Knob label="Tone" value={p.tone ?? 0.5} min={0} max={1} step={0.01} onChange={(v) => set('tone', v)} />
+          <Knob label="Mode" value={p.mode ?? 0} min={0} max={2} step={1} onChange={(v) => set('mode', v)} />
+          <Knob label="Mix" value={p.mix ?? 1} min={0} max={1} step={0.01} onChange={(v) => set('mix', v)} />
+        </>
+      )
+    case 'wah':
+      return (
+        <>
+          <Knob label="Sens" value={p.sensitivity ?? 0.5} min={0} max={1} step={0.01} onChange={(v) => set('sensitivity', v)} />
+          <Knob label="Q" value={p.q ?? 5} min={1} max={15} step={0.5} onChange={(v) => set('q', v)} />
+          <Knob label="Mode" value={p.mode ?? 0} min={0} max={1} step={1} onChange={(v) => set('mode', v)} />
+        </>
+      )
+    case 'pitchshift':
+      return (
+        <>
+          <Knob label="Semi" value={p.semitones ?? 0} min={-12} max={12} step={1} onChange={(v) => set('semitones', v)} />
+          <Knob label="Mix" value={p.mix ?? 1} min={0} max={1} step={0.01} onChange={(v) => set('mix', v)} />
+        </>
+      )
+    case 'cabinet':
+      return <CabinetControls params={p} onParamChange={set} onLoadIR={onLoadCabinetIR} />
     case 'nam':
       return <NamControls params={p} onParamChange={set} onLoadModel={onLoadNamModel} />
     default:
       return <span className="text-xs text-zinc-500">No parameters</span>
   }
+}
+
+function CabinetControls({
+  params,
+  onParamChange,
+  onLoadIR
+}: {
+  params: Record<string, number>
+  onParamChange: (param: string, value: number) => void
+  onLoadIR?: (data: ArrayBuffer) => Promise<{ success: boolean; error?: string }>
+}): JSX.Element {
+  const fileRef = useRef<HTMLInputElement>(null)
+  const [irName, setIrName] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !onLoadIR) return
+
+    setLoading(true)
+    setError(null)
+    try {
+      const data = await file.arrayBuffer()
+      const result = await onLoadIR(data)
+      if (result.success) {
+        setIrName(file.name.replace(/\.(wav|ir)$/i, ''))
+      } else {
+        setError(result.error || 'Failed to load IR')
+        setIrName(null)
+      }
+    } catch (err) {
+      setError(String(err))
+      setIrName(null)
+    }
+    setLoading(false)
+    if (fileRef.current) fileRef.current.value = ''
+  }
+
+  return (
+    <div className="flex flex-col gap-3 items-center">
+      <input
+        ref={fileRef}
+        type="file"
+        accept=".wav,.ir"
+        onChange={handleFileSelect}
+        className="hidden"
+      />
+      <button
+        onClick={() => fileRef.current?.click()}
+        disabled={loading}
+        className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-zinc-800 rounded border border-zinc-700 hover:border-stone-400 text-zinc-300 hover:text-white transition-colors"
+      >
+        <Upload size={12} />
+        {loading ? 'Loading...' : irName ?? 'Load IR'}
+      </button>
+      {error && <span className="text-xs text-red-400 max-w-48 text-center">{error}</span>}
+      <Knob label="Mix" value={params.mix ?? 0.8} min={0} max={1} step={0.01} onChange={(v) => onParamChange('mix', v)} />
+    </div>
+  )
 }
 
 function NamControls({

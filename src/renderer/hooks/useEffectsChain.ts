@@ -10,7 +10,13 @@ import {
   compressorProcessorUrl,
   noisegateProcessorUrl,
   namProcessorUrl,
-  namWasmUrl
+  namWasmUrl,
+  tremoloProcessorUrl,
+  phaserProcessorUrl,
+  flangerProcessorUrl,
+  distortionProcessorUrl,
+  wahProcessorUrl,
+  pitchshiftProcessorUrl
 } from '../audio/worklet-urls'
 
 interface ManagedEffect {
@@ -26,7 +32,13 @@ const WORKLET_URLS: Record<string, string> = {
   chorus: chorusProcessorUrl,
   compressor: compressorProcessorUrl,
   noisegate: noisegateProcessorUrl,
-  nam: namProcessorUrl
+  nam: namProcessorUrl,
+  tremolo: tremoloProcessorUrl,
+  phaser: phaserProcessorUrl,
+  flanger: flangerProcessorUrl,
+  distortion: distortionProcessorUrl,
+  wah: wahProcessorUrl,
+  pitchshift: pitchshiftProcessorUrl
 }
 
 export function useEffectsChain() {
@@ -142,6 +154,25 @@ export function useEffectsChain() {
     })
   }
 
+  const loadCabinetIR = async (effectId: string, audioData: ArrayBuffer): Promise<{ success: boolean; error?: string }> => {
+    const managed = managedRef.current.get(effectId)
+    if (!managed || managed.config.type !== 'cabinet') {
+      return { success: false, error: 'Effect not found' }
+    }
+    const engine = getEngine()
+    const ctx = engine?.getContext()
+    if (!ctx) return { success: false, error: 'No audio context' }
+
+    try {
+      const buffer = await ctx.decodeAudioData(audioData)
+      const convolver = managed.internals.convolver as ConvolverNode
+      convolver.buffer = buffer
+      return { success: true }
+    } catch (err) {
+      return { success: false, error: String(err) }
+    }
+  }
+
   return {
     chain,
     addEffect: useEffectsStore.getState().addEffect,
@@ -149,7 +180,8 @@ export function useEffectsChain() {
     toggleEffect: useEffectsStore.getState().toggleEffect,
     setParam: useEffectsStore.getState().setParam,
     reorderEffects: useEffectsStore.getState().reorderEffects,
-    loadNamModel
+    loadNamModel,
+    loadCabinetIR
   }
 }
 
@@ -161,11 +193,19 @@ function createManagedEffect(ctx: AudioContext, effect: EffectConfig): ManagedEf
     case 'compressor':
     case 'noisegate':
     case 'nam':
+    case 'tremolo':
+    case 'phaser':
+    case 'flanger':
+    case 'distortion':
+    case 'wah':
+    case 'pitchshift':
       return createWorkletEffect(ctx, effect)
     case 'eq':
       return createEqEffect(ctx, effect)
     case 'reverb':
       return createReverbEffect(ctx, effect)
+    case 'cabinet':
+      return createCabinetEffect(ctx, effect)
     default:
       return null
   }
@@ -177,7 +217,13 @@ const WORKLET_NAMES: Record<string, string> = {
   chorus: 'chorus-processor',
   compressor: 'compressor-processor',
   noisegate: 'noisegate-processor',
-  nam: 'nam-processor'
+  nam: 'nam-processor',
+  tremolo: 'tremolo-processor',
+  phaser: 'phaser-processor',
+  flanger: 'flanger-processor',
+  distortion: 'distortion-processor',
+  wah: 'wah-processor',
+  pitchshift: 'pitchshift-processor'
 }
 
 let namWasmBytesCache: ArrayBuffer | null = null
@@ -301,6 +347,50 @@ function createReverbEffect(ctx: AudioContext, config: EffectConfig): ManagedEff
   }
 }
 
+function createCabinetEffect(ctx: AudioContext, config: EffectConfig): ManagedEffect {
+  const splitter = ctx.createGain()
+  const dry = ctx.createGain()
+  const wet = ctx.createGain()
+  const convolver = ctx.createConvolver()
+  const merger = ctx.createGain()
+
+  // Default flat IR (passthrough) until a cab IR is loaded
+  const irLength = 512
+  const ir = ctx.createBuffer(2, irLength, ctx.sampleRate)
+  for (let ch = 0; ch < 2; ch++) {
+    ir.getChannelData(ch)[0] = 1
+  }
+  convolver.buffer = ir
+
+  splitter.connect(dry)
+  splitter.connect(convolver)
+  convolver.connect(wet)
+  dry.connect(merger)
+  wet.connect(merger)
+
+  const mix = config.params.mix ?? 0.8
+  dry.gain.value = 1 - mix
+  wet.gain.value = mix
+
+  return {
+    config,
+    pipelineNode: {
+      id: config.id,
+      enabled: config.enabled,
+      getInput: () => splitter,
+      getOutput: () => merger
+    },
+    internals: { splitter, dry, wet, convolver, merger },
+    dispose: () => {
+      splitter.disconnect()
+      dry.disconnect()
+      wet.disconnect()
+      convolver.disconnect()
+      merger.disconnect()
+    }
+  }
+}
+
 function updateParams(managed: ManagedEffect, effect: EffectConfig, ctx: AudioContext): void {
   const t = ctx.currentTime
 
@@ -331,11 +421,25 @@ function updateParams(managed: ManagedEffect, effect: EffectConfig, ctx: AudioCo
     case 'delay':
     case 'chorus':
     case 'compressor':
-    case 'noisegate': {
+    case 'noisegate':
+    case 'tremolo':
+    case 'phaser':
+    case 'flanger':
+    case 'distortion':
+    case 'wah':
+    case 'pitchshift': {
       const node = managed.internals.node as AudioWorkletNode
       for (const [param, value] of Object.entries(effect.params)) {
         node.parameters.get(param)?.setTargetAtTime(value, t, 0.01)
       }
+      break
+    }
+    case 'cabinet': {
+      const dry = managed.internals.dry as GainNode
+      const wet = managed.internals.wet as GainNode
+      const mix = effect.params.mix ?? 0.8
+      dry.gain.setTargetAtTime(1 - mix, t, 0.01)
+      wet.gain.setTargetAtTime(mix, t, 0.01)
       break
     }
     case 'nam': {

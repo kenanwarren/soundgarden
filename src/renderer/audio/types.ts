@@ -24,7 +24,7 @@ export interface AnalysisData {
   confidence?: number
 }
 
-export type AudioProcessorType = 'gain' | 'eq' | 'reverb' | 'delay' | 'chorus' | 'compressor' | 'noisegate' | 'nam' | 'tuner'
+export type AudioProcessorType = 'gain' | 'eq' | 'reverb' | 'delay' | 'chorus' | 'compressor' | 'noisegate' | 'nam' | 'tuner' | 'tremolo' | 'phaser' | 'flanger' | 'distortion' | 'wah' | 'pitchshift' | 'cabinet'
 
 export interface AudioProcessorDescriptor {
   id: string

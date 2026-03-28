@@ -8,15 +8,22 @@ const AVAILABLE_EFFECTS: { type: AudioProcessorType; label: string }[] = [
   { type: 'noisegate', label: 'Noise Gate' },
   { type: 'compressor', label: 'Compressor' },
   { type: 'gain', label: 'Gain / Drive' },
+  { type: 'distortion', label: 'Distortion' },
   { type: 'eq', label: 'EQ' },
+  { type: 'wah', label: 'Wah' },
   { type: 'chorus', label: 'Chorus' },
+  { type: 'tremolo', label: 'Tremolo' },
+  { type: 'phaser', label: 'Phaser' },
+  { type: 'flanger', label: 'Flanger' },
   { type: 'reverb', label: 'Reverb' },
   { type: 'delay', label: 'Delay' },
+  { type: 'pitchshift', label: 'Pitch Shifter' },
+  { type: 'cabinet', label: 'Cabinet Sim' },
   { type: 'nam', label: 'NAM Capture' }
 ]
 
 export function EffectsChainPanel(): JSX.Element {
-  const { chain, addEffect, removeEffect, toggleEffect, setParam, reorderEffects, loadNamModel } =
+  const { chain, addEffect, removeEffect, toggleEffect, setParam, reorderEffects, loadNamModel, loadCabinetIR } =
     useEffectsChain()
   const [showMenu, setShowMenu] = useState(false)
   const dragIdx = useRef<number | null>(null)
@@ -63,6 +70,7 @@ export function EffectsChainPanel(): JSX.Element {
               onParamChange={(param, value) => setParam(effect.id, param, value)}
               onDragStart={(e) => handleDragStart(e, idx)}
               onLoadNamModel={effect.type === 'nam' ? (data) => loadNamModel(effect.id, data) : undefined}
+              onLoadCabinetIR={effect.type === 'cabinet' ? (data) => loadCabinetIR(effect.id, data) : undefined}
             />
           </div>
         ))}

@@ -18,7 +18,14 @@ const DEFAULT_PARAMS: Record<AudioProcessorType, Record<string, number>> = {
   compressor: { threshold: -20, ratio: 4, attack: 10, release: 100, makeup: 0 },
   noisegate: { threshold: -40, attack: 1, release: 50 },
   nam: { inputGain: 1.0, outputGain: 1.0 },
-  tuner: {}
+  tuner: {},
+  tremolo: { rate: 4, depth: 0.5, wave: 0 },
+  phaser: { rate: 0.5, depth: 0.7, stages: 4, feedback: 0.5, mix: 0.5 },
+  flanger: { rate: 0.5, depth: 0.7, feedback: 0.5, mix: 0.5 },
+  distortion: { gain: 3, tone: 0.5, mode: 0, mix: 1 },
+  wah: { sensitivity: 0.5, frequency: 1500, q: 5, mode: 0 },
+  pitchshift: { semitones: 0, mix: 1 },
+  cabinet: { mix: 0.8 }
 }
 
 interface EffectsState {
