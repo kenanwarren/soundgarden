@@ -1,106 +1,8 @@
 import { Plus, Search, X } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import { EffectPedal } from './EffectPedal'
+import { getEffectPickerSections } from '../../effects/definitions'
 import { useEffectsChain } from '../../hooks/useEffectsChain'
-import type { AudioProcessorType } from '../../audio/types'
-
-const EFFECT_CATEGORIES: {
-  name: string
-  effects: { type: AudioProcessorType; label: string }[]
-}[] = [
-  {
-    name: 'Dynamics',
-    effects: [
-      { type: 'noisegate', label: 'Noise Gate' },
-      { type: 'compressor', label: 'Compressor' },
-      { type: 'limiter', label: 'Limiter' }
-    ]
-  },
-  {
-    name: 'Drive',
-    effects: [
-      { type: 'cleanboost', label: 'Clean Boost' },
-      { type: 'gain', label: 'Gain / Drive' },
-      { type: 'distortion', label: 'Distortion' }
-    ]
-  },
-  {
-    name: 'EQ',
-    effects: [
-      { type: 'eq', label: 'EQ' },
-      { type: 'graphiceq', label: 'Graphic EQ' },
-      { type: 'parameq', label: 'Parametric EQ' }
-    ]
-  },
-  {
-    name: 'Pitch',
-    effects: [
-      { type: 'octaver', label: 'Octaver' },
-      { type: 'harmonizer', label: 'Harmonizer' },
-      { type: 'pitchshift', label: 'Pitch Shifter' }
-    ]
-  },
-  {
-    name: 'Modulation',
-    effects: [
-      { type: 'wah', label: 'Wah' },
-      { type: 'chorus', label: 'Chorus' },
-      { type: 'tremolo', label: 'Tremolo' },
-      { type: 'phaser', label: 'Phaser' },
-      { type: 'flanger', label: 'Flanger' },
-      { type: 'rotary', label: 'Rotary Speaker' },
-      { type: 'ringmod', label: 'Ring Mod' },
-      { type: 'bitcrusher', label: 'Bitcrusher' }
-    ]
-  },
-  {
-    name: 'Space',
-    effects: [
-      { type: 'reverb', label: 'Reverb' },
-      { type: 'shimmer', label: 'Shimmer Reverb' },
-      { type: 'delay', label: 'Delay' }
-    ]
-  },
-  {
-    name: 'Utility',
-    effects: [
-      { type: 'autoswell', label: 'Auto-Swell' },
-      { type: 'looper', label: 'Looper' },
-      { type: 'cabinet', label: 'Cabinet Sim' },
-      { type: 'nam', label: 'NAM Capture' }
-    ]
-  }
-]
-
-const TILE_COLORS: Record<string, string> = {
-  noisegate: 'border-red-600 bg-red-600/10 hover:bg-red-600/25',
-  compressor: 'border-yellow-600 bg-yellow-600/10 hover:bg-yellow-600/25',
-  limiter: 'border-red-500 bg-red-500/10 hover:bg-red-500/25',
-  cleanboost: 'border-emerald-600 bg-emerald-600/10 hover:bg-emerald-600/25',
-  gain: 'border-orange-600 bg-orange-600/10 hover:bg-orange-600/25',
-  distortion: 'border-rose-600 bg-rose-600/10 hover:bg-rose-600/25',
-  eq: 'border-blue-600 bg-blue-600/10 hover:bg-blue-600/25',
-  graphiceq: 'border-sky-600 bg-sky-600/10 hover:bg-sky-600/25',
-  parameq: 'border-blue-600 bg-blue-600/10 hover:bg-blue-600/25',
-  octaver: 'border-blue-500 bg-blue-500/10 hover:bg-blue-500/25',
-  harmonizer: 'border-violet-500 bg-violet-500/10 hover:bg-violet-500/25',
-  pitchshift: 'border-sky-600 bg-sky-600/10 hover:bg-sky-600/25',
-  wah: 'border-teal-600 bg-teal-600/10 hover:bg-teal-600/25',
-  chorus: 'border-pink-600 bg-pink-600/10 hover:bg-pink-600/25',
-  tremolo: 'border-lime-600 bg-lime-600/10 hover:bg-lime-600/25',
-  phaser: 'border-violet-600 bg-violet-600/10 hover:bg-violet-600/25',
-  flanger: 'border-fuchsia-600 bg-fuchsia-600/10 hover:bg-fuchsia-600/25',
-  rotary: 'border-yellow-500 bg-yellow-500/10 hover:bg-yellow-500/25',
-  ringmod: 'border-indigo-600 bg-indigo-600/10 hover:bg-indigo-600/25',
-  bitcrusher: 'border-green-600 bg-green-600/10 hover:bg-green-600/25',
-  reverb: 'border-purple-600 bg-purple-600/10 hover:bg-purple-600/25',
-  shimmer: 'border-purple-500 bg-purple-500/10 hover:bg-purple-500/25',
-  delay: 'border-cyan-600 bg-cyan-600/10 hover:bg-cyan-600/25',
-  autoswell: 'border-amber-600 bg-amber-600/10 hover:bg-amber-600/25',
-  looper: 'border-red-600 bg-red-600/10 hover:bg-red-600/25',
-  cabinet: 'border-stone-500 bg-stone-500/10 hover:bg-stone-500/25',
-  nam: 'border-amber-500 bg-amber-500/10 hover:bg-amber-500/25'
-}
 
 export function EffectsChainPanel(): JSX.Element {
   const {
@@ -152,14 +54,7 @@ export function EffectsChainPanel(): JSX.Element {
     setDragOverIdx(null)
   }
 
-  const query = search.trim().toLowerCase()
-  const filteredCategories = EFFECT_CATEGORIES.map((category) => ({
-    ...category,
-    effects: category.effects.filter(
-      (effect) =>
-        effect.label.toLowerCase().includes(query) || category.name.toLowerCase().includes(query)
-    )
-  })).filter((category) => category.effects.length > 0)
+  const filteredCategories = getEffectPickerSections(search)
 
   return (
     <div className="flex flex-col gap-6">
@@ -247,17 +142,17 @@ export function EffectsChainPanel(): JSX.Element {
                     <h3 className="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-2">
                       {category.name}
                     </h3>
-                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                      {category.effects.map(({ type, label }) => (
+                    <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+                      {category.effects.map((definition) => (
                         <button
-                          key={type}
+                          key={definition.type}
                           onClick={() => {
-                            addEffect(type)
+                            addEffect(definition.type)
                             setShowMenu(false)
                           }}
-                          className={`px-3 py-2.5 rounded-lg border-2 text-sm font-medium text-white hover:scale-[1.03] transition-all duration-150 text-left ${TILE_COLORS[type] ?? 'border-zinc-700 bg-zinc-700/10 hover:bg-zinc-700/25'}`}
+                          className={`rounded-lg border-2 px-3 py-2.5 text-left text-sm font-medium text-white transition-all duration-150 hover:scale-[1.03] ${definition.tileClass}`}
                         >
-                          {label}
+                          {definition.label}
                         </button>
                       ))}
                     </div>

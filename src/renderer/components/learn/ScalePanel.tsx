@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef } from 'react'
-import { useSearchParams } from 'react-router-dom'
 import { RotateCcw } from 'lucide-react'
 import { NOTE_NAMES } from '../../utils/constants'
 import { SCALES, getScaleNotes } from '../../utils/scale-data'
@@ -8,16 +7,14 @@ import { useScaleStore } from '../../stores/scale-store'
 import { useScalePractice } from '../../hooks/useScalePractice'
 import { useLearnSession } from '../../hooks/useLearnSession'
 import { Fretboard } from '../common/Fretboard'
-import { PageHeader } from '../layout/PageHeader'
-import { useLessonStep } from '../../hooks/useLessonStep'
-import { buildRouteWithParams, getScaleIndexByName } from '../../utils/learn-data'
+import { useLearnToolRouteState } from '../../hooks/useLearnToolRouteState'
+import { getScaleIndexByName } from '../../utils/learn-data'
 import { LearnSessionSummary } from './LearnSessionSummary'
 import type { CompletionState } from '../../utils/learn-types'
-import { GuidedStepBanner } from './GuidedStepBanner'
 import { LearnStatCard } from './LearnStatCard'
+import { LearnToolLayout } from './LearnToolLayout'
 
 export function ScalePanel(): JSX.Element {
-  const [searchParams] = useSearchParams()
   const {
     selectedRoot,
     selectedScaleIndex,
@@ -29,7 +26,10 @@ export function ScalePanel(): JSX.Element {
     resetProgress
   } = useScaleStore()
   const { startPractice, stopPractice, isPracticing, isConnected } = useScalePractice()
-  const lessonStep = useLessonStep('scale-explorer')
+  const { searchParams, lessonStep, buildResumeHref } = useLearnToolRouteState(
+    'scale-explorer',
+    '/learn/scales'
+  )
   const sessionStartedAt = useRef<number | null>(null)
   const rootParam = searchParams.get('root')
   const scaleParam = searchParams.get('scale')
@@ -76,9 +76,7 @@ export function ScalePanel(): JSX.Element {
         title: `${selectedRoot} ${scale.name} session`,
         description: `Covered ${hitNotes.length} of ${scaleNotes.length} target tones with live tracking.`,
         route: '/learn/scales',
-        resumeHref: lessonStep
-          ? buildRouteWithParams('/learn/scales', { lesson: lessonStep.id })
-          : buildRouteWithParams('/learn/scales', { root: selectedRoot, scale: scale.name }),
+        resumeHref: buildResumeHref({ root: selectedRoot, scale: scale.name }),
         contextLabel: `${selectedRoot} ${scale.name}`,
         score,
         bestStreak: hitNotes.length,
@@ -92,13 +90,13 @@ export function ScalePanel(): JSX.Element {
         scaleName: scale.name
       }
     },
-    [hitNotes, lessonStep, scale.name, scaleNotes, selectedRoot]
+    [buildResumeHref, hitNotes, scale.name, scaleNotes, selectedRoot]
   )
 
   const { savedSummary, finalizeSession, startSession, resetSessionStart } = useLearnSession({
     module: 'scale-explorer',
     lessonStepId: lessonStep?.id,
-    sessionKey: lessonStep ? null : `root:${rootParam ?? ''}|scale:${scaleParam ?? ''}`,
+    sessionKey: lessonStep ? null : buildResumeHref({ root: rootParam, scale: scaleParam }),
     hasActivity: () => isPracticing || hitNotes.length > 0 || sessionStartedAt.current !== null,
     buildSummary: () => {
       const startedAt = sessionStartedAt.current ?? Date.now()
@@ -124,29 +122,23 @@ export function ScalePanel(): JSX.Element {
   }
 
   return (
-    <div className="flex h-full flex-col gap-6 p-6">
-      <PageHeader
-        title="Scale Explorer"
-        description="Browse scale shapes, then switch into live practice to track which notes you have already covered."
-        backTo="/learn"
-        actions={
-          <button
-            onClick={() => {
-              resetSessionStart()
-              resetProgress()
-            }}
-            className="inline-flex items-center gap-2 rounded-xl border border-zinc-800 px-3 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
-          >
-            <RotateCcw size={14} />
-            Reset Progress
-          </button>
-        }
-      />
-
-      {lessonStep && (
-        <GuidedStepBanner title={lessonStep.title} description={lessonStep.description} />
-      )}
-
+    <LearnToolLayout
+      title="Scale Explorer"
+      description="Browse scale shapes, then switch into live practice to track which notes you have already covered."
+      lessonStep={lessonStep}
+      actions={
+        <button
+          onClick={() => {
+            resetSessionStart()
+            resetProgress()
+          }}
+          className="inline-flex items-center gap-2 rounded-xl border border-zinc-800 px-3 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
+        >
+          <RotateCcw size={14} />
+          Reset Progress
+        </button>
+      }
+    >
       {!isConnected && (
         <div className="rounded-3xl border border-amber-500/20 bg-amber-500/10 px-5 py-4 text-sm text-amber-100">
           Live pitch practice is currently unavailable. You can still browse the scale layout and
@@ -296,6 +288,6 @@ export function ScalePanel(): JSX.Element {
           weakSpots={displayedSummary.weakSpots}
         />
       )}
-    </div>
+    </LearnToolLayout>
   )
 }

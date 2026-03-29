@@ -2,6 +2,7 @@ export const tunerProcessorUrl = new URL('./nodes/tuner-processor.js', import.me
 export const namWasmUrl = new URL('./wasm/nam-kernel.wasm', import.meta.url).href
 
 export const WORKLET_URLS: Record<string, string> = {
+  tuner: tunerProcessorUrl,
   gain: new URL('./nodes/gain-processor.js', import.meta.url).href,
   delay: new URL('./nodes/delay-processor.js', import.meta.url).href,
   chorus: new URL('./nodes/chorus-processor.js', import.meta.url).href,
@@ -27,6 +28,7 @@ export const WORKLET_URLS: Record<string, string> = {
 }
 
 export const WORKLET_NAMES: Record<string, string> = {
+  tuner: 'tuner-processor',
   gain: 'gain-drive-processor',
   delay: 'delay-processor',
   chorus: 'chorus-processor',

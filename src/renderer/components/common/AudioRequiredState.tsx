@@ -5,7 +5,7 @@ import { useAudioEngine } from '../../hooks/useAudioEngine'
 import { useSystemStatus } from '../../hooks/useSystemStatus'
 
 export function AudioRequiredState({ featureName }: { featureName: string }): JSX.Element {
-  const { connect, inputDeviceId } = useAudioEngine()
+  const { inputDeviceId, reconnect } = useAudioEngine()
   const status = useSystemStatus()
   const [isReconnecting, setIsReconnecting] = useState(false)
 
@@ -13,7 +13,7 @@ export function AudioRequiredState({ featureName }: { featureName: string }): JS
     if (!inputDeviceId) return
     setIsReconnecting(true)
     try {
-      await connect(inputDeviceId)
+      await reconnect()
     } finally {
       setIsReconnecting(false)
     }
@@ -52,7 +52,7 @@ export function AudioRequiredState({ featureName }: { featureName: string }): JS
             to="/settings"
             className="rounded-xl border border-zinc-800 px-4 py-2 text-sm font-medium text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
           >
-            Open Settings
+            Open Preferences
           </Link>
           {status.permissionState !== 'denied' && inputDeviceId && (
             <button

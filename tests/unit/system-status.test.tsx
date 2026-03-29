@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { renderHook } from '@testing-library/react'
 import {
   DEFAULT_AUDIO_SETTINGS,
@@ -23,16 +23,9 @@ import {
   getSignalLabel
 } from '../../src/renderer/utils/system-status'
 
-const getEngine = vi.fn()
-
-vi.mock('../../src/renderer/hooks/useAudioEngine', () => ({
-  getEngine: (...args: unknown[]) => getEngine(...args)
-}))
-
 describe('system-status', () => {
   beforeEach(() => {
     localStorage.clear()
-    vi.clearAllMocks()
 
     useAppSettingsStore.setState({
       audio: { ...DEFAULT_AUDIO_SETTINGS },
@@ -46,7 +39,9 @@ describe('system-status', () => {
       inputLevel: 0,
       devicesLoading: false,
       permissionState: 'unknown',
-      lastRecoverableError: null
+      lastRecoverableError: null,
+      latencyEstimateMs: null,
+      sampleRate: null
     })
     useTunerStore.setState({ isActive: false })
     useChordStore.setState({
@@ -97,13 +92,13 @@ describe('system-status', () => {
       currentBeat: 0,
       accentFirst: true
     })
-    getEngine.mockReturnValue({ latencyEstimate: 0.04 })
   })
 
   it('prefers the highest-priority active practice mode and uses unavailable-device fallbacks', () => {
     useAudioStore.setState({
       isConnected: true,
       inputLevel: 0.91,
+      latencyEstimateMs: 40,
       inputDevices: [{ id: 'input-1', label: 'Interface', kind: 'audioinput' }],
       outputDevices: [{ id: 'output-1', label: 'Monitors', kind: 'audiooutput' }]
     })
@@ -127,7 +122,7 @@ describe('system-status', () => {
   })
 
   it('returns live-input mode when no training tool is active', () => {
-    useAudioStore.setState({ isConnected: true, inputLevel: 0.2 })
+    useAudioStore.setState({ isConnected: true, inputLevel: 0.2, latencyEstimateMs: 40 })
 
     const { result } = renderHook(() => useSystemStatus())
 

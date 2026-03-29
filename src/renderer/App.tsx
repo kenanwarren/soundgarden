@@ -119,7 +119,9 @@ export default function App(): JSX.Element {
               <Route path="/effects" element={<EffectsPage />} />
               <Route path="/metronome" element={<MetronomePage />} />
               <Route path="/chords" element={<ChordsPage />} />
-              <Route path="/learn" element={<LearnHub />} />
+              <Route path="/learn" element={<LearnHub view="overview" />} />
+              <Route path="/learn/explore" element={<LearnHub view="explore" />} />
+              <Route path="/learn/tools" element={<LearnHub view="tools" />} />
               <Route path="/learn/scales" element={<ScalePanel />} />
               <Route path="/learn/chords" element={<ChordLibraryPanel />} />
               <Route path="/learn/rhythm" element={<RhythmPanel />} />

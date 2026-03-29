@@ -1,6 +1,7 @@
 import type { EffectConfig } from '../../stores/effects-store'
+import { getEffectDefinition } from '../../effects/definitions'
 import type { ManagedEffect } from './types'
-import { WORKLET_NAMES, namWasmUrl } from '../worklet-urls'
+import { namWasmUrl } from '../worklet-urls'
 
 let namWasmBytesCache: ArrayBuffer | null = null
 
@@ -17,7 +18,8 @@ async function fetchNamWasmBytes(): Promise<ArrayBuffer | null> {
 }
 
 export function createWorkletEffect(ctx: AudioContext, config: EffectConfig): ManagedEffect {
-  const node = new AudioWorkletNode(ctx, WORKLET_NAMES[config.type])
+  const definition = getEffectDefinition(config.type)
+  const node = new AudioWorkletNode(ctx, definition.workletName ?? config.type)
   if (config.type === 'nam') {
     node.port.addEventListener('message', (e: MessageEvent) => {
       if (e.data?.type === 'modelError') {

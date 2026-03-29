@@ -110,6 +110,21 @@ export interface PracticePath {
   steps: LessonStep[]
 }
 
+export interface LearnToolDefinition {
+  module: LearnModuleId
+  route: string
+  title: string
+  description: string
+}
+
+export interface LearnToolRouteState {
+  searchParams: URLSearchParams
+  lessonStep: LessonStep | null
+  genreContext: GenreId | null
+  genreLabel: string | null
+  buildResumeHref: (params?: Record<string, string | number | null | undefined>) => string
+}
+
 export interface LearnStarterDrill {
   id: string
   kind: 'rhythm' | 'chord-changes' | 'scale-sequences' | 'ear'

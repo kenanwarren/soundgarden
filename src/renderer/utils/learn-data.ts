@@ -8,10 +8,12 @@ export type { ScaleSequencePreset } from './presets/scale-sequences'
 export { EAR_TRAINING_PRESETS } from './presets/ear-training'
 export type { EarTrainingPreset } from './presets/ear-training'
 export {
+  LEARN_TOOL_DEFINITIONS,
   MODULE_ROUTES,
   LEARN_FEATURES,
   LEARN_SKILLS,
   LEARN_HUB_VIEWS,
+  LEARN_HUB_ROUTES,
   LEARN_BROWSE_MODES,
   buildLearnHubHref,
   buildLessonHref,

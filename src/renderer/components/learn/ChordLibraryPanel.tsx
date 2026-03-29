@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
 import { Check, RotateCcw, X } from 'lucide-react'
 import { NOTE_NAMES } from '../../utils/constants'
 import { CHORD_VOICINGS, type ChordVoicing } from '../../utils/chord-voicings'
@@ -8,13 +7,12 @@ import { useChordPractice } from '../../hooks/useChordPractice'
 import { useLearnSession } from '../../hooks/useLearnSession'
 import { ChordDiagram } from '../common/ChordDiagram'
 import { useAudioStore } from '../../stores/audio-store'
-import { PageHeader } from '../layout/PageHeader'
-import { useLessonStep } from '../../hooks/useLessonStep'
-import { buildRouteWithParams, getChordIndexByName } from '../../utils/learn-data'
+import { useLearnToolRouteState } from '../../hooks/useLearnToolRouteState'
+import { getChordIndexByName } from '../../utils/learn-data'
 import { LearnSessionSummary } from './LearnSessionSummary'
 import type { CompletionState } from '../../utils/learn-types'
-import { GuidedStepBanner } from './GuidedStepBanner'
 import { LearnStatCard } from './LearnStatCard'
+import { LearnToolLayout } from './LearnToolLayout'
 
 const CATEGORIES = [
   { value: 'all' as const, label: 'All' },
@@ -165,7 +163,6 @@ function ChordPracticeIndicator({
 }
 
 export function ChordLibraryPanel(): JSX.Element {
-  const [searchParams] = useSearchParams()
   const {
     selectedChordIndex,
     filterRoot,
@@ -175,7 +172,10 @@ export function ChordLibraryPanel(): JSX.Element {
     setFilterCategory
   } = useChordLibraryStore()
   const isConnected = useAudioStore((s) => s.isConnected)
-  const lessonStep = useLessonStep('chord-library')
+  const { searchParams, lessonStep, buildResumeHref } = useLearnToolRouteState(
+    'chord-library',
+    '/learn/chords'
+  )
   const rootParam = searchParams.get('root')
   const categoryParam = searchParams.get('category')
   const chordParam = searchParams.get('chord')
@@ -187,13 +187,11 @@ export function ChordLibraryPanel(): JSX.Element {
   })
 
   const selectedVoicing = selectedChordIndex !== null ? CHORD_VOICINGS[selectedChordIndex] : null
-  const resumeHref = lessonStep
-    ? buildRouteWithParams('/learn/chords', { lesson: lessonStep.id })
-    : buildRouteWithParams('/learn/chords', {
-        root: filterRoot,
-        category: filterCategory,
-        chord: selectedVoicing?.name ?? null
-      })
+  const resumeHref = buildResumeHref({
+    root: filterRoot,
+    category: filterCategory,
+    chord: selectedVoicing?.name ?? null
+  })
 
   useEffect(() => {
     if (!lessonStep || lessonStep.prefill.module !== 'chord-library') return
@@ -236,26 +234,20 @@ export function ChordLibraryPanel(): JSX.Element {
   }
 
   return (
-    <div className="flex h-full flex-col gap-6 p-6">
-      <PageHeader
-        title="Chord Library"
-        description="Browse voicings by root and shape category, then switch into live practice when you want instant feedback on the chord you strum."
-        backTo="/learn"
-        actions={
-          <button
-            onClick={clearFilters}
-            className="inline-flex items-center gap-2 rounded-xl border border-zinc-800 px-3 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
-          >
-            <RotateCcw size={14} />
-            Clear Filters
-          </button>
-        }
-      />
-
-      {lessonStep && (
-        <GuidedStepBanner title={lessonStep.title} description={lessonStep.description} />
-      )}
-
+    <LearnToolLayout
+      title="Chord Library"
+      description="Browse voicings by root and shape category, then switch into live practice when you want instant feedback on the chord you strum."
+      lessonStep={lessonStep}
+      actions={
+        <button
+          onClick={clearFilters}
+          className="inline-flex items-center gap-2 rounded-xl border border-zinc-800 px-3 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
+        >
+          <RotateCcw size={14} />
+          Clear Filters
+        </button>
+      }
+    >
       <div className="grid gap-4 md:grid-cols-3">
         <LearnStatCard label="Filtered voicings" value={String(filtered.length)} />
         <LearnStatCard label="Selected chord" value={selectedVoicing?.name ?? 'None selected'} />
@@ -377,6 +369,6 @@ export function ChordLibraryPanel(): JSX.Element {
           <p className="text-zinc-500">No chords match the current filters.</p>
         )}
       </div>
-    </div>
+    </LearnToolLayout>
   )
 }

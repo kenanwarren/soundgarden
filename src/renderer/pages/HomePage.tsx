@@ -5,6 +5,8 @@ import { useDevices } from '../hooks/useDevices'
 import { useSystemStatus } from '../hooks/useSystemStatus'
 import { DeviceSelector } from '../components/audio/DeviceSelector'
 import { AudioMeter } from '../components/audio/AudioMeter'
+import { AudioDiagnosticsPanel } from '../components/audio/AudioDiagnosticsPanel'
+import { AudioStatusCards } from '../components/audio/AudioStatusCards'
 import { LatencyIndicator } from '../components/audio/LatencyIndicator'
 import { VolumeSlider } from '../components/audio/VolumeSlider'
 import { PageHeader } from '../components/layout/PageHeader'
@@ -185,6 +187,10 @@ export function HomePage(): JSX.Element {
               <LatencyIndicator />
             </div>
           </div>
+
+          <AudioStatusCards includeActiveMode={false} />
+
+          <AudioDiagnosticsPanel />
 
           <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 px-4 py-4">
             <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">Next move</div>
