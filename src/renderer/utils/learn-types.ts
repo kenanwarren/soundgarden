@@ -20,6 +20,9 @@ export type LearnSkillId =
   | 'technique'
   | 'fingerstyle'
 
+export type LearnHubView = 'overview' | 'explore' | 'tools'
+export type LearnBrowseMode = 'all' | 'genre' | 'skill'
+
 export type Instrument = 'lead-guitar' | 'rhythm-guitar' | 'bass'
 
 export type CompletionState = 'not-started' | 'in-progress' | 'completed'
@@ -107,6 +110,16 @@ export interface PracticePath {
   steps: LessonStep[]
 }
 
+export interface LearnStarterDrill {
+  id: string
+  kind: 'rhythm' | 'chord-changes' | 'scale-sequences' | 'ear'
+  module: LearnModuleId
+  title: string
+  description: string
+  href: string
+  genreId: GenreId
+}
+
 export type NoteDuration = 'whole' | 'half' | 'quarter' | 'eighth' | 'sixteenth' | 'thirtySecond'
 
 export type NoteTechnique =
@@ -184,6 +197,8 @@ interface BaseSessionSummary {
   title: string
   description: string
   route: string
+  resumeHref: string
+  contextLabel?: string
   score: number | null
   bestStreak: number | null
   completionState: CompletionState

@@ -1,13 +1,17 @@
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
+import { useEffect, useMemo, useReducer, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { RotateCcw } from 'lucide-react'
 import { CHORD_VOICINGS } from '../../utils/chord-voicings'
 import {
   CHORD_CHANGE_PRESETS,
+  buildRouteWithParams,
   getChordChangePreset,
-  getChordIndexByName
+  getChordIndexByName,
+  getGenreDefinition,
+  isChordChangePresetRecommendedForGenre
 } from '../../utils/learn-data'
+import { useLearnSession } from '../../hooks/useLearnSession'
 import { useLessonStep } from '../../hooks/useLessonStep'
-import { useLearnProgressStore } from '../../stores/learn-progress-store'
 import { useMetronomeStore } from '../../stores/metronome-store'
 import { useMetronome } from '../../hooks/useMetronome'
 import { useChordDetection } from '../../hooks/useChordDetection'
@@ -18,16 +22,9 @@ import { AudioRequiredState } from '../common/AudioRequiredState'
 import { BpmControl } from '../common/BpmControl'
 import { ChordDiagram } from '../common/ChordDiagram'
 import { LearnSessionSummary } from './LearnSessionSummary'
-import type { CompletionState } from '../../utils/learn-types'
-
-function SummaryCard({ label, value }: { label: string; value: string }): JSX.Element {
-  return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/80 px-4 py-3">
-      <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">{label}</div>
-      <div className="mt-2 text-lg font-medium text-white">{value}</div>
-    </div>
-  )
-}
+import type { CompletionState, GenreId } from '../../utils/learn-types'
+import { GuidedStepBanner } from './GuidedStepBanner'
+import { LearnStatCard } from './LearnStatCard'
 
 interface ChordChangesState {
   presetId: string
@@ -84,13 +81,19 @@ function reducer(state: ChordChangesState, action: ChordChangesAction): ChordCha
 }
 
 export function ChordChangesPanel(): JSX.Element {
+  const [searchParams] = useSearchParams()
   const lessonStep = useLessonStep('chord-changes')
-  const recordSession = useLearnProgressStore((state) => state.recordSession)
-  const savedSummary = useLearnProgressStore(
-    (state) => state.progress['chord-changes']?.lastSession
-  )
   const sessionStartedAt = useRef<number | null>(null)
   const lastProcessedChord = useRef<string | null>(null)
+  const appliedQueryKey = useRef<string | null>(null)
+  const presetParam = searchParams.get('preset')
+  const bpmParam = searchParams.get('bpm')
+  const rawGenreContext = searchParams.get('genre')
+  const genreContext =
+    rawGenreContext && getGenreDefinition(rawGenreContext as GenreId)
+      ? (rawGenreContext as GenreId)
+      : null
+  const genreLabel = genreContext ? (getGenreDefinition(genreContext)?.title ?? null) : null
 
   const [{ presetId, currentTargetIndex, cleanSwitches, mismatchCount, mismatches }, dispatch] =
     useReducer(reducer, INITIAL_STATE)
@@ -114,10 +117,10 @@ export function ChordChangesPanel(): JSX.Element {
   const { start, stop, isConnected } = useChordDetection()
   const currentChord = useChordStore((state) => state.currentChord)
 
-  const resetSessionState = useCallback(() => {
+  function resetSessionState() {
     dispatch({ type: 'reset-session' })
     lastProcessedChord.current = null
-  }, [])
+  }
 
   useEffect(() => {
     if (!lessonStep || lessonStep.prefill.module !== 'chord-changes') return
@@ -126,7 +129,34 @@ export function ChordChangesPanel(): JSX.Element {
     lastProcessedChord.current = null
   }, [lessonStep, setBpm])
 
-  const buildSummary = useCallback(() => {
+  useEffect(() => {
+    if (lessonStep) {
+      appliedQueryKey.current = null
+      return
+    }
+
+    const queryKey = `preset:${presetParam ?? ''}|bpm:${bpmParam ?? ''}`
+    if (appliedQueryKey.current === queryKey) return
+    if (!presetParam && !bpmParam) {
+      appliedQueryKey.current = null
+      return
+    }
+
+    if (presetParam && getChordChangePreset(presetParam)) {
+      dispatch({ type: 'set-preset', presetId: presetParam })
+    }
+
+    if (bpmParam) {
+      const bpmValue = Number(bpmParam)
+      if (Number.isFinite(bpmValue)) setBpm(bpmValue)
+    }
+
+    lastProcessedChord.current = null
+    sessionStartedAt.current = null
+    appliedQueryKey.current = queryKey
+  }, [bpmParam, lessonStep, presetParam, setBpm])
+
+  function buildSummary() {
     const attempts = cleanSwitches + mismatchCount
     const score = attempts > 0 ? (cleanSwitches / attempts) * 100 : 0
     const completionState: CompletionState =
@@ -137,6 +167,14 @@ export function ChordChangesPanel(): JSX.Element {
       title: `${preset?.name ?? 'Chord changes'} session`,
       description: `Completed ${cleanSwitches} clean target changes at ${bpm} BPM.`,
       route: '/learn/chord-changes',
+      resumeHref: lessonStep
+        ? buildRouteWithParams('/learn/chord-changes', { lesson: lessonStep.id })
+        : buildRouteWithParams('/learn/chord-changes', {
+            preset: preset?.id ?? presetId,
+            bpm,
+            genre: genreContext
+          }),
+      contextLabel: preset?.name ?? 'Chord changes',
       score,
       bestStreak: cleanSwitches,
       completionState,
@@ -147,21 +185,26 @@ export function ChordChangesPanel(): JSX.Element {
       mismatches,
       bpm
     }
-  }, [bpm, cleanSwitches, mismatchCount, mismatches, preset, presetId])
+  }
 
-  const finalizeSession = useCallback(() => {
-    if (sessionStartedAt.current === null && cleanSwitches === 0 && mismatchCount === 0) return
-    recordSession(buildSummary(), lessonStep?.id)
-    sessionStartedAt.current = null
-  }, [buildSummary, cleanSwitches, lessonStep?.id, mismatchCount, recordSession])
+  const { savedSummary, finalizeSession, startSession, resetSessionStart } = useLearnSession({
+    module: 'chord-changes',
+    lessonStepId: lessonStep?.id,
+    sessionKey: lessonStep
+      ? null
+      : `preset:${presetParam ?? ''}|bpm:${bpmParam ?? ''}|genre:${genreContext ?? ''}`,
+    hasActivity: () => sessionStartedAt.current !== null || cleanSwitches > 0 || mismatchCount > 0,
+    buildSummary,
+    sessionStartedAtRef: sessionStartedAt
+  })
 
-  const stopSession = useCallback(() => {
+  function stopSession() {
     finalizeSession()
     stop()
     stopMetronome()
     setIsRunning(false)
-    sessionStartedAt.current = null
-  }, [finalizeSession, stop, stopMetronome])
+    resetSessionStart()
+  }
 
   useEffect(() => {
     if (!isRunning || !currentChord || !currentTarget) return
@@ -179,12 +222,6 @@ export function ChordChangesPanel(): JSX.Element {
       dispatch({ type: 'mismatch', chordName: currentChord.name })
     }
   }, [currentChord, currentTarget, isRunning, targetVoicings])
-
-  useEffect(() => {
-    return () => {
-      finalizeSession()
-    }
-  }, [finalizeSession])
 
   const displayedSummary =
     cleanSwitches + mismatchCount > 0
@@ -210,7 +247,7 @@ export function ChordChangesPanel(): JSX.Element {
               stopMetronome()
               setIsRunning(false)
               finalizeSession()
-              sessionStartedAt.current = null
+              resetSessionStart()
               resetSessionState()
             }}
             className="inline-flex items-center gap-2 rounded-xl border border-zinc-800 px-3 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
@@ -222,23 +259,25 @@ export function ChordChangesPanel(): JSX.Element {
       />
 
       {lessonStep && (
-        <div className="rounded-3xl border border-emerald-500/20 bg-emerald-500/10 px-5 py-4 text-sm text-emerald-100">
-          Guided step: <span className="font-medium text-white">{lessonStep.title}</span>.{' '}
-          {lessonStep.description}
-        </div>
+        <GuidedStepBanner title={lessonStep.title} description={lessonStep.description} />
       )}
 
       <div className="grid gap-4 md:grid-cols-4">
-        <SummaryCard label="Preset" value={preset?.name ?? 'Unknown'} />
-        <SummaryCard label="Next chord" value={currentTarget?.name ?? 'Pick a preset'} />
-        <SummaryCard label="Clean switches" value={String(cleanSwitches)} />
-        <SummaryCard label="Beat" value={String(currentBeat + 1)} />
+        <LearnStatCard label="Preset" value={preset?.name ?? 'Unknown'} />
+        <LearnStatCard label="Next chord" value={currentTarget?.name ?? 'Pick a preset'} />
+        <LearnStatCard label="Clean switches" value={String(cleanSwitches)} />
+        <LearnStatCard label="Beat" value={String(currentBeat + 1)} />
       </div>
 
       <BpmControl bpm={bpm} setBpm={setBpm} onTap={tap} min={50} max={180} />
 
       <div className="rounded-3xl border border-zinc-800 bg-zinc-900/80 p-5">
         <div className="text-sm font-medium text-white">Progression preset</div>
+        {genreLabel && !lessonStep && (
+          <div className="mt-2 text-sm text-emerald-200">
+            Highlighting presets tagged for {genreLabel.toLowerCase()} practice.
+          </div>
+        )}
         <div className="mt-4 grid gap-3 lg:grid-cols-3">
           {CHORD_CHANGE_PRESETS.map((option) => {
             return (
@@ -251,7 +290,9 @@ export function ChordChangesPanel(): JSX.Element {
                 className={`rounded-2xl border p-4 text-left transition-colors ${
                   presetId === option.id
                     ? 'border-emerald-400/60 bg-emerald-600 text-white'
-                    : 'border-zinc-800 bg-zinc-800 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-700'
+                    : isChordChangePresetRecommendedForGenre(option.id, genreContext)
+                      ? 'border-emerald-500/30 bg-emerald-500/5 text-zinc-100 hover:border-emerald-500/50'
+                      : 'border-zinc-800 bg-zinc-800 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-700'
                 }`}
               >
                 <div className="text-sm font-medium">{option.name}</div>
@@ -301,7 +342,7 @@ export function ChordChangesPanel(): JSX.Element {
                   return
                 }
                 resetSessionState()
-                sessionStartedAt.current = Date.now()
+                startSession()
                 setIsRunning(true)
                 start()
                 void startMetronome()

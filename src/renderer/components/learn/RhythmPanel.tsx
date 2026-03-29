@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { RotateCcw } from 'lucide-react'
 import { RHYTHM_PATTERNS } from '../../utils/rhythm-patterns'
 import {
@@ -10,14 +11,23 @@ import {
 import { useMetronomeStore } from '../../stores/metronome-store'
 import { useRhythmTrainer } from '../../hooks/useRhythmTrainer'
 import { useMetronome } from '../../hooks/useMetronome'
+import { useLearnSession } from '../../hooks/useLearnSession'
 import { PageHeader } from '../layout/PageHeader'
 import { BpmControl } from '../common/BpmControl'
 import { AudioRequiredState } from '../common/AudioRequiredState'
 import { useLessonStep } from '../../hooks/useLessonStep'
-import { getPatternIndexByName } from '../../utils/learn-data'
-import { useLearnProgressStore } from '../../stores/learn-progress-store'
+import {
+  buildRhythmStarterId,
+  buildRouteWithParams,
+  getGenreDefinition,
+  getPatternIndexByName,
+  getRhythmPatternByStarterId,
+  isRhythmPatternRecommendedForGenre
+} from '../../utils/learn-data'
 import { LearnSessionSummary } from './LearnSessionSummary'
-import type { CompletionState } from '../../utils/learn-types'
+import type { CompletionState, GenreId } from '../../utils/learn-types'
+import { GuidedStepBanner } from './GuidedStepBanner'
+import { LearnStatCard } from './LearnStatCard'
 
 const GRADE_CONFIG: Record<HitGrade, { label: string; color: string }> = {
   perfect: { label: 'Perfect!', color: 'text-emerald-400' },
@@ -246,15 +256,6 @@ function StatCard({ label, value, color }: { label: string; value: string; color
   )
 }
 
-function SummaryCard({ label, value }: { label: string; value: string }): JSX.Element {
-  return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/80 px-4 py-3">
-      <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">{label}</div>
-      <div className="mt-2 text-lg font-medium text-white">{value}</div>
-    </div>
-  )
-}
-
 function SensitivityCard({
   sensitivity,
   setSensitivity
@@ -285,6 +286,7 @@ function SensitivityCard({
 }
 
 export function RhythmPanel(): JSX.Element {
+  const [searchParams] = useSearchParams()
   const {
     selectedPatternIndex,
     isRunning,
@@ -306,11 +308,17 @@ export function RhythmPanel(): JSX.Element {
   const { tap } = useMetronome()
   const { start, stop, isConnected } = useRhythmTrainer()
   const lessonStep = useLessonStep('rhythm-trainer')
-  const recordSession = useLearnProgressStore((state) => state.recordSession)
-  const savedSummary = useLearnProgressStore(
-    (state) => state.progress['rhythm-trainer']?.lastSession
-  )
   const sessionStartedAt = useRef<number | null>(null)
+  const appliedQueryKey = useRef<string | null>(null)
+  const patternParam = searchParams.get('pattern')
+  const bpmParam = searchParams.get('bpm')
+  const sensitivityParam = searchParams.get('sensitivity')
+  const rawGenreContext = searchParams.get('genre')
+  const genreContext =
+    rawGenreContext && getGenreDefinition(rawGenreContext as GenreId)
+      ? (rawGenreContext as GenreId)
+      : null
+  const genreLabel = genreContext ? (getGenreDefinition(genreContext)?.title ?? null) : null
 
   const pattern = RHYTHM_PATTERNS[selectedPatternIndex]
   const timing = useMemo(() => getTimingInsights(results), [results])
@@ -322,7 +330,47 @@ export function RhythmPanel(): JSX.Element {
     if (lessonStep.prefill.sensitivity) setSensitivity(lessonStep.prefill.sensitivity)
   }, [lessonStep, setBpm, setPatternIndex, setSensitivity])
 
-  const buildSummary = useCallback(() => {
+  useEffect(() => {
+    if (lessonStep) {
+      appliedQueryKey.current = null
+      return
+    }
+
+    const queryKey = `pattern:${patternParam ?? ''}|bpm:${bpmParam ?? ''}|sensitivity:${sensitivityParam ?? ''}`
+    if (appliedQueryKey.current === queryKey) return
+    if (!patternParam && !bpmParam && !sensitivityParam) {
+      appliedQueryKey.current = null
+      return
+    }
+
+    if (patternParam) {
+      const patternFromQuery = getRhythmPatternByStarterId(patternParam)
+      if (patternFromQuery) {
+        setPatternIndex(getPatternIndexByName(patternFromQuery.name))
+      }
+    }
+
+    if (bpmParam) {
+      const bpmValue = Number(bpmParam)
+      if (Number.isFinite(bpmValue)) setBpm(bpmValue)
+    }
+
+    if (sensitivityParam === 'low' || sensitivityParam === 'mid' || sensitivityParam === 'high') {
+      setSensitivity(sensitivityParam)
+    }
+
+    appliedQueryKey.current = queryKey
+  }, [
+    bpmParam,
+    lessonStep,
+    patternParam,
+    sensitivityParam,
+    setBpm,
+    setPatternIndex,
+    setSensitivity
+  ])
+
+  function buildSummary() {
     const weakSpots: string[] = []
     if (missCount > 0) weakSpots.push(`${missCount} misses`)
     if (timing.tendency !== null && Math.abs(timing.tendency) >= 5) {
@@ -340,6 +388,15 @@ export function RhythmPanel(): JSX.Element {
       title: `${pattern.name} rhythm session`,
       description: `Logged ${hitCount} hits and ${missCount} misses while tracking timing drift.`,
       route: '/learn/rhythm',
+      resumeHref: lessonStep
+        ? buildRouteWithParams('/learn/rhythm', { lesson: lessonStep.id })
+        : buildRouteWithParams('/learn/rhythm', {
+            pattern: buildRhythmStarterId(pattern.name),
+            bpm,
+            sensitivity,
+            genre: genreContext
+          }),
+      contextLabel: pattern.name,
       score: accuracy,
       bestStreak,
       completionState,
@@ -350,28 +407,29 @@ export function RhythmPanel(): JSX.Element {
       missCount,
       tendencyLabel: tendencyLabel(timing.tendency)
     }
-  }, [accuracy, bestStreak, hitCount, missCount, pattern.name, results.length, timing.tendency])
+  }
 
-  const finalizeSession = useCallback(() => {
-    if (sessionStartedAt.current === null && results.length === 0) return
-    recordSession(buildSummary(), lessonStep?.id)
-    sessionStartedAt.current = null
-  }, [buildSummary, lessonStep?.id, recordSession, results.length])
+  const { savedSummary, finalizeSession, startSession, resetSessionStart } = useLearnSession({
+    module: 'rhythm-trainer',
+    lessonStepId: lessonStep?.id,
+    sessionKey: lessonStep
+      ? null
+      : `pattern:${patternParam ?? ''}|bpm:${bpmParam ?? ''}|sensitivity:${sensitivityParam ?? ''}|genre:${genreContext ?? ''}`,
+    hasActivity: () => sessionStartedAt.current !== null || results.length > 0,
+    buildSummary,
+    sessionStartedAtRef: sessionStartedAt
+  })
 
   const handlePatternChange = (index: number) => {
-    if (isRunning) {
+    if (isRunning || results.length > 0 || sessionStartedAt.current !== null) {
       finalizeSession()
+      resetSessionStart()
+    }
+    if (isRunning) {
       stop()
-      sessionStartedAt.current = null
     }
     setPatternIndex(index)
   }
-
-  useEffect(() => {
-    return () => {
-      finalizeSession()
-    }
-  }, [finalizeSession])
 
   const displayedSummary =
     results.length > 0
@@ -396,7 +454,7 @@ export function RhythmPanel(): JSX.Element {
               finalizeSession()
               if (isRunning) stop()
               reset()
-              sessionStartedAt.current = null
+              resetSessionStart()
             }}
             className="inline-flex items-center gap-2 rounded-xl border border-zinc-800 px-3 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
           >
@@ -407,20 +465,17 @@ export function RhythmPanel(): JSX.Element {
       />
 
       {lessonStep && (
-        <div className="rounded-3xl border border-emerald-500/20 bg-emerald-500/10 px-5 py-4 text-sm text-emerald-100">
-          Guided step: <span className="font-medium text-white">{lessonStep.title}</span>.{' '}
-          {lessonStep.description}
-        </div>
+        <GuidedStepBanner title={lessonStep.title} description={lessonStep.description} />
       )}
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <SummaryCard label="Pattern" value={pattern.name} />
-        <SummaryCard
+        <LearnStatCard label="Pattern" value={pattern.name} />
+        <LearnStatCard
           label="Accuracy"
           value={accuracy === null ? 'Waiting for hits' : `${Math.round(accuracy)}%`}
         />
         <SensitivityCard sensitivity={sensitivity} setSensitivity={setSensitivity} />
-        <SummaryCard
+        <LearnStatCard
           label="Best streak"
           value={bestStreak > 0 ? String(bestStreak) : 'No streak yet'}
         />
@@ -435,6 +490,11 @@ export function RhythmPanel(): JSX.Element {
             <div className="mt-1 text-sm text-zinc-400">
               Pick a groove, then widen the window to see more presets side by side.
             </div>
+            {genreLabel && !lessonStep && (
+              <div className="mt-2 text-sm text-emerald-200">
+                Highlighting patterns tagged for {genreLabel.toLowerCase()} practice.
+              </div>
+            )}
           </div>
           <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">
             {RHYTHM_PATTERNS.length} patterns
@@ -448,7 +508,9 @@ export function RhythmPanel(): JSX.Element {
               className={`flex min-h-[104px] flex-col gap-2 rounded-2xl border px-4 py-3 text-left transition-colors ${
                 selectedPatternIndex === index
                   ? 'border-emerald-400/60 bg-emerald-600 text-white'
-                  : 'border-zinc-800 bg-zinc-800 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-700'
+                  : isRhythmPatternRecommendedForGenre(patternOption.name, genreContext)
+                    ? 'border-emerald-500/30 bg-emerald-500/5 text-zinc-100 hover:border-emerald-500/50'
+                    : 'border-zinc-800 bg-zinc-800 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-700'
               }`}
             >
               <div className="flex items-start justify-between gap-3">
@@ -471,10 +533,10 @@ export function RhythmPanel(): JSX.Element {
                 ? () => {
                     finalizeSession()
                     stop()
-                    sessionStartedAt.current = null
+                    resetSessionStart()
                   }
                 : () => {
-                    sessionStartedAt.current = Date.now()
+                    startSession()
                     void start()
                   }
             }

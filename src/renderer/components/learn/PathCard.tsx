@@ -5,11 +5,12 @@ import { StepState } from './StepState'
 import {
   LEARN_FEATURES,
   buildLessonHref,
+  getStarterDrillsForPath,
   getGenreDefinition,
   getNextIncompleteStep,
   isSetupReady
 } from '../../utils/learn-data'
-import type { PracticePath } from '../../utils/learn-types'
+import type { LearnStarterDrill, PracticePath } from '../../utils/learn-types'
 import type { useSystemStatus } from '../../hooks/useSystemStatus'
 
 export function PathCard({
@@ -29,6 +30,7 @@ export function PathCard({
   const toolLabels = path.recommendedTools
     .map((tool) => LEARN_FEATURES.find((feature) => feature.module === tool)?.title ?? tool)
     .slice(0, 3)
+  const starterDrills = getStarterDrillsForPath(path).slice(0, 3)
 
   return (
     <div className="rounded-3xl border border-zinc-800 bg-zinc-900/80 p-5">
@@ -113,6 +115,37 @@ export function PathCard({
           </div>
         )}
       </div>
+
+      {starterDrills.length > 0 && (
+        <div className="mt-4">
+          <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">Starter drills</div>
+          <div className="mt-2 flex flex-col gap-2">
+            {starterDrills.map((drill) => (
+              <StarterDrillLink key={drill.id} drill={drill} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
+  )
+}
+
+function StarterDrillLink({ drill }: { drill: LearnStarterDrill }): JSX.Element {
+  return (
+    <Link
+      to={drill.href}
+      className="group rounded-2xl border border-zinc-800 bg-zinc-950/70 px-4 py-3 transition-colors hover:border-emerald-500/40 hover:bg-zinc-950"
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <div className="text-sm font-medium text-white">{drill.title}</div>
+          <p className="mt-1 text-xs leading-5 text-zinc-400">{drill.description}</p>
+        </div>
+        <ArrowRight
+          size={14}
+          className="mt-1 text-zinc-500 transition-colors group-hover:text-emerald-300"
+        />
+      </div>
+    </Link>
   )
 }

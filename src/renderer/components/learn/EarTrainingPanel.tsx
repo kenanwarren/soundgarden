@@ -1,14 +1,23 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useEffect, useRef } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { Ear, Play, RotateCcw } from 'lucide-react'
 import { useEarTrainingStore } from '../../stores/ear-training-store'
 import { useEarTraining } from '../../hooks/useEarTraining'
+import { useLearnSession } from '../../hooks/useLearnSession'
 import { PageHeader } from '../layout/PageHeader'
 import { AudioRequiredState } from '../common/AudioRequiredState'
 import { useLessonStep } from '../../hooks/useLessonStep'
-import { useLearnProgressStore } from '../../stores/learn-progress-store'
 import { LearnSessionSummary } from './LearnSessionSummary'
-import { EAR_TRAINING_PRESETS, getEarTrainingPreset } from '../../utils/learn-data'
-import type { CompletionState } from '../../utils/learn-types'
+import {
+  EAR_TRAINING_PRESETS,
+  buildRouteWithParams,
+  getEarTrainingPreset,
+  getGenreDefinition,
+  isEarTrainingPresetRecommendedForGenre
+} from '../../utils/learn-data'
+import type { CompletionState, GenreId } from '../../utils/learn-types'
+import { GuidedStepBanner } from './GuidedStepBanner'
+import { LearnStatCard } from './LearnStatCard'
 
 const MODES = [
   {
@@ -23,16 +32,8 @@ const MODES = [
   }
 ]
 
-function SummaryCard({ label, value }: { label: string; value: string }): JSX.Element {
-  return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/80 px-4 py-3">
-      <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">{label}</div>
-      <div className="mt-2 text-lg font-medium text-white">{value}</div>
-    </div>
-  )
-}
-
 export function EarTrainingPanel(): JSX.Element {
+  const [searchParams] = useSearchParams()
   const {
     mode,
     challengePresetId,
@@ -50,15 +51,22 @@ export function EarTrainingPanel(): JSX.Element {
   } = useEarTrainingStore()
   const { newRound, playChallenge, listen, stopListening, isConnected } = useEarTraining()
   const lessonStep = useLessonStep('ear-training')
-  const recordSession = useLearnProgressStore((state) => state.recordSession)
-  const savedSummary = useLearnProgressStore((state) => state.progress['ear-training']?.lastSession)
   const sessionStartedAt = useRef<number | null>(null)
   const appliedLessonId = useRef<string | null>(null)
+  const appliedQueryKey = useRef<string | null>(null)
+  const presetParam = searchParams.get('preset')
+  const modeParam = searchParams.get('mode')
+  const rawGenreContext = searchParams.get('genre')
+  const genreContext =
+    rawGenreContext && getGenreDefinition(rawGenreContext as GenreId)
+      ? (rawGenreContext as GenreId)
+      : null
+  const genreLabel = genreContext ? (getGenreDefinition(genreContext)?.title ?? null) : null
   const selectedPreset = getEarTrainingPreset(challengePresetId)
 
   const accuracy = total > 0 ? Math.round((score / total) * 100) : null
 
-  const buildSummary = useCallback(() => {
+  function buildSummary() {
     const completionState: CompletionState =
       accuracy !== null && accuracy >= 70 && total >= 4
         ? 'completed'
@@ -71,6 +79,15 @@ export function EarTrainingPanel(): JSX.Element {
       title: `${mode === 'note' ? 'Note' : 'Interval'} ear session`,
       description: `Answered ${score} correctly out of ${total} prompts.`,
       route: '/learn/ear-training',
+      resumeHref: lessonStep
+        ? buildRouteWithParams('/learn/ear-training', { lesson: lessonStep.id })
+        : buildRouteWithParams('/learn/ear-training', {
+            preset: challengePresetId,
+            mode,
+            genre: genreContext
+          }),
+      contextLabel:
+        selectedPreset?.name ?? (mode === 'note' ? 'Note ear training' : 'Interval ear training'),
       score: accuracy,
       bestStreak,
       completionState,
@@ -81,13 +98,18 @@ export function EarTrainingPanel(): JSX.Element {
       total,
       missedTargets
     }
-  }, [accuracy, bestStreak, missedTargets, mode, score, total])
+  }
 
-  const finalizeSession = useCallback(() => {
-    if (sessionStartedAt.current === null && total === 0) return
-    recordSession(buildSummary(), lessonStep?.id)
-    sessionStartedAt.current = null
-  }, [buildSummary, lessonStep?.id, recordSession, total])
+  const { savedSummary, finalizeSession, startSession, resetSessionStart } = useLearnSession({
+    module: 'ear-training',
+    lessonStepId: lessonStep?.id,
+    sessionKey: lessonStep
+      ? null
+      : `preset:${presetParam ?? ''}|mode:${modeParam ?? ''}|genre:${genreContext ?? ''}`,
+    hasActivity: () => sessionStartedAt.current !== null || total > 0,
+    buildSummary,
+    sessionStartedAtRef: sessionStartedAt
+  })
 
   useEffect(() => {
     if (!lessonStep || lessonStep.prefill.module !== 'ear-training') {
@@ -95,22 +117,50 @@ export function EarTrainingPanel(): JSX.Element {
       return
     }
     if (appliedLessonId.current === lessonStep.id) return
-    finalizeSession()
     if (lessonStep.prefill.mode !== mode) {
       setMode(lessonStep.prefill.mode)
     } else {
       reset()
     }
     setChallengePresetId(lessonStep.prefill.presetId ?? null)
-    sessionStartedAt.current = null
+    resetSessionStart()
     appliedLessonId.current = lessonStep.id
-  }, [finalizeSession, lessonStep, mode, reset, setChallengePresetId, setMode])
+  }, [lessonStep, mode, reset, resetSessionStart, setChallengePresetId, setMode])
 
   useEffect(() => {
-    return () => {
-      finalizeSession()
+    if (lessonStep) {
+      appliedQueryKey.current = null
+      return
     }
-  }, [finalizeSession])
+
+    const queryKey = `preset:${presetParam ?? ''}|mode:${modeParam ?? ''}`
+    if (appliedQueryKey.current === queryKey) return
+    if (!presetParam && !modeParam) {
+      appliedQueryKey.current = null
+      return
+    }
+
+    const preset = presetParam ? getEarTrainingPreset(presetParam) : null
+    const nextMode =
+      preset?.mode ?? (modeParam === 'note' || modeParam === 'interval' ? modeParam : null)
+    if (nextMode && nextMode !== mode) {
+      setMode(nextMode)
+    } else {
+      reset()
+    }
+    setChallengePresetId(preset?.id ?? null)
+    resetSessionStart()
+    appliedQueryKey.current = queryKey
+  }, [
+    lessonStep,
+    mode,
+    modeParam,
+    presetParam,
+    reset,
+    resetSessionStart,
+    setChallengePresetId,
+    setMode
+  ])
 
   const displayedSummary =
     total > 0 ? buildSummary() : savedSummary?.module === 'ear-training' ? savedSummary : null
@@ -140,17 +190,14 @@ export function EarTrainingPanel(): JSX.Element {
       />
 
       {lessonStep && (
-        <div className="rounded-3xl border border-emerald-500/20 bg-emerald-500/10 px-5 py-4 text-sm text-emerald-100">
-          Guided step: <span className="font-medium text-white">{lessonStep.title}</span>.{' '}
-          {lessonStep.description}
-        </div>
+        <GuidedStepBanner title={lessonStep.title} description={lessonStep.description} />
       )}
 
       <div className="grid gap-4 md:grid-cols-4">
-        <SummaryCard label="Correct" value={String(score)} />
-        <SummaryCard label="Total" value={String(total)} />
-        <SummaryCard label="Accuracy" value={accuracy === null ? 'Waiting' : `${accuracy}%`} />
-        <SummaryCard label="Streak" value={String(streak)} />
+        <LearnStatCard label="Correct" value={String(score)} />
+        <LearnStatCard label="Total" value={String(total)} />
+        <LearnStatCard label="Accuracy" value={accuracy === null ? 'Waiting' : `${accuracy}%`} />
+        <LearnStatCard label="Streak" value={String(streak)} />
       </div>
 
       <div className="flex flex-wrap gap-3">
@@ -181,6 +228,11 @@ export function EarTrainingPanel(): JSX.Element {
           Genre presets keep the ear work framed around a musical context without changing the core
           scoring rules.
         </p>
+        {genreLabel && !lessonStep && (
+          <p className="mt-2 text-sm text-emerald-200">
+            Highlighting presets tagged for {genreLabel.toLowerCase()} practice.
+          </p>
+        )}
         <div className="mt-4 grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
           {EAR_TRAINING_PRESETS.map((preset) => (
             <button
@@ -193,12 +245,14 @@ export function EarTrainingPanel(): JSX.Element {
                   reset()
                 }
                 setChallengePresetId(preset.id)
-                sessionStartedAt.current = null
+                resetSessionStart()
               }}
               className={`rounded-2xl border p-4 text-left transition-colors ${
                 challengePresetId === preset.id
                   ? 'border-emerald-400/60 bg-emerald-600 text-white'
-                  : 'border-zinc-800 bg-zinc-800 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-700'
+                  : isEarTrainingPresetRecommendedForGenre(preset.id, genreContext)
+                    ? 'border-emerald-500/30 bg-emerald-500/5 text-zinc-100 hover:border-emerald-500/50'
+                    : 'border-zinc-800 bg-zinc-800 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-700'
               }`}
             >
               <div className="flex items-start justify-between gap-3">
@@ -227,7 +281,7 @@ export function EarTrainingPanel(): JSX.Element {
             )}
             <button
               onClick={() => {
-                if (sessionStartedAt.current === null) sessionStartedAt.current = Date.now()
+                startSession()
                 void newRound()
               }}
               className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 font-medium text-white transition-colors hover:bg-emerald-500"
@@ -280,7 +334,7 @@ export function EarTrainingPanel(): JSX.Element {
               ) : (
                 <button
                   onClick={() => {
-                    if (sessionStartedAt.current === null) sessionStartedAt.current = Date.now()
+                    startSession()
                     void listen()
                   }}
                   className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2 font-medium text-white transition-colors hover:bg-emerald-500"

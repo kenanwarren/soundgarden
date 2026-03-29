@@ -18,7 +18,7 @@ function summaryCardValue(page: Page, label: string): Locator {
   return page.getByText(label, { exact: true }).locator('xpath=following-sibling::div[1]')
 }
 
-function continueCardValue(page: Page, label: 'Module' | 'Best score' | 'Best streak'): Locator {
+function continueCardValue(page: Page, label: 'Context' | 'Best score' | 'Best streak'): Locator {
   return page.getByText(label, { exact: true }).first().locator('xpath=following-sibling::div[1]')
 }
 
@@ -104,6 +104,8 @@ test.describe('Persistence and routing flows', () => {
               title: 'A blues scale session',
               description: 'Covered the A blues box with a full-note pass.',
               route: '/learn/scales',
+              resumeHref: '/learn/scales?root=A&scale=Blues',
+              contextLabel: 'A Blues',
               score: 91,
               bestStreak: 12,
               completionState: 'completed',
@@ -127,12 +129,13 @@ test.describe('Persistence and routing flows', () => {
 
     await expect(page.getByText('A blues scale session')).toBeVisible()
     await expect(page.getByText('Covered the A blues box with a full-note pass.')).toBeVisible()
-    await expect(continueCardValue(page, 'Module')).toHaveText('scale-explorer')
+    await expect(continueCardValue(page, 'Context')).toHaveText('A Blues')
     await expect(continueCardValue(page, 'Best score')).toHaveText('91%')
     await expect(continueCardValue(page, 'Best streak')).toHaveText('12')
 
     await page.getByRole('link', { name: 'Continue' }).click()
     await expect(page.getByRole('heading', { name: 'Scale Explorer' })).toBeVisible()
+    await expect(summaryCardValue(page, 'Scale')).toHaveText('A Blues')
   })
 
   test('guided lesson deep links override persisted scale and chord filters', async ({

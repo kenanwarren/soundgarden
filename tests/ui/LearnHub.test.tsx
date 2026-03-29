@@ -57,7 +57,7 @@ describe('LearnHub', () => {
     vi.clearAllMocks()
   })
 
-  it('filters the path library by skill without hiding the direct tools', () => {
+  it('keeps overview short, then exposes path filtering and tools behind dedicated views', () => {
     useLearnProgressStore.setState({
       progress: {
         'scale-explorer': {
@@ -90,6 +90,11 @@ describe('LearnHub', () => {
 
     renderWithRouter(<LearnHub />)
 
+    expect(screen.getByText('Resume where you left off')).toBeInTheDocument()
+    expect(screen.queryByText('All Learning Paths')).not.toBeInTheDocument()
+    expect(screen.queryByText('Quick lookup still lives here.')).not.toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Explore' }))
     fireEvent.click(screen.getByRole('button', { name: 'By skill' }))
     fireEvent.click(screen.getByRole('button', { name: 'Fingerstyle' }))
 
@@ -104,11 +109,13 @@ describe('LearnHub', () => {
         'Build shuffle feel, dominant changes, blues-box motion, and ear-led response.'
       )
     ).not.toBeInTheDocument()
-    expect(screen.getByText('Tools')).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Tools' }))
+    expect(screen.getByText('Open a direct learning tool')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /Chord Library/i })).toBeInTheDocument()
   })
 
-  it('shows blocked guided steps when the input is disconnected while keeping browse tools available', () => {
+  it('shows blocked guided guidance on overview and keeps secondary navigation available offline', () => {
     mockUseSystemStatus.mockReturnValue(disconnectedStatus)
 
     renderWithRouter(<LearnHub />)
@@ -117,7 +124,16 @@ describe('LearnHub', () => {
       screen.getByText(/Guided audio steps will unlock once your input is connected/i)
     ).toBeInTheDocument()
     expect(screen.getAllByText('Connect input').length).toBeGreaterThan(0)
-    expect(screen.getByText(/Quick lookup still lives here/i)).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /Scale Explorer/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Explore all paths' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Browse tools' })).toBeInTheDocument()
+  })
+
+  it('restores learn subview and filters from the URL search params', () => {
+    renderWithRouter(<LearnHub />, '/learn?view=explore&browse=skill&skill=fingerstyle')
+
+    expect(screen.getByText('Fingerstyle Paths')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Explore' })).toHaveClass('bg-emerald-600')
+    expect(screen.getByRole('button', { name: 'By skill' })).toHaveClass('bg-emerald-600')
+    expect(screen.getByRole('button', { name: 'Fingerstyle' })).toHaveClass('bg-emerald-600')
   })
 })

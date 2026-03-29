@@ -85,4 +85,18 @@ describe('ChordChangesPanel', () => {
     expect(chordDetectionMocks.start).toHaveBeenCalledTimes(1)
     expect(metronomeMocks.start).toHaveBeenCalledTimes(1)
   })
+
+  it('highlights genre-matched progression presets from starter drill links', async () => {
+    renderWithRouter(
+      <ChordChangesPanel />,
+      '/learn/chord-changes?preset=rock-power-stack&genre=rock'
+    )
+
+    await waitFor(() => {
+      expect(screen.getAllByText('Rock Power Stack').length).toBeGreaterThan(0)
+    })
+
+    expect(screen.getByText(/Highlighting presets tagged for rock practice/i)).toBeInTheDocument()
+    expect(screen.getAllByText('E5').length).toBeGreaterThan(0)
+  })
 })

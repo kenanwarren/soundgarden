@@ -52,4 +52,18 @@ describe('ScaleSequencePanel', () => {
 
     expect(pitchDetectionMocks.start).toHaveBeenCalledTimes(1)
   })
+
+  it('highlights genre-matched sequence presets from starter drill links', async () => {
+    renderWithRouter(
+      <ScaleSequencePanel />,
+      '/learn/scale-sequences?preset=funk-mixolydian-pocket&genre=funk'
+    )
+
+    await waitFor(() => {
+      expect(screen.getAllByText(/Mixolydian Pocket/).length).toBeGreaterThan(0)
+    })
+
+    expect(screen.getByText(/Highlighting presets tagged for funk practice/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/A Mixolydian/).length).toBeGreaterThan(0)
+  })
 })

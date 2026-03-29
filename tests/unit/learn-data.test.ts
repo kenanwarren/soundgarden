@@ -8,6 +8,7 @@ import {
   getNextIncompleteStep,
   getPathsForGenre,
   getPathsForSkill,
+  getStarterDrillsForPath,
   getStarterPath,
   getVisibleGenres
 } from '../../src/renderer/utils/learn-data'
@@ -60,6 +61,22 @@ describe('learn-data', () => {
     const rhythmPaths = getPathsForSkill('rhythm')
     expect(rhythmPaths.some((path) => path.id === 'funk-pocket-builder')).toBe(true)
     expect(rhythmPaths.some((path) => path.id === 'timing-builder')).toBe(true)
+  })
+
+  it('resolves starter drill metadata into deep links for path cards', () => {
+    const bluesPath = PRACTICE_PATHS.find((path) => path.id === 'blues-foundations')
+    expect(bluesPath).toBeDefined()
+
+    const drills = getStarterDrillsForPath(bluesPath!)
+
+    expect(drills.map((drill) => drill.id)).toEqual([
+      'rhythm:shuffle',
+      'chord-changes:blues-turnaround',
+      'scale-sequences:blues-box-run',
+      'ear:blues-call-response'
+    ])
+    expect(drills[0]?.href).toContain('/learn/rhythm?pattern=shuffle')
+    expect(drills[1]?.href).toContain('/learn/chord-changes?preset=blues-turnaround')
   })
 
   it('aggregates genre progress from the paths inside that genre', () => {
