@@ -1,5 +1,8 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { useLearnProgressStore } from '../../src/renderer/stores/learn-progress-store'
+import {
+  migrateLearnProgressState,
+  useLearnProgressStore
+} from '../../src/renderer/stores/learn-progress-store'
 
 describe('learn-progress-store', () => {
   beforeEach(() => {
@@ -184,5 +187,43 @@ describe('learn-progress-store', () => {
     expect(
       useLearnProgressStore.getState().completedSteps['country-pentatonic-step']
     ).toBeUndefined()
+  })
+
+  it('migrates legacy summaries to include resumeHref defaults', () => {
+    const migrated = migrateLearnProgressState(
+      {
+        progress: {
+          'scale-explorer': {
+            id: 'scale-explorer',
+            attempts: 1,
+            lastPracticedAt: 1_700_000_000_000,
+            bestScore: 91,
+            bestStreak: 12,
+            completionState: 'completed',
+            weakSpots: [],
+            lastSession: {
+              module: 'scale-explorer',
+              title: 'A blues scale session',
+              description: 'Covered the A blues box.',
+              route: '/learn/scales',
+              score: 91,
+              bestStreak: 12,
+              completionState: 'completed',
+              weakSpots: [],
+              notesHit: 6,
+              totalNotes: 6,
+              timeSpentMs: 52_000,
+              missedNotes: [],
+              root: 'A',
+              scaleName: 'Blues'
+            }
+          }
+        },
+        completedSteps: {}
+      },
+      0
+    )
+
+    expect(migrated.progress?.['scale-explorer']?.lastSession?.resumeHref).toBe('/learn/scales')
   })
 })

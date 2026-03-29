@@ -1,28 +1,23 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { RotateCcw } from 'lucide-react'
 import { NOTE_NAMES } from '../../utils/constants'
 import { SCALES, getScaleNotes } from '../../utils/scale-data'
 import { getScalePositions } from '../../utils/fretboard-data'
 import { useScaleStore } from '../../stores/scale-store'
 import { useScalePractice } from '../../hooks/useScalePractice'
+import { useLearnSession } from '../../hooks/useLearnSession'
 import { Fretboard } from '../common/Fretboard'
 import { PageHeader } from '../layout/PageHeader'
 import { useLessonStep } from '../../hooks/useLessonStep'
-import { getScaleIndexByName } from '../../utils/learn-data'
-import { useLearnProgressStore } from '../../stores/learn-progress-store'
+import { buildRouteWithParams, getScaleIndexByName } from '../../utils/learn-data'
 import { LearnSessionSummary } from './LearnSessionSummary'
 import type { CompletionState } from '../../utils/learn-types'
-
-function SummaryCard({ label, value }: { label: string; value: string }): JSX.Element {
-  return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/80 px-4 py-3">
-      <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">{label}</div>
-      <div className="mt-2 text-lg font-medium text-white">{value}</div>
-    </div>
-  )
-}
+import { GuidedStepBanner } from './GuidedStepBanner'
+import { LearnStatCard } from './LearnStatCard'
 
 export function ScalePanel(): JSX.Element {
+  const [searchParams] = useSearchParams()
   const {
     selectedRoot,
     selectedScaleIndex,
@@ -35,11 +30,9 @@ export function ScalePanel(): JSX.Element {
   } = useScaleStore()
   const { startPractice, stopPractice, isPracticing, isConnected } = useScalePractice()
   const lessonStep = useLessonStep('scale-explorer')
-  const recordSession = useLearnProgressStore((state) => state.recordSession)
-  const savedSummary = useLearnProgressStore(
-    (state) => state.progress['scale-explorer']?.lastSession
-  )
-  const [sessionStartedAt, setSessionStartedAt] = useState<number | null>(null)
+  const sessionStartedAt = useRef<number | null>(null)
+  const rootParam = searchParams.get('root')
+  const scaleParam = searchParams.get('scale')
 
   const scale = SCALES[selectedScaleIndex]
   const scaleNotes = getScaleNotes(selectedRoot, scale)
@@ -54,8 +47,18 @@ export function ScalePanel(): JSX.Element {
     if (!lessonStep || lessonStep.prefill.module !== 'scale-explorer') return
     setRoot(lessonStep.prefill.root)
     setScaleIndex(getScaleIndexByName(lessonStep.prefill.scaleName))
+    sessionStartedAt.current = null
     resetProgress()
   }, [lessonStep, resetProgress, setRoot, setScaleIndex])
+
+  useEffect(() => {
+    if (lessonStep) return
+    if (!rootParam && !scaleParam) return
+    if (rootParam) setRoot(rootParam)
+    if (scaleParam) setScaleIndex(getScaleIndexByName(scaleParam))
+    sessionStartedAt.current = null
+    resetProgress()
+  }, [lessonStep, resetProgress, rootParam, scaleParam, setRoot, setScaleIndex])
 
   const buildSummary = useCallback(
     (timeSpentMs: number) => {
@@ -73,6 +76,10 @@ export function ScalePanel(): JSX.Element {
         title: `${selectedRoot} ${scale.name} session`,
         description: `Covered ${hitNotes.length} of ${scaleNotes.length} target tones with live tracking.`,
         route: '/learn/scales',
+        resumeHref: lessonStep
+          ? buildRouteWithParams('/learn/scales', { lesson: lessonStep.id })
+          : buildRouteWithParams('/learn/scales', { root: selectedRoot, scale: scale.name }),
+        contextLabel: `${selectedRoot} ${scale.name}`,
         score,
         bestStreak: hitNotes.length,
         completionState,
@@ -85,38 +92,34 @@ export function ScalePanel(): JSX.Element {
         scaleName: scale.name
       }
     },
-    [hitNotes, scale.name, scaleNotes, selectedRoot]
+    [hitNotes, lessonStep, scale.name, scaleNotes, selectedRoot]
   )
 
-  const finalizeSession = useCallback(() => {
-    if (sessionStartedAt === null && hitNotes.length === 0) return
-    const startedAt = sessionStartedAt ?? Date.now()
-    recordSession(buildSummary(Math.max(0, Date.now() - startedAt)), lessonStep?.id)
-    setSessionStartedAt(null)
-  }, [buildSummary, hitNotes.length, lessonStep?.id, recordSession, sessionStartedAt])
-
-  useEffect(() => {
-    return () => {
-      finalizeSession()
-    }
-  }, [finalizeSession])
-
-  const liveSummary = useMemo(() => {
-    if (sessionStartedAt === null && hitNotes.length === 0) return null
-    return buildSummary(0)
-  }, [buildSummary, hitNotes.length, sessionStartedAt])
+  const { savedSummary, finalizeSession, startSession, resetSessionStart } = useLearnSession({
+    module: 'scale-explorer',
+    lessonStepId: lessonStep?.id,
+    sessionKey: lessonStep ? null : `root:${rootParam ?? ''}|scale:${scaleParam ?? ''}`,
+    hasActivity: () => isPracticing || hitNotes.length > 0 || sessionStartedAt.current !== null,
+    buildSummary: () => {
+      const startedAt = sessionStartedAt.current ?? Date.now()
+      return buildSummary(Math.max(0, Date.now() - startedAt))
+    },
+    sessionStartedAtRef: sessionStartedAt
+  })
 
   const displayedSummary =
-    liveSummary ?? (savedSummary?.module === 'scale-explorer' ? savedSummary : null)
+    (isPracticing || hitNotes.length > 0 ? buildSummary(0) : null) ??
+    (savedSummary?.module === 'scale-explorer' ? savedSummary : null)
 
   const handleTogglePractice = () => {
     if (isPracticing) {
       finalizeSession()
+      resetSessionStart()
       stopPractice()
       return
     }
 
-    setSessionStartedAt(Date.now())
+    startSession()
     void startPractice()
   }
 
@@ -128,7 +131,10 @@ export function ScalePanel(): JSX.Element {
         backTo="/learn"
         actions={
           <button
-            onClick={resetProgress}
+            onClick={() => {
+              resetSessionStart()
+              resetProgress()
+            }}
             className="inline-flex items-center gap-2 rounded-xl border border-zinc-800 px-3 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
           >
             <RotateCcw size={14} />
@@ -138,10 +144,7 @@ export function ScalePanel(): JSX.Element {
       />
 
       {lessonStep && (
-        <div className="rounded-3xl border border-emerald-500/20 bg-emerald-500/10 px-5 py-4 text-sm text-emerald-100">
-          Guided step: <span className="font-medium text-white">{lessonStep.title}</span>.{' '}
-          {lessonStep.description}
-        </div>
+        <GuidedStepBanner title={lessonStep.title} description={lessonStep.description} />
       )}
 
       {!isConnected && (
@@ -152,9 +155,9 @@ export function ScalePanel(): JSX.Element {
       )}
 
       <div className="grid gap-4 md:grid-cols-3">
-        <SummaryCard label="Scale" value={`${selectedRoot} ${scale.name}`} />
-        <SummaryCard label="Progress" value={`${hitNotes.length}/${scaleNotes.length} notes`} />
-        <SummaryCard
+        <LearnStatCard label="Scale" value={`${selectedRoot} ${scale.name}`} />
+        <LearnStatCard label="Progress" value={`${hitNotes.length}/${scaleNotes.length} notes`} />
+        <LearnStatCard
           label="Detected note"
           value={
             currentDetectedNote

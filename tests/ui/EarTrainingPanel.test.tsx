@@ -70,4 +70,18 @@ describe('EarTrainingPanel', () => {
 
     expect(earTrainingMocks.newRound).toHaveBeenCalledTimes(1)
   })
+
+  it('highlights genre-matched ear presets when opened from a starter drill link', async () => {
+    renderWithRouter(
+      <EarTrainingPanel />,
+      '/learn/ear-training?preset=blues-call-response&genre=blues'
+    )
+
+    await waitFor(() => {
+      expect(useEarTrainingStore.getState().challengePresetId).toBe('blues-call-response')
+    })
+
+    expect(screen.getByText(/Highlighting presets tagged for blues practice/i)).toBeInTheDocument()
+    expect(screen.getByText('Interval').closest('button')).toHaveClass('bg-emerald-600')
+  })
 })

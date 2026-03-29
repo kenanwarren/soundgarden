@@ -1,31 +1,28 @@
-import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react'
+import { useEffect, useMemo, useReducer, useRef } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { RotateCcw } from 'lucide-react'
 import { NOTE_NAMES } from '../../utils/constants'
 import { SCALES, getScaleNotes } from '../../utils/scale-data'
 import { getScalePositions } from '../../utils/fretboard-data'
 import { usePitchDetection } from '../../hooks/usePitchDetection'
+import { useLearnSession } from '../../hooks/useLearnSession'
 import { PageHeader } from '../layout/PageHeader'
 import { Fretboard } from '../common/Fretboard'
 import { AudioRequiredState } from '../common/AudioRequiredState'
 import { useLessonStep } from '../../hooks/useLessonStep'
 import {
   SCALE_SEQUENCE_PRESETS,
+  buildRouteWithParams,
+  getGenreDefinition,
   getScaleIndexByName,
-  getScaleSequencePreset
+  getScaleSequencePreset,
+  isScaleSequencePresetRecommendedForGenre
 } from '../../utils/learn-data'
-import { useLearnProgressStore } from '../../stores/learn-progress-store'
 import { LearnSessionSummary } from './LearnSessionSummary'
 import { buildScaleSequence, type ScaleSequenceType } from '../../utils/learn-drills'
-import type { CompletionState } from '../../utils/learn-types'
-
-function SummaryCard({ label, value }: { label: string; value: string }): JSX.Element {
-  return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/80 px-4 py-3">
-      <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">{label}</div>
-      <div className="mt-2 text-lg font-medium text-white">{value}</div>
-    </div>
-  )
-}
+import type { CompletionState, GenreId } from '../../utils/learn-types'
+import { GuidedStepBanner } from './GuidedStepBanner'
+import { LearnStatCard } from './LearnStatCard'
 
 interface ScaleSequenceState {
   selectedPresetId: string | null
@@ -188,14 +185,23 @@ function reducer(state: ScaleSequenceState, action: ScaleSequenceAction): ScaleS
 }
 
 export function ScaleSequencePanel(): JSX.Element {
+  const [searchParams] = useSearchParams()
   const lessonStep = useLessonStep('scale-sequences')
-  const recordSession = useLearnProgressStore((state) => state.recordSession)
-  const savedSummary = useLearnProgressStore(
-    (state) => state.progress['scale-sequences']?.lastSession
-  )
   const sessionStartedAt = useRef<number | null>(null)
   const lastAcceptedAt = useRef(0)
   const lastMissedAt = useRef(0)
+  const appliedQueryKey = useRef<string | null>(null)
+  const presetParam = searchParams.get('preset')
+  const rootParam = searchParams.get('root')
+  const scaleParam = searchParams.get('scale')
+  const sequenceParam = searchParams.get('sequence')
+  const loopsParam = searchParams.get('loops')
+  const rawGenreContext = searchParams.get('genre')
+  const genreContext =
+    rawGenreContext && getGenreDefinition(rawGenreContext as GenreId)
+      ? (rawGenreContext as GenreId)
+      : null
+  const genreLabel = genreContext ? (getGenreDefinition(genreContext)?.title ?? null) : null
 
   const [
     {
@@ -228,19 +234,16 @@ export function ScaleSequencePanel(): JSX.Element {
   const activeNote =
     detectedNote && detectedOctave !== null ? { note: detectedNote, octave: detectedOctave } : null
 
-  const resetSessionState = useCallback(() => {
+  function resetSessionState() {
     dispatch({ type: 'reset-session' })
     lastAcceptedAt.current = 0
     lastMissedAt.current = 0
-  }, [])
+  }
 
-  const applySequencePreset = useCallback(
-    (presetId: string) => {
-      dispatch({ type: 'apply-preset', presetId })
-      resetSessionState()
-    },
-    [resetSessionState]
-  )
+  function applySequencePreset(presetId: string) {
+    dispatch({ type: 'apply-preset', presetId })
+    resetSessionState()
+  }
 
   useEffect(() => {
     if (!lessonStep || lessonStep.prefill.module !== 'scale-sequences') return
@@ -261,11 +264,55 @@ export function ScaleSequencePanel(): JSX.Element {
     lastMissedAt.current = 0
   }, [lessonStep])
 
+  useEffect(() => {
+    if (lessonStep) {
+      appliedQueryKey.current = null
+      return
+    }
+
+    const queryKey = `preset:${presetParam ?? ''}|root:${rootParam ?? ''}|scale:${scaleParam ?? ''}|sequence:${sequenceParam ?? ''}|loops:${loopsParam ?? ''}`
+    if (appliedQueryKey.current === queryKey) return
+    if (!presetParam && !rootParam && !scaleParam && !sequenceParam && !loopsParam) {
+      appliedQueryKey.current = null
+      return
+    }
+
+    if (presetParam && getScaleSequencePreset(presetParam)) {
+      dispatch({ type: 'apply-preset', presetId: presetParam })
+    } else {
+      dispatch({
+        type: 'apply-custom-config',
+        root: rootParam ?? root,
+        scaleIndex: getScaleIndexByName(scaleParam ?? scale.name),
+        sequenceType:
+          sequenceParam === 'descending' || sequenceParam === 'thirds'
+            ? sequenceParam
+            : 'ascending',
+        targetLoops: Math.max(1, Number(loopsParam) || targetLoops)
+      })
+    }
+
+    lastAcceptedAt.current = 0
+    lastMissedAt.current = 0
+    appliedQueryKey.current = queryKey
+  }, [
+    genreContext,
+    lessonStep,
+    loopsParam,
+    presetParam,
+    root,
+    rootParam,
+    scale.name,
+    scaleParam,
+    sequenceParam,
+    targetLoops
+  ])
+
   const progressSteps = loopsCompleted * sequence.length + currentIndex
   const totalSteps = Math.max(1, targetLoops * Math.max(sequence.length, 1))
   const score = Math.min(100, Math.round((progressSteps / totalSteps) * 100))
 
-  const buildSummary = useCallback(() => {
+  function buildSummary() {
     const completionState: CompletionState =
       loopsCompleted >= targetLoops
         ? 'completed'
@@ -278,6 +325,17 @@ export function ScaleSequencePanel(): JSX.Element {
       title: `${root} ${scale.name} ${sequenceType} sequence`,
       description: `Completed ${loopsCompleted} of ${targetLoops} target loops while tracking note order.`,
       route: '/learn/scale-sequences',
+      resumeHref: lessonStep
+        ? buildRouteWithParams('/learn/scale-sequences', { lesson: lessonStep.id })
+        : buildRouteWithParams('/learn/scale-sequences', {
+            preset: selectedPresetId,
+            root,
+            scale: scale.name,
+            sequence: sequenceType,
+            loops: targetLoops,
+            genre: genreContext
+          }),
+      contextLabel: selectedPreset?.name ?? `${root} ${scale.name} ${sequenceType}`,
       score,
       bestStreak: bestRun,
       completionState,
@@ -289,76 +347,68 @@ export function ScaleSequencePanel(): JSX.Element {
       targetLoops,
       missedNotes
     }
-  }, [
-    bestRun,
-    loopsCompleted,
-    missedNotes,
-    progressSteps,
-    root,
-    scale.name,
-    score,
-    sequenceType,
-    targetLoops
-  ])
+  }
 
-  const finalizeSession = useCallback(() => {
-    if (sessionStartedAt.current === null && progressSteps === 0) return
-    recordSession(buildSummary(), lessonStep?.id)
-    sessionStartedAt.current = null
-  }, [buildSummary, lessonStep?.id, progressSteps, recordSession])
+  const { savedSummary, finalizeSession, startSession, resetSessionStart } = useLearnSession({
+    module: 'scale-sequences',
+    lessonStepId: lessonStep?.id,
+    sessionKey: lessonStep
+      ? null
+      : `preset:${presetParam ?? ''}|root:${rootParam ?? ''}|scale:${scaleParam ?? ''}|sequence:${sequenceParam ?? ''}|loops:${loopsParam ?? ''}|genre:${genreContext ?? ''}`,
+    hasActivity: () => sessionStartedAt.current !== null || progressSteps > 0,
+    buildSummary,
+    sessionStartedAtRef: sessionStartedAt
+  })
 
-  const onPitch = useCallback(
-    (data: { note: string; octave: number; frequency: number; clarity: number; cents: number }) => {
-      if (data.frequency === 0) {
-        dispatch({ type: 'clear-detected-note' })
-        return
-      }
+  function onPitch(data: {
+    note: string
+    octave: number
+    frequency: number
+    clarity: number
+    cents: number
+  }) {
+    if (data.frequency === 0) {
+      dispatch({ type: 'clear-detected-note' })
+      return
+    }
 
-      dispatch({ type: 'set-detected-note', note: data.note, octave: data.octave })
+    dispatch({ type: 'set-detected-note', note: data.note, octave: data.octave })
 
-      if (!isPracticing || !expectedNote || Math.abs(data.cents) > 30) return
+    if (!isPracticing || !expectedNote || Math.abs(data.cents) > 30) return
 
-      const now = Date.now()
-      if (data.note === expectedNote) {
-        if (now - lastAcceptedAt.current < 250) return
-        lastAcceptedAt.current = now
-        dispatch({ type: 'match-note', sequenceLength: sequence.length })
-        return
-      }
+    const now = Date.now()
+    if (data.note === expectedNote) {
+      if (now - lastAcceptedAt.current < 250) return
+      lastAcceptedAt.current = now
+      dispatch({ type: 'match-note', sequenceLength: sequence.length })
+      return
+    }
 
-      if (now - lastMissedAt.current < 400) return
-      lastMissedAt.current = now
-      dispatch({ type: 'miss-note', expectedNote })
-    },
-    [expectedNote, isPracticing, sequence.length]
-  )
+    if (now - lastMissedAt.current < 400) return
+    lastMissedAt.current = now
+    dispatch({ type: 'miss-note', expectedNote })
+  }
 
   const { start, stop, isConnected } = usePitchDetection({
     id: '__scale_sequence__',
     onPitch
   })
 
-  const stopPractice = useCallback(() => {
+  function stopPractice() {
     finalizeSession()
     stop()
     dispatch({ type: 'stop-practice' })
-    sessionStartedAt.current = null
-  }, [finalizeSession, stop])
+    resetSessionStart()
+  }
 
   useEffect(() => {
     if (isPracticing && loopsCompleted >= targetLoops && targetLoops > 0) {
       finalizeSession()
       stop()
       dispatch({ type: 'stop-practice' })
-      sessionStartedAt.current = null
+      resetSessionStart()
     }
-  }, [finalizeSession, isPracticing, loopsCompleted, stop, targetLoops])
-
-  useEffect(() => {
-    return () => {
-      finalizeSession()
-    }
-  }, [finalizeSession])
+  }, [finalizeSession, isPracticing, loopsCompleted, resetSessionStart, stop, targetLoops])
 
   const displayedSummary =
     progressSteps > 0
@@ -382,7 +432,7 @@ export function ScaleSequencePanel(): JSX.Element {
             onClick={() => {
               stop()
               finalizeSession()
-              sessionStartedAt.current = null
+              resetSessionStart()
               dispatch({ type: 'stop-practice' })
               resetSessionState()
             }}
@@ -395,17 +445,14 @@ export function ScaleSequencePanel(): JSX.Element {
       />
 
       {lessonStep && (
-        <div className="rounded-3xl border border-emerald-500/20 bg-emerald-500/10 px-5 py-4 text-sm text-emerald-100">
-          Guided step: <span className="font-medium text-white">{lessonStep.title}</span>.{' '}
-          {lessonStep.description}
-        </div>
+        <GuidedStepBanner title={lessonStep.title} description={lessonStep.description} />
       )}
 
       <div className="grid gap-4 md:grid-cols-4">
-        <SummaryCard label="Scale" value={`${root} ${scale.name}`} />
-        <SummaryCard label="Sequence" value={selectedPreset?.name ?? sequenceType} />
-        <SummaryCard label="Loops" value={`${loopsCompleted}/${targetLoops}`} />
-        <SummaryCard label="Next note" value={expectedNote ?? 'Ready'} />
+        <LearnStatCard label="Scale" value={`${root} ${scale.name}`} />
+        <LearnStatCard label="Sequence" value={selectedPreset?.name ?? sequenceType} />
+        <LearnStatCard label="Loops" value={`${loopsCompleted}/${targetLoops}`} />
+        <LearnStatCard label="Next note" value={expectedNote ?? 'Ready'} />
       </div>
 
       <div className="rounded-3xl border border-zinc-800 bg-zinc-900/80 p-5">
@@ -414,6 +461,11 @@ export function ScaleSequencePanel(): JSX.Element {
           Genre-ready presets keep the sequence settings coherent, but you can still edit them
           manually.
         </p>
+        {genreLabel && !lessonStep && (
+          <p className="mt-2 text-sm text-emerald-200">
+            Highlighting presets tagged for {genreLabel.toLowerCase()} practice.
+          </p>
+        )}
         <div className="mt-4 grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
           {SCALE_SEQUENCE_PRESETS.map((preset) => (
             <button
@@ -422,7 +474,9 @@ export function ScaleSequencePanel(): JSX.Element {
               className={`rounded-2xl border p-4 text-left transition-colors ${
                 selectedPresetId === preset.id
                   ? 'border-emerald-400/60 bg-emerald-600 text-white'
-                  : 'border-zinc-800 bg-zinc-800 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-700'
+                  : isScaleSequencePresetRecommendedForGenre(preset.id, genreContext)
+                    ? 'border-emerald-500/30 bg-emerald-500/5 text-zinc-100 hover:border-emerald-500/50'
+                    : 'border-zinc-800 bg-zinc-800 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-700'
               }`}
             >
               <div className="text-sm font-medium">{preset.name}</div>
@@ -531,7 +585,7 @@ export function ScaleSequencePanel(): JSX.Element {
                     stopPractice()
                     return
                   }
-                  sessionStartedAt.current = Date.now()
+                  startSession()
                   dispatch({ type: 'start-practice' })
                   lastAcceptedAt.current = 0
                   lastMissedAt.current = 0

@@ -9,8 +9,11 @@ import { EAR_TRAINING_PRESETS } from './presets/ear-training'
 import type {
   GenreDefinition,
   GenreId,
+  LearnBrowseMode,
+  LearnHubView,
   LearnModuleId,
   LearnProgressEntry,
+  LearnStarterDrill,
   LearnSkillId,
   LessonStep,
   PracticePath,
@@ -31,6 +34,9 @@ export const MODULE_ROUTES: Record<LearnModuleId, string> = {
   'scale-sequences': '/learn/scale-sequences',
   'song-viewer': '/learn/songs'
 }
+
+export const LEARN_HUB_VIEWS: LearnHubView[] = ['overview', 'explore', 'tools']
+export const LEARN_BROWSE_MODES: LearnBrowseMode[] = ['all', 'genre', 'skill']
 
 export const LEARN_FEATURES: Array<{
   to: string
@@ -101,8 +107,46 @@ export const LEARN_SKILLS: Array<{
   }
 ]
 
+export function buildRouteWithParams(
+  path: string,
+  params: Record<string, string | number | null | undefined>
+): string {
+  const searchParams = new URLSearchParams()
+
+  for (const [key, value] of Object.entries(params)) {
+    if (value === null || value === undefined || value === '') continue
+    searchParams.set(key, String(value))
+  }
+
+  const query = searchParams.toString()
+  return query ? `${path}?${query}` : path
+}
+
+export function buildLearnHubHref(
+  options: {
+    view?: LearnHubView
+    browse?: LearnBrowseMode
+    genre?: GenreId | null
+    skill?: LearnSkillId | null
+  } = {}
+): string {
+  return buildRouteWithParams('/learn', {
+    view: options.view ?? 'overview',
+    browse: options.browse ?? null,
+    genre: options.genre ?? null,
+    skill: options.skill ?? null
+  })
+}
+
 export function buildLessonHref(step: LessonStep): string {
   return `${step.route}?lesson=${step.id}`
+}
+
+export function buildRhythmStarterId(patternName: string): string {
+  return patternName
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
 }
 
 export function getVisibleGenres(): GenreDefinition[] {
@@ -165,6 +209,10 @@ export function getPatternIndexByName(patternName: string): number {
     0,
     RHYTHM_PATTERNS.findIndex((pattern) => pattern.name === patternName)
   )
+}
+
+export function getRhythmPatternByStarterId(starterId: string) {
+  return RHYTHM_PATTERNS.find((pattern) => buildRhythmStarterId(pattern.name) === starterId) ?? null
 }
 
 export function getChordIndexByName(chordName: string): number | null {
@@ -256,5 +304,118 @@ export function getNextIncompleteStep(
 
 export function getContinueRoute(lastSession: SessionSummary | null): string | null {
   if (!lastSession) return null
-  return MODULE_ROUTES[lastSession.module]
+  return lastSession.resumeHref || lastSession.route || MODULE_ROUTES[lastSession.module]
+}
+
+export function getStarterDrillsForPath(path: PracticePath): LearnStarterDrill[] {
+  return (path.starterPresetIds ?? []).reduce<LearnStarterDrill[]>((drills, starterPresetId) => {
+    const [kind, rawId] = starterPresetId.split(':')
+    if (!kind || !rawId) return drills
+
+    switch (kind) {
+      case 'rhythm': {
+        const pattern = getRhythmPatternByStarterId(rawId)
+        if (!pattern) return drills
+        drills.push({
+          id: starterPresetId,
+          kind: 'rhythm' as const,
+          module: 'rhythm-trainer' as const,
+          title: pattern.name,
+          description: pattern.description,
+          href: buildRouteWithParams(MODULE_ROUTES['rhythm-trainer'], {
+            pattern: rawId,
+            genre: path.genre
+          }),
+          genreId: path.genre
+        })
+        return drills
+      }
+      case 'chord-changes': {
+        const preset = getChordChangePreset(rawId)
+        if (!preset) return drills
+        drills.push({
+          id: starterPresetId,
+          kind: 'chord-changes' as const,
+          module: 'chord-changes' as const,
+          title: preset.name,
+          description: preset.description,
+          href: buildRouteWithParams(MODULE_ROUTES['chord-changes'], {
+            preset: preset.id,
+            genre: path.genre
+          }),
+          genreId: path.genre
+        })
+        return drills
+      }
+      case 'scale-sequences': {
+        const preset = getScaleSequencePreset(rawId)
+        if (!preset) return drills
+        drills.push({
+          id: starterPresetId,
+          kind: 'scale-sequences' as const,
+          module: 'scale-sequences' as const,
+          title: preset.name,
+          description: preset.description,
+          href: buildRouteWithParams(MODULE_ROUTES['scale-sequences'], {
+            preset: preset.id,
+            genre: path.genre
+          }),
+          genreId: path.genre
+        })
+        return drills
+      }
+      case 'ear': {
+        const preset = getEarTrainingPreset(rawId)
+        if (!preset) return drills
+        drills.push({
+          id: starterPresetId,
+          kind: 'ear' as const,
+          module: 'ear-training' as const,
+          title: preset.name,
+          description: preset.description,
+          href: buildRouteWithParams(MODULE_ROUTES['ear-training'], {
+            preset: preset.id,
+            genre: path.genre
+          }),
+          genreId: path.genre
+        })
+        return drills
+      }
+      default:
+        return drills
+    }
+  }, [])
+}
+
+export function isRhythmPatternRecommendedForGenre(
+  patternName: string,
+  genreId: GenreId | null
+): boolean {
+  if (!genreId) return false
+  const pattern = RHYTHM_PATTERNS.find((item) => item.name === patternName)
+  return pattern?.genreTags?.includes(genreId) ?? false
+}
+
+export function isChordChangePresetRecommendedForGenre(
+  presetId: string,
+  genreId: GenreId | null
+): boolean {
+  if (!genreId) return false
+  return getChordChangePreset(presetId)?.genreTags.includes(genreId) ?? false
+}
+
+export function isScaleSequencePresetRecommendedForGenre(
+  presetId: string | null,
+  genreId: GenreId | null
+): boolean {
+  if (!genreId || !presetId) return false
+  return getScaleSequencePreset(presetId)?.genreTags.includes(genreId) ?? false
+}
+
+export function isEarTrainingPresetRecommendedForGenre(
+  presetId: string | null,
+  genreId: GenreId | null
+): boolean {
+  if (!genreId || !presetId) return false
+  return getEarTrainingPreset(presetId)?.genreTags.includes(genreId) ?? false
 }

@@ -30,6 +30,41 @@ function createProgressEntry(module: LearnModuleId): LearnProgressEntry {
   }
 }
 
+type PersistedLearnProgressState = Partial<Pick<LearnProgressState, 'progress' | 'completedSteps'>>
+
+function withResumeDefaults(entry: LearnProgressEntry): LearnProgressEntry {
+  if (!entry.lastSession) return entry
+
+  return {
+    ...entry,
+    lastSession: {
+      ...entry.lastSession,
+      resumeHref: entry.lastSession.resumeHref ?? entry.lastSession.route,
+      contextLabel: entry.lastSession.contextLabel
+    }
+  }
+}
+
+export function migrateLearnProgressState(
+  persistedState: unknown,
+  version: number
+): PersistedLearnProgressState {
+  const state = (persistedState as PersistedLearnProgressState | undefined) ?? {}
+  if (version >= 1) return state
+
+  const progress = Object.fromEntries(
+    Object.entries(state.progress ?? {}).map(([module, entry]) => [
+      module,
+      withResumeDefaults(entry)
+    ])
+  )
+
+  return {
+    ...state,
+    progress
+  }
+}
+
 function findCompletionRule(stepId: string): LessonCompletionRule | null {
   for (const path of PRACTICE_PATHS) {
     const step = path.steps.find((item) => item.id === stepId)
@@ -138,7 +173,9 @@ export const useLearnProgressStore = create<LearnProgressState>()(
     }),
     {
       name: 'soundgarden-learn-progress',
-      storage: zustandStorage
+      storage: zustandStorage,
+      version: 1,
+      migrate: migrateLearnProgressState
     }
   )
 )

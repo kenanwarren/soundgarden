@@ -1,17 +1,20 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { Check, RotateCcw, X } from 'lucide-react'
 import { NOTE_NAMES } from '../../utils/constants'
 import { CHORD_VOICINGS, type ChordVoicing } from '../../utils/chord-voicings'
 import { useChordLibraryStore } from '../../stores/chord-library-store'
 import { useChordPractice } from '../../hooks/useChordPractice'
+import { useLearnSession } from '../../hooks/useLearnSession'
 import { ChordDiagram } from '../common/ChordDiagram'
 import { useAudioStore } from '../../stores/audio-store'
 import { PageHeader } from '../layout/PageHeader'
 import { useLessonStep } from '../../hooks/useLessonStep'
-import { getChordIndexByName } from '../../utils/learn-data'
-import { useLearnProgressStore } from '../../stores/learn-progress-store'
+import { buildRouteWithParams, getChordIndexByName } from '../../utils/learn-data'
 import { LearnSessionSummary } from './LearnSessionSummary'
 import type { CompletionState } from '../../utils/learn-types'
+import { GuidedStepBanner } from './GuidedStepBanner'
+import { LearnStatCard } from './LearnStatCard'
 
 const CATEGORIES = [
   { value: 'all' as const, label: 'All' },
@@ -20,27 +23,16 @@ const CATEGORIES = [
   { value: 'extended' as const, label: 'Extended' }
 ]
 
-function SummaryCard({ label, value }: { label: string; value: string }): JSX.Element {
-  return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/80 px-4 py-3">
-      <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">{label}</div>
-      <div className="mt-2 text-lg font-medium text-white">{value}</div>
-    </div>
-  )
-}
-
 function ChordPracticeIndicator({
   voicing,
-  lessonStepId
+  lessonStepId,
+  resumeHref
 }: {
   voicing: ChordVoicing
   lessonStepId?: string
+  resumeHref: string
 }) {
   const isConnected = useAudioStore((s) => s.isConnected)
-  const recordSession = useLearnProgressStore((state) => state.recordSession)
-  const savedSummary = useLearnProgressStore(
-    (state) => state.progress['chord-library']?.lastSession
-  )
   const {
     start,
     stop,
@@ -51,9 +43,8 @@ function ChordPracticeIndicator({
     mismatchCount,
     mismatches
   } = useChordPractice(voicing.root, voicing.quality)
-  const [sessionStarted, setSessionStarted] = useState(false)
 
-  const buildSummary = useCallback(() => {
+  function buildSummary() {
     const totalDetections = cleanMatchCount + mismatchCount
     const score = totalDetections > 0 ? (cleanMatchCount / totalDetections) * 100 : 0
     const completionState: CompletionState =
@@ -64,6 +55,8 @@ function ChordPracticeIndicator({
       title: `${voicing.name} chord session`,
       description: `Tracked ${cleanMatchCount} clean matches against ${mismatchCount} mismatches.`,
       route: '/learn/chords',
+      resumeHref,
+      contextLabel: voicing.name,
       score,
       bestStreak: cleanMatchCount,
       completionState,
@@ -72,27 +65,18 @@ function ChordPracticeIndicator({
       cleanMatchCount,
       mismatches
     }
-  }, [cleanMatchCount, mismatchCount, mismatches, voicing.name])
+  }
 
-  const finalizeSession = useCallback(() => {
-    if (!sessionStarted && cleanMatchCount === 0 && mismatchCount === 0) return
-    recordSession(buildSummary(), lessonStepId)
-    setSessionStarted(false)
-  }, [buildSummary, cleanMatchCount, lessonStepId, mismatchCount, recordSession, sessionStarted])
-
-  useEffect(() => {
-    return () => {
-      finalizeSession()
-    }
-  }, [finalizeSession])
-
-  const liveSummary = useMemo(() => {
-    if (!sessionStarted && cleanMatchCount === 0 && mismatchCount === 0) return null
-    return buildSummary()
-  }, [buildSummary, cleanMatchCount, mismatchCount, sessionStarted])
+  const { savedSummary, finalizeSession } = useLearnSession({
+    module: 'chord-library',
+    lessonStepId,
+    sessionKey: resumeHref,
+    hasActivity: () => isActive || cleanMatchCount > 0 || mismatchCount > 0,
+    buildSummary
+  })
 
   const displayedSummary =
-    liveSummary ??
+    (isActive || cleanMatchCount > 0 || mismatchCount > 0 ? buildSummary() : null) ??
     (savedSummary?.module === 'chord-library' && savedSummary.targetChord === voicing.name
       ? savedSummary
       : null)
@@ -116,7 +100,6 @@ function ChordPracticeIndicator({
                   stop()
                 }
               : () => {
-                  setSessionStarted(true)
                   start()
                 }
           }
@@ -182,6 +165,7 @@ function ChordPracticeIndicator({
 }
 
 export function ChordLibraryPanel(): JSX.Element {
+  const [searchParams] = useSearchParams()
   const {
     selectedChordIndex,
     filterRoot,
@@ -192,6 +176,9 @@ export function ChordLibraryPanel(): JSX.Element {
   } = useChordLibraryStore()
   const isConnected = useAudioStore((s) => s.isConnected)
   const lessonStep = useLessonStep('chord-library')
+  const rootParam = searchParams.get('root')
+  const categoryParam = searchParams.get('category')
+  const chordParam = searchParams.get('chord')
 
   const filtered = CHORD_VOICINGS.filter((voicing) => {
     if (filterRoot && voicing.root !== filterRoot) return false
@@ -200,6 +187,13 @@ export function ChordLibraryPanel(): JSX.Element {
   })
 
   const selectedVoicing = selectedChordIndex !== null ? CHORD_VOICINGS[selectedChordIndex] : null
+  const resumeHref = lessonStep
+    ? buildRouteWithParams('/learn/chords', { lesson: lessonStep.id })
+    : buildRouteWithParams('/learn/chords', {
+        root: filterRoot,
+        category: filterCategory,
+        chord: selectedVoicing?.name ?? null
+      })
 
   useEffect(() => {
     if (!lessonStep || lessonStep.prefill.module !== 'chord-library') return
@@ -210,6 +204,30 @@ export function ChordLibraryPanel(): JSX.Element {
       : null
     setSelectedChord(chordIndex)
   }, [lessonStep, setFilterCategory, setFilterRoot, setSelectedChord])
+
+  useEffect(() => {
+    if (lessonStep) return
+    if (rootParam) setFilterRoot(rootParam)
+    if (
+      categoryParam === 'all' ||
+      categoryParam === 'open' ||
+      categoryParam === 'barre' ||
+      categoryParam === 'extended'
+    ) {
+      setFilterCategory(categoryParam)
+    }
+    if (chordParam) {
+      setSelectedChord(getChordIndexByName(chordParam))
+    }
+  }, [
+    categoryParam,
+    chordParam,
+    lessonStep,
+    rootParam,
+    setFilterCategory,
+    setFilterRoot,
+    setSelectedChord
+  ])
 
   const clearFilters = () => {
     setFilterRoot(null)
@@ -235,16 +253,13 @@ export function ChordLibraryPanel(): JSX.Element {
       />
 
       {lessonStep && (
-        <div className="rounded-3xl border border-emerald-500/20 bg-emerald-500/10 px-5 py-4 text-sm text-emerald-100">
-          Guided step: <span className="font-medium text-white">{lessonStep.title}</span>.{' '}
-          {lessonStep.description}
-        </div>
+        <GuidedStepBanner title={lessonStep.title} description={lessonStep.description} />
       )}
 
       <div className="grid gap-4 md:grid-cols-3">
-        <SummaryCard label="Filtered voicings" value={String(filtered.length)} />
-        <SummaryCard label="Selected chord" value={selectedVoicing?.name ?? 'None selected'} />
-        <SummaryCard
+        <LearnStatCard label="Filtered voicings" value={String(filtered.length)} />
+        <LearnStatCard label="Selected chord" value={selectedVoicing?.name ?? 'None selected'} />
+        <LearnStatCard
           label="Practice mode"
           value={isConnected ? 'Live audio ready' : 'Browse-only until input connects'}
         />
@@ -335,7 +350,11 @@ export function ChordLibraryPanel(): JSX.Element {
             </button>
           </div>
 
-          <ChordPracticeIndicator voicing={selectedVoicing} lessonStepId={lessonStep?.id} />
+          <ChordPracticeIndicator
+            voicing={selectedVoicing}
+            lessonStepId={lessonStep?.id}
+            resumeHref={resumeHref}
+          />
         </div>
       )}
 
