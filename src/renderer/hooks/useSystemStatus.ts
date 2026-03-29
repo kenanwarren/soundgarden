@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import { getEngine } from './useAudioEngine'
 import { useAudioStore } from '../stores/audio-store'
 import { useAppSettingsStore } from '../stores/app-settings-store'
 import { useTunerStore } from '../stores/tuner-store'
@@ -33,7 +32,8 @@ export function useSystemStatus(): SystemStatus {
     inputLevel,
     permissionState,
     devicesLoading,
-    lastRecoverableError
+    lastRecoverableError,
+    latencyEstimateMs
   } = useAudioStore()
   const inputDeviceId = useAppSettingsStore((s) => s.audio.inputDeviceId)
   const outputDeviceId = useAppSettingsStore((s) => s.audio.outputDeviceId)
@@ -45,8 +45,7 @@ export function useSystemStatus(): SystemStatus {
   const metronomePlaying = useMetronomeStore((s) => s.isPlaying)
 
   return useMemo(() => {
-    const engine = getEngine()
-    const latencyMs = isConnected && engine ? engine.latencyEstimate * 1000 : null
+    const latencyMs = isConnected ? latencyEstimateMs : null
     const latencyBand = getLatencyBand(latencyMs, isConnected)
     const signalBand = getSignalBand(inputLevel, isConnected)
 
@@ -85,6 +84,7 @@ export function useSystemStatus(): SystemStatus {
     inputLevel,
     isConnected,
     lastRecoverableError,
+    latencyEstimateMs,
     metronomePlaying,
     outputDeviceId,
     outputDevices,

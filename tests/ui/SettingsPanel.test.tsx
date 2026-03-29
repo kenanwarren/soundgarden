@@ -3,7 +3,7 @@
 import React from 'react'
 import '@testing-library/jest-dom/vitest'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { fireEvent, render, screen, within } from '@testing-library/react'
+import { fireEvent, screen, within } from '@testing-library/react'
 import { SettingsPanel } from '../../src/renderer/components/settings/SettingsPanel'
 import {
   DEFAULT_AUDIO_SETTINGS,
@@ -15,34 +15,19 @@ import { useAudioStore } from '../../src/renderer/stores/audio-store'
 import { useMetronomeStore } from '../../src/renderer/stores/metronome-store'
 import { useTunerStore } from '../../src/renderer/stores/tuner-store'
 import { useUiStore } from '../../src/renderer/stores/ui-store'
+import { renderWithRouter } from './render-with-router'
 
 const useAudioEngine = vi.fn()
-const useDevices = vi.fn()
 const useSystemStatus = vi.fn()
 
 vi.mock('../../src/renderer/hooks/useAudioEngine', () => ({
   useAudioEngine: (...args: unknown[]) => useAudioEngine(...args)
-}))
-vi.mock('../../src/renderer/hooks/useDevices', () => ({
-  useDevices: (...args: unknown[]) => useDevices(...args)
 }))
 vi.mock('../../src/renderer/hooks/useSystemStatus', () => ({
   useSystemStatus: (...args: unknown[]) => useSystemStatus(...args)
 }))
 vi.mock('../../src/renderer/components/layout/PageHeader', () => ({
   PageHeader: ({ title }: { title: string }) => <div>{title}</div>
-}))
-vi.mock('../../src/renderer/components/audio/DeviceSelector', () => ({
-  DeviceSelector: () => <div>Device Selector</div>
-}))
-vi.mock('../../src/renderer/components/audio/VolumeSlider', () => ({
-  VolumeSlider: () => <div>Volume Slider</div>
-}))
-vi.mock('../../src/renderer/components/audio/AudioMeter', () => ({
-  AudioMeter: () => <div>Audio Meter</div>
-}))
-vi.mock('../../src/renderer/components/audio/LatencyIndicator', () => ({
-  LatencyIndicator: () => <div>Latency Indicator</div>
 }))
 vi.mock('../../src/renderer/components/common/BpmControl', () => ({
   BpmControl: ({ bpm, setBpm }: { bpm: number; setBpm: (value: number) => void }) => (
@@ -74,7 +59,9 @@ describe('SettingsPanel', () => {
       inputLevel: 0,
       devicesLoading: false,
       permissionState: 'unknown',
-      lastRecoverableError: null
+      lastRecoverableError: null,
+      sampleRate: 48_000,
+      latencyEstimateMs: 12
     })
     useTunerStore.setState({
       frequency: 0,
@@ -97,13 +84,7 @@ describe('SettingsPanel', () => {
     useUiStore.setState({ notices: [] })
 
     useAudioEngine.mockReturnValue({
-      isConnected: false,
-      inputDeviceId: null,
-      connect: vi.fn(),
       disconnect: vi.fn()
-    })
-    useDevices.mockReturnValue({
-      refreshDevices: vi.fn()
     })
     useSystemStatus.mockReturnValue({
       permissionState: 'granted',
@@ -126,12 +107,7 @@ describe('SettingsPanel', () => {
 
   it('resets audio, practice, and interface settings back to defaults', () => {
     const disconnect = vi.fn()
-    useAudioEngine.mockReturnValue({
-      isConnected: true,
-      inputDeviceId: 'input-1',
-      connect: vi.fn(),
-      disconnect
-    })
+    useAudioEngine.mockReturnValue({ disconnect })
 
     useAppSettingsStore.setState({
       audio: {
@@ -166,7 +142,7 @@ describe('SettingsPanel', () => {
       accentFirst: false
     })
 
-    render(<SettingsPanel />)
+    renderWithRouter(<SettingsPanel />, '/settings')
 
     fireEvent.click(within(sectionFor('Audio')).getByRole('button', { name: 'Reset' }))
     expect(useAppSettingsStore.getState().audio).toEqual(DEFAULT_AUDIO_SETTINGS)
@@ -189,34 +165,9 @@ describe('SettingsPanel', () => {
     expect(useUiStore.getState().notices).toHaveLength(3)
   })
 
-  it('renders disabled connect state and the hot-monitoring warning copy', () => {
+  it('shows the compact runtime snapshot and routes the user back to Setup for live controls', () => {
     useAppSettingsStore.getState().setAudioSetting('masterVolume', 0.95)
     useAppSettingsStore.getState().setAudioSetting('monitoringEnabled', true)
-
-    render(<SettingsPanel />)
-
-    const audioSection = sectionFor('Audio')
-
-    expect(screen.getByRole('button', { name: 'Connect Selected Input' })).toBeDisabled()
-    expect(screen.getByText('set fairly hot')).toBeInTheDocument()
-    expect(audioSection).toHaveTextContent(
-      'Use headphones or lower the volume before playing through speakers.'
-    )
-  })
-
-  it('shows success diagnostics only when permission and input selection are both healthy', async () => {
-    const refreshDevices = vi.fn(async () => {
-      useAudioStore.setState({
-        permissionState: 'granted',
-        isConnected: true,
-        inputLevel: 0.4,
-        inputDevices: [{ id: 'input-1', label: 'Interface', kind: 'audioinput' }],
-        outputDevices: [{ id: 'output-1', label: 'Monitors', kind: 'audiooutput' }]
-      })
-      useAppSettingsStore.getState().setAudioSetting('inputDeviceId', 'input-1')
-      useAppSettingsStore.getState().setAudioSetting('outputDeviceId', 'output-1')
-    })
-    useDevices.mockReturnValue({ refreshDevices })
     useSystemStatus.mockReturnValue({
       permissionState: 'granted',
       isConnected: true,
@@ -235,40 +186,31 @@ describe('SettingsPanel', () => {
       devicesLoading: false
     })
 
-    render(<SettingsPanel />)
+    renderWithRouter(<SettingsPanel />, '/settings')
 
-    fireEvent.click(screen.getByRole('button', { name: 'Run Audio Check' }))
+    const audioSection = sectionFor('Audio')
 
-    expect(
-      await screen.findByText('Audio check passed. Soundgarden is ready for live input.')
-    ).toBeInTheDocument()
-    expect(screen.getByText('Input route: Interface.')).toBeInTheDocument()
-    expect(screen.getByText('Live audio is connected with healthy signal.')).toBeInTheDocument()
+    expect(audioSection).toHaveTextContent('Current runtime snapshot')
+    expect(audioSection).toHaveTextContent(
+      'Setup owns device routing and diagnostics. This panel stays focused on defaults and shows only a compact runtime summary.'
+    )
+    expect(within(audioSection).getByText('Healthy')).toBeInTheDocument()
+    expect(within(audioSection).getByText('Good (12.0ms)')).toBeInTheDocument()
+    expect(within(audioSection).getByText('95% (Hot)')).toBeInTheDocument()
+    expect(within(audioSection).getByText('48 kHz')).toBeInTheDocument()
+    expect(within(audioSection).getByRole('link', { name: 'Open Setup' })).toHaveAttribute(
+      'href',
+      '/'
+    )
+    expect(within(audioSection).getByRole('button', { name: 'Disconnect Input' })).toBeEnabled()
   })
 
-  it('shows warning diagnostics when permission is denied or no input is selected', async () => {
-    const refreshDevices = vi.fn(async () => {
-      useAudioStore.setState({
-        permissionState: 'denied',
-        isConnected: false,
-        inputLevel: 0,
-        inputDevices: [],
-        outputDevices: []
-      })
-      useAppSettingsStore.getState().setAudioSetting('inputDeviceId', null)
-      useAppSettingsStore.getState().setAudioSetting('outputDeviceId', null)
-    })
-    useDevices.mockReturnValue({ refreshDevices })
+  it('does not keep the old diagnostics and routing controls in Settings', () => {
+    renderWithRouter(<SettingsPanel />, '/settings')
 
-    render(<SettingsPanel />)
-
-    fireEvent.click(screen.getByRole('button', { name: 'Run Audio Check' }))
-
-    expect(
-      await screen.findByText('Audio check found a few setup issues to resolve.')
-    ).toBeInTheDocument()
-    expect(screen.getByText('Microphone permission is blocked.')).toBeInTheDocument()
-    expect(screen.getByText('No input device is selected.')).toBeInTheDocument()
-    expect(screen.getByText('Live audio is not connected.')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Run Audio Check' })).not.toBeInTheDocument()
+    expect(screen.queryByText('Device Selector')).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Connect Selected Input' })).not.toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Open Setup' })).toBeInTheDocument()
   })
 })

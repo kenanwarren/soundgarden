@@ -1,18 +1,6 @@
 import type { Locator, Page } from '@playwright/test'
 import { expect, persistedState, test } from './fixtures'
 
-function diagnosticsSection(page: Page): Locator {
-  return page
-    .locator('section')
-    .filter({ has: page.getByRole('heading', { name: 'Diagnostics', exact: true }) })
-}
-
-function settingsStatusValue(page: Page, label: string): Locator {
-  return diagnosticsSection(page)
-    .getByText(label, { exact: true })
-    .locator('xpath=following-sibling::div[1]')
-}
-
 function statusStripValue(page: Page, value: string): Locator {
   return page.locator('span.font-medium', {
     hasText: new RegExp(`^${value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`)
@@ -88,6 +76,7 @@ test.describe('Audio mode flows', () => {
       page.getByText('Connect an input device on the Setup page to start using this tool.')
     ).toBeVisible()
     await expect(page.getByRole('button', { name: 'Reconnect' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Open Preferences' })).toBeVisible()
   })
 
   test('connected audio mode renders the live shell instead of gates', async ({ soundgarden }) => {
@@ -116,24 +105,20 @@ test.describe('Audio mode flows', () => {
     await expect(page.getByRole('button', { name: 'Start Detection' })).toBeVisible()
   })
 
-  test('settings diagnostics handle connected success and saved-device warnings', async ({
+  test('setup diagnostics handle connected success and saved-device warnings', async ({
     soundgarden
   }) => {
     let page = await soundgarden.relaunch({ audioMode: 'connected' })
-    await soundgarden.gotoHash('#/settings')
+    await soundgarden.gotoHash('#/')
 
     await page.getByRole('button', { name: 'Run Audio Check' }).click()
 
     await expect(
-      diagnosticsSection(page).getByText('Audio check passed. Soundgarden is ready for live input.')
+      page.getByText('Audio check passed. Soundgarden is ready for live input.').last()
     ).toBeVisible()
     await expect(page.getByText('Audio check passed', { exact: true })).toBeVisible()
-    await expect(
-      diagnosticsSection(page).getByText('Input route: E2E USB Interface.')
-    ).toBeVisible()
-    await expect(
-      diagnosticsSection(page).getByText('Live audio is connected with healthy signal.')
-    ).toBeVisible()
+    await expect(page.getByText('Input route: E2E USB Interface.')).toBeVisible()
+    await expect(page.getByText('Live audio is connected with healthy signal.')).toBeVisible()
 
     await soundgarden.seedStorage(
       {
@@ -155,13 +140,28 @@ test.describe('Audio mode flows', () => {
       page.getByText('Your saved input device is unavailable. Select another input to continue.')
     ).toBeVisible()
 
-    await soundgarden.gotoHash('#/settings')
     await page.getByRole('button', { name: 'Run Audio Check' }).click()
 
     await expect(
-      diagnosticsSection(page).getByText('Audio check found a few setup issues to resolve.')
+      page.getByText('Audio check found a few setup issues to resolve.').last()
     ).toBeVisible()
-    await expect(diagnosticsSection(page).getByText('No input device is selected.')).toBeVisible()
-    await expect(settingsStatusValue(page, 'Connection')).toHaveText('Disconnected')
+    await expect(page.getByText('No input device is selected.')).toBeVisible()
+    await expect(page.getByText('Live audio is not connected.')).toBeVisible()
+  })
+
+  test('settings stay focused on defaults and hand live controls back to Setup', async ({
+    soundgarden
+  }) => {
+    const page = await soundgarden.relaunch({ audioMode: 'connected' })
+    await soundgarden.gotoHash('#/settings')
+
+    await expect(page.getByText('Current runtime snapshot')).toBeVisible()
+    await expect(
+      page.getByText(
+        'Setup owns device routing and diagnostics. This panel stays focused on defaults and shows only a compact runtime summary.'
+      )
+    ).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Run Audio Check' })).toHaveCount(0)
+    await expect(page.getByRole('link', { name: 'Open Setup' })).toBeVisible()
   })
 })

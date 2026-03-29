@@ -1,4 +1,5 @@
 import type { EffectConfig } from '../../stores/effects-store'
+import { getEffectDefinition } from '../../effects/definitions'
 import type { ManagedEffect } from './types'
 import { createWorkletEffect, updateWorkletParams } from './worklet-effect'
 import { createEqEffect, updateEqParams } from './eq-effect'
@@ -11,43 +12,21 @@ import {
   updateCabinetParams
 } from './reverb-effect'
 
-const WORKLET_TYPES = new Set([
-  'gain',
-  'delay',
-  'chorus',
-  'compressor',
-  'noisegate',
-  'nam',
-  'tremolo',
-  'phaser',
-  'flanger',
-  'distortion',
-  'wah',
-  'pitchshift',
-  'cleanboost',
-  'autoswell',
-  'limiter',
-  'ringmod',
-  'bitcrusher',
-  'octaver',
-  'rotary',
-  'shimmer',
-  'harmonizer',
-  'looper'
-])
-
 export function createManagedEffect(ctx: AudioContext, config: EffectConfig): ManagedEffect | null {
-  if (WORKLET_TYPES.has(config.type)) return createWorkletEffect(ctx, config)
-  switch (config.type) {
+  const definition = getEffectDefinition(config.type)
+
+  switch (definition.runtime) {
+    case 'worklet':
+      return createWorkletEffect(ctx, config)
     case 'eq':
       return createEqEffect(ctx, config)
     case 'reverb':
       return createReverbEffect(ctx, config)
     case 'cabinet':
       return createCabinetEffect(ctx, config)
-    case 'graphiceq':
+    case 'graphic-eq':
       return createGraphicEqEffect(ctx, config)
-    case 'parameq':
+    case 'parametric-eq':
       return createParametricEqEffect(ctx, config)
     default:
       return null
@@ -60,13 +39,12 @@ export function updateEffectParams(
   ctx: AudioContext
 ): void {
   const t = ctx.currentTime
+  const definition = getEffectDefinition(config.type)
 
-  if (WORKLET_TYPES.has(config.type)) {
-    updateWorkletParams(managed, config, t)
-    return
-  }
-
-  switch (config.type) {
+  switch (definition.runtime) {
+    case 'worklet':
+      updateWorkletParams(managed, config, t)
+      break
     case 'eq':
       updateEqParams(managed, config, t)
       break
@@ -76,10 +54,10 @@ export function updateEffectParams(
     case 'cabinet':
       updateCabinetParams(managed, config, t)
       break
-    case 'graphiceq':
+    case 'graphic-eq':
       updateGraphicEqParams(managed, config, t)
       break
-    case 'parameq':
+    case 'parametric-eq':
       updateParametricEqParams(managed, config, t)
       break
   }

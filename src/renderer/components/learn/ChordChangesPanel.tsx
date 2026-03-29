@@ -1,30 +1,26 @@
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
 import { RotateCcw } from 'lucide-react'
 import { CHORD_VOICINGS } from '../../utils/chord-voicings'
 import {
   CHORD_CHANGE_PRESETS,
-  buildRouteWithParams,
   getChordChangePreset,
   getChordIndexByName,
-  getGenreDefinition,
   isChordChangePresetRecommendedForGenre
 } from '../../utils/learn-data'
 import { useLearnSession } from '../../hooks/useLearnSession'
-import { useLessonStep } from '../../hooks/useLessonStep'
+import { useLearnToolRouteState } from '../../hooks/useLearnToolRouteState'
 import { useMetronomeStore } from '../../stores/metronome-store'
 import { useMetronome } from '../../hooks/useMetronome'
 import { useChordDetection } from '../../hooks/useChordDetection'
 import { useChordStore } from '../../stores/chord-store'
 import { matchesChordVoicing } from '../../utils/learn-drills'
-import { PageHeader } from '../layout/PageHeader'
 import { AudioRequiredState } from '../common/AudioRequiredState'
 import { BpmControl } from '../common/BpmControl'
 import { ChordDiagram } from '../common/ChordDiagram'
 import { LearnSessionSummary } from './LearnSessionSummary'
-import type { CompletionState, GenreId } from '../../utils/learn-types'
-import { GuidedStepBanner } from './GuidedStepBanner'
+import type { CompletionState } from '../../utils/learn-types'
 import { LearnStatCard } from './LearnStatCard'
+import { LearnToolLayout } from './LearnToolLayout'
 
 interface ChordChangesState {
   presetId: string
@@ -81,19 +77,13 @@ function reducer(state: ChordChangesState, action: ChordChangesAction): ChordCha
 }
 
 export function ChordChangesPanel(): JSX.Element {
-  const [searchParams] = useSearchParams()
-  const lessonStep = useLessonStep('chord-changes')
+  const { searchParams, lessonStep, genreContext, genreLabel, buildResumeHref } =
+    useLearnToolRouteState('chord-changes', '/learn/chord-changes')
   const sessionStartedAt = useRef<number | null>(null)
   const lastProcessedChord = useRef<string | null>(null)
   const appliedQueryKey = useRef<string | null>(null)
   const presetParam = searchParams.get('preset')
   const bpmParam = searchParams.get('bpm')
-  const rawGenreContext = searchParams.get('genre')
-  const genreContext =
-    rawGenreContext && getGenreDefinition(rawGenreContext as GenreId)
-      ? (rawGenreContext as GenreId)
-      : null
-  const genreLabel = genreContext ? (getGenreDefinition(genreContext)?.title ?? null) : null
 
   const [{ presetId, currentTargetIndex, cleanSwitches, mismatchCount, mismatches }, dispatch] =
     useReducer(reducer, INITIAL_STATE)
@@ -167,13 +157,7 @@ export function ChordChangesPanel(): JSX.Element {
       title: `${preset?.name ?? 'Chord changes'} session`,
       description: `Completed ${cleanSwitches} clean target changes at ${bpm} BPM.`,
       route: '/learn/chord-changes',
-      resumeHref: lessonStep
-        ? buildRouteWithParams('/learn/chord-changes', { lesson: lessonStep.id })
-        : buildRouteWithParams('/learn/chord-changes', {
-            preset: preset?.id ?? presetId,
-            bpm,
-            genre: genreContext
-          }),
+      resumeHref: buildResumeHref({ preset: preset?.id ?? presetId, bpm }),
       contextLabel: preset?.name ?? 'Chord changes',
       score,
       bestStreak: cleanSwitches,
@@ -190,9 +174,7 @@ export function ChordChangesPanel(): JSX.Element {
   const { savedSummary, finalizeSession, startSession, resetSessionStart } = useLearnSession({
     module: 'chord-changes',
     lessonStepId: lessonStep?.id,
-    sessionKey: lessonStep
-      ? null
-      : `preset:${presetParam ?? ''}|bpm:${bpmParam ?? ''}|genre:${genreContext ?? ''}`,
+    sessionKey: lessonStep ? null : buildResumeHref({ preset: presetParam, bpm: bpmParam }),
     hasActivity: () => sessionStartedAt.current !== null || cleanSwitches > 0 || mismatchCount > 0,
     buildSummary,
     sessionStartedAtRef: sessionStartedAt
@@ -235,33 +217,27 @@ export function ChordChangesPanel(): JSX.Element {
   }
 
   return (
-    <div className="flex h-full flex-col gap-6 p-6">
-      <PageHeader
-        title="Chord Changes Trainer"
-        description="Keep the metronome running, hit the highlighted chord cleanly, and only advance once Soundgarden hears the correct target."
-        backTo="/learn"
-        actions={
-          <button
-            onClick={() => {
-              stop()
-              stopMetronome()
-              setIsRunning(false)
-              finalizeSession()
-              resetSessionStart()
-              resetSessionState()
-            }}
-            className="inline-flex items-center gap-2 rounded-xl border border-zinc-800 px-3 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
-          >
-            <RotateCcw size={14} />
-            Reset Session
-          </button>
-        }
-      />
-
-      {lessonStep && (
-        <GuidedStepBanner title={lessonStep.title} description={lessonStep.description} />
-      )}
-
+    <LearnToolLayout
+      title="Chord Changes Trainer"
+      description="Keep the metronome running, hit the highlighted chord cleanly, and only advance once Soundgarden hears the correct target."
+      lessonStep={lessonStep}
+      actions={
+        <button
+          onClick={() => {
+            stop()
+            stopMetronome()
+            setIsRunning(false)
+            finalizeSession()
+            resetSessionStart()
+            resetSessionState()
+          }}
+          className="inline-flex items-center gap-2 rounded-xl border border-zinc-800 px-3 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
+        >
+          <RotateCcw size={14} />
+          Reset Session
+        </button>
+      }
+    >
       <div className="grid gap-4 md:grid-cols-4">
         <LearnStatCard label="Preset" value={preset?.name ?? 'Unknown'} />
         <LearnStatCard label="Next chord" value={currentTarget?.name ?? 'Pick a preset'} />
@@ -421,6 +397,6 @@ export function ChordChangesPanel(): JSX.Element {
           weakSpots={displayedSummary.weakSpots}
         />
       )}
-    </div>
+    </LearnToolLayout>
   )
 }

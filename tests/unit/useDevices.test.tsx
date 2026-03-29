@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { act, cleanup, renderHook, waitFor } from '@testing-library/react'
+import { act, cleanup, renderHook } from '@testing-library/react'
 import {
   DEFAULT_AUDIO_SETTINGS,
   DEFAULT_INTERFACE_SETTINGS,
@@ -10,12 +10,11 @@ import {
 } from '../../src/renderer/stores/app-settings-store'
 import { useAudioStore } from '../../src/renderer/stores/audio-store'
 import { useDevices } from '../../src/renderer/hooks/useDevices'
-import { useUiStore } from '../../src/renderer/stores/ui-store'
 
-const getEngine = vi.fn()
+const refreshAudioRuntimeDevices = vi.fn()
 
-vi.mock('../../src/renderer/hooks/useAudioEngine', () => ({
-  getEngine: (...args: unknown[]) => getEngine(...args)
+vi.mock('../../src/renderer/audio/runtime', () => ({
+  refreshAudioRuntimeDevices: (...args: unknown[]) => refreshAudioRuntimeDevices(...args)
 }))
 
 describe('useDevices', () => {
@@ -30,58 +29,51 @@ describe('useDevices', () => {
     })
     useAudioStore.setState({
       isConnected: false,
-      inputDevices: [],
-      outputDevices: [],
+      inputDevices: [{ id: 'input-1', label: 'Interface', kind: 'audioinput' }],
+      outputDevices: [{ id: 'output-1', label: 'Monitors', kind: 'audiooutput' }],
       inputLevel: 0,
-      devicesLoading: false,
+      devicesLoading: true,
       permissionState: 'unknown',
-      lastRecoverableError: null
+      lastRecoverableError: null,
+      latencyEstimateMs: null,
+      sampleRate: null
     })
-    useUiStore.setState({ notices: [] })
+    useAppSettingsStore.getState().setAudioSetting('inputDeviceId', 'input-1')
+    useAppSettingsStore.getState().setAudioSetting('outputDeviceId', 'output-1')
   })
 
   afterEach(() => {
     cleanup()
   })
 
-  it('refreshes devices, clears missing saved outputs, and splits input/output lists', async () => {
-    getEngine.mockReturnValue({
-      enumerateDevices: vi.fn().mockResolvedValue([
-        { id: 'input-1', label: 'Interface', kind: 'audioinput' },
-        { id: 'output-2', label: 'Monitors', kind: 'audiooutput' }
-      ])
-    })
-    useAppSettingsStore.getState().setAudioSetting('outputDeviceId', 'missing-output')
-
+  it('exposes device lists, ids, and loading state directly from the stores', () => {
     const { result } = renderHook(() => useDevices())
 
-    await act(async () => {
-      await result.current.refreshDevices()
-    })
-
-    await waitFor(() =>
-      expect(useAudioStore.getState().outputDevices).toEqual([
-        { id: 'output-2', label: 'Monitors', kind: 'audiooutput' }
-      ])
-    )
-
-    expect(useAudioStore.getState().inputDevices).toEqual([
+    expect(result.current.inputDevices).toEqual([
       { id: 'input-1', label: 'Interface', kind: 'audioinput' }
     ])
+    expect(result.current.outputDevices).toEqual([
+      { id: 'output-1', label: 'Monitors', kind: 'audiooutput' }
+    ])
+    expect(result.current.inputDeviceId).toBe('input-1')
+    expect(result.current.outputDeviceId).toBe('output-1')
+    expect(result.current.devicesLoading).toBe(true)
+  })
+
+  it('updates persisted device selections through the app settings store', () => {
+    const { result } = renderHook(() => useDevices())
+
+    act(() => {
+      result.current.setInputDeviceId('input-2')
+      result.current.setOutputDeviceId(null)
+    })
+
+    expect(useAppSettingsStore.getState().audio.inputDeviceId).toBe('input-2')
     expect(useAppSettingsStore.getState().audio.outputDeviceId).toBeNull()
-    expect(useAudioStore.getState().lastRecoverableError).toBe(
-      'Your saved output device is unavailable. Soundgarden switched back to the default output.'
-    )
-    expect(useAudioStore.getState().devicesLoading).toBe(false)
   })
 
-  it('surfaces permission-denied status when devices still enumerate successfully', async () => {
-    getEngine.mockReturnValue({
-      enumerateDevices: vi
-        .fn()
-        .mockResolvedValue([{ id: 'input-1', label: 'Interface', kind: 'audioinput' }])
-    })
-    useAudioStore.getState().setPermissionState('denied')
+  it('delegates refreshes to the shared audio runtime', async () => {
+    refreshAudioRuntimeDevices.mockResolvedValue(undefined)
 
     const { result } = renderHook(() => useDevices())
 
@@ -89,29 +81,6 @@ describe('useDevices', () => {
       await result.current.refreshDevices()
     })
 
-    expect(useAudioStore.getState().lastRecoverableError).toBe(
-      'Microphone access is blocked. Grant permission to use live audio features.'
-    )
-    expect(useUiStore.getState().notices).toEqual([])
-  })
-
-  it('handles refresh failures by clearing the loading flag and posting an error notice', async () => {
-    getEngine.mockReturnValue({
-      enumerateDevices: vi.fn().mockRejectedValue(new Error('USB bus unavailable'))
-    })
-
-    const { result } = renderHook(() => useDevices())
-
-    await act(async () => {
-      await result.current.refreshDevices()
-    })
-
-    expect(useAudioStore.getState().devicesLoading).toBe(false)
-    expect(useAudioStore.getState().lastRecoverableError).toBe('Could not refresh audio devices.')
-    expect(useUiStore.getState().notices[0]).toMatchObject({
-      tone: 'error',
-      title: 'Device refresh failed',
-      description: 'Error: USB bus unavailable'
-    })
+    expect(refreshAudioRuntimeDevices).toHaveBeenCalledTimes(1)
   })
 })

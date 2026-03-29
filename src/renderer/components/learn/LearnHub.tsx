@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   ArrowRight,
   BookOpen,
@@ -21,6 +21,7 @@ import {
   LEARN_HUB_VIEWS,
   LEARN_SKILLS,
   PRACTICE_PATHS,
+  buildLearnHubHref,
   buildLessonHref,
   getContinueRoute,
   getGenreProgress,
@@ -94,10 +95,6 @@ function formatLastPracticed(timestamp: number | null): string {
     hour: 'numeric',
     minute: '2-digit'
   })
-}
-
-function isLearnHubView(value: string | null): value is LearnHubView {
-  return LEARN_HUB_VIEWS.includes(value as LearnHubView)
 }
 
 function isLearnBrowseMode(value: string | null): value is LearnBrowseMode {
@@ -464,13 +461,14 @@ function InfoCard({ label, value }: { label: string; value: string }): JSX.Eleme
   )
 }
 
-export function LearnHub(): JSX.Element {
+export function LearnHub({ view = 'overview' }: { view?: LearnHubView }): JSX.Element {
   const status = useSystemStatus()
   const progress = useLearnProgressStore((state) => state.progress)
   const completedSteps = useLearnProgressStore((state) => state.completedSteps)
   const markStepComplete = useLearnProgressStore((state) => state.markStepComplete)
   const visibleGenres = useMemo(() => getVisibleGenres(), [])
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (!isSetupReady(status)) return
@@ -483,9 +481,6 @@ export function LearnHub(): JSX.Element {
     }
   }, [status, completedSteps, markStepComplete])
 
-  const view = isLearnHubView(searchParams.get('view'))
-    ? (searchParams.get('view') as LearnHubView)
-    : 'overview'
   const browseMode = isLearnBrowseMode(searchParams.get('browse'))
     ? (searchParams.get('browse') as LearnBrowseMode)
     : 'all'
@@ -496,18 +491,22 @@ export function LearnHub(): JSX.Element {
     ? (searchParams.get('skill') as LearnSkillId)
     : 'chords'
 
-  const updateSearch = (updates: Record<string, string | null>) => {
-    setSearchParams((current) => {
-      const next = new URLSearchParams(current)
-      Object.entries(updates).forEach(([key, value]) => {
-        if (value === null) {
-          next.delete(key)
-          return
-        }
-        next.set(key, value)
+  const navigateHub = (
+    nextView: LearnHubView,
+    updates: Partial<{
+      browse: LearnBrowseMode | null
+      genre: GenreId | null
+      skill: LearnSkillId | null
+    }> = {}
+  ) => {
+    navigate(
+      buildLearnHubHref({
+        view: nextView,
+        browse: updates.browse === undefined ? browseMode : updates.browse,
+        genre: updates.genre === undefined ? selectedGenre : updates.genre,
+        skill: updates.skill === undefined ? selectedSkill : updates.skill
       })
-      return next
-    })
+    )
   }
 
   const lastEntry = Object.values(progress)
@@ -554,17 +553,24 @@ export function LearnHub(): JSX.Element {
 
       <div className="flex flex-wrap gap-2">
         {LEARN_HUB_VIEWS.map((tab) => (
-          <button
+          <NavLink
             key={tab}
-            onClick={() => updateSearch({ view: tab })}
-            className={`rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
-              view === tab
-                ? 'bg-emerald-600 text-white'
-                : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
-            }`}
+            to={buildLearnHubHref({
+              view: tab,
+              browse: browseMode,
+              genre: selectedGenre,
+              skill: selectedSkill
+            })}
+            className={({ isActive }) =>
+              `rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
+                isActive
+                  ? 'bg-emerald-600 text-white'
+                  : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+              }`
+            }
           >
             {tab === 'overview' ? 'Overview' : tab === 'explore' ? 'Explore' : 'Tools'}
-          </button>
+          </NavLink>
         ))}
       </div>
 
@@ -575,22 +581,9 @@ export function LearnHub(): JSX.Element {
           todaysPlan={todaysPlan}
           visibleGenres={visibleGenres}
           selectedGenre={selectedGenre}
-          onSelectGenre={(genreId) =>
-            updateSearch({
-              view: 'explore',
-              browse: 'genre',
-              genre: genreId
-            })
-          }
-          onExploreAll={() =>
-            updateSearch({
-              view: 'explore',
-              browse: 'all',
-              genre: null,
-              skill: null
-            })
-          }
-          onBrowseTools={() => updateSearch({ view: 'tools' })}
+          onSelectGenre={(genreId) => navigateHub('explore', { browse: 'genre', genre: genreId })}
+          onExploreAll={() => navigateHub('explore', { browse: 'all', genre: null, skill: null })}
+          onBrowseTools={() => navigateHub('tools', { browse: null, genre: null, skill: null })}
           completedSteps={completedSteps}
           progress={progress}
           status={status}
@@ -600,9 +593,13 @@ export function LearnHub(): JSX.Element {
           browseMode={browseMode}
           selectedGenre={selectedGenre}
           selectedSkill={selectedSkill}
-          setBrowseMode={(mode) => updateSearch({ browse: mode })}
-          setSelectedGenre={(genreId) => updateSearch({ browse: 'genre', genre: genreId })}
-          setSelectedSkill={(skillId) => updateSearch({ browse: 'skill', skill: skillId })}
+          setBrowseMode={(mode) => navigateHub('explore', { browse: mode })}
+          setSelectedGenre={(genreId) =>
+            navigateHub('explore', { browse: 'genre', genre: genreId })
+          }
+          setSelectedSkill={(skillId) =>
+            navigateHub('explore', { browse: 'skill', skill: skillId })
+          }
           visibleGenres={visibleGenres}
           filteredPaths={filteredPaths}
           pathSectionTitle={pathSectionTitle}

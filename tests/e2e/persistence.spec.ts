@@ -154,7 +154,7 @@ test.describe('Persistence and routing flows', () => {
 
     const page = await soundgarden.gotoHash('#/learn/scales?lesson=foundations-minor-pentatonic')
 
-    await expect(page.getByText('Guided step:').first()).toBeVisible()
+    await expect(page.getByText(/Guided step:/).first()).toBeVisible()
     await expect(page.getByText('Minor Pentatonic Map')).toBeVisible()
     await expect(summaryCardValue(page, 'Scale')).toHaveText('A Minor Pentatonic')
 

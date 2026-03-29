@@ -1,28 +1,24 @@
 import { useEffect, useMemo, useReducer, useRef } from 'react'
-import { useSearchParams } from 'react-router-dom'
 import { RotateCcw } from 'lucide-react'
 import { NOTE_NAMES } from '../../utils/constants'
 import { SCALES, getScaleNotes } from '../../utils/scale-data'
 import { getScalePositions } from '../../utils/fretboard-data'
 import { usePitchDetection } from '../../hooks/usePitchDetection'
 import { useLearnSession } from '../../hooks/useLearnSession'
-import { PageHeader } from '../layout/PageHeader'
+import { useLearnToolRouteState } from '../../hooks/useLearnToolRouteState'
 import { Fretboard } from '../common/Fretboard'
 import { AudioRequiredState } from '../common/AudioRequiredState'
-import { useLessonStep } from '../../hooks/useLessonStep'
 import {
   SCALE_SEQUENCE_PRESETS,
-  buildRouteWithParams,
-  getGenreDefinition,
   getScaleIndexByName,
   getScaleSequencePreset,
   isScaleSequencePresetRecommendedForGenre
 } from '../../utils/learn-data'
 import { LearnSessionSummary } from './LearnSessionSummary'
 import { buildScaleSequence, type ScaleSequenceType } from '../../utils/learn-drills'
-import type { CompletionState, GenreId } from '../../utils/learn-types'
-import { GuidedStepBanner } from './GuidedStepBanner'
+import type { CompletionState } from '../../utils/learn-types'
 import { LearnStatCard } from './LearnStatCard'
+import { LearnToolLayout } from './LearnToolLayout'
 
 interface ScaleSequenceState {
   selectedPresetId: string | null
@@ -185,8 +181,8 @@ function reducer(state: ScaleSequenceState, action: ScaleSequenceAction): ScaleS
 }
 
 export function ScaleSequencePanel(): JSX.Element {
-  const [searchParams] = useSearchParams()
-  const lessonStep = useLessonStep('scale-sequences')
+  const { searchParams, lessonStep, genreContext, genreLabel, buildResumeHref } =
+    useLearnToolRouteState('scale-sequences', '/learn/scale-sequences')
   const sessionStartedAt = useRef<number | null>(null)
   const lastAcceptedAt = useRef(0)
   const lastMissedAt = useRef(0)
@@ -196,12 +192,6 @@ export function ScaleSequencePanel(): JSX.Element {
   const scaleParam = searchParams.get('scale')
   const sequenceParam = searchParams.get('sequence')
   const loopsParam = searchParams.get('loops')
-  const rawGenreContext = searchParams.get('genre')
-  const genreContext =
-    rawGenreContext && getGenreDefinition(rawGenreContext as GenreId)
-      ? (rawGenreContext as GenreId)
-      : null
-  const genreLabel = genreContext ? (getGenreDefinition(genreContext)?.title ?? null) : null
 
   const [
     {
@@ -325,16 +315,13 @@ export function ScaleSequencePanel(): JSX.Element {
       title: `${root} ${scale.name} ${sequenceType} sequence`,
       description: `Completed ${loopsCompleted} of ${targetLoops} target loops while tracking note order.`,
       route: '/learn/scale-sequences',
-      resumeHref: lessonStep
-        ? buildRouteWithParams('/learn/scale-sequences', { lesson: lessonStep.id })
-        : buildRouteWithParams('/learn/scale-sequences', {
-            preset: selectedPresetId,
-            root,
-            scale: scale.name,
-            sequence: sequenceType,
-            loops: targetLoops,
-            genre: genreContext
-          }),
+      resumeHref: buildResumeHref({
+        preset: selectedPresetId,
+        root,
+        scale: scale.name,
+        sequence: sequenceType,
+        loops: targetLoops
+      }),
       contextLabel: selectedPreset?.name ?? `${root} ${scale.name} ${sequenceType}`,
       score,
       bestStreak: bestRun,
@@ -354,7 +341,13 @@ export function ScaleSequencePanel(): JSX.Element {
     lessonStepId: lessonStep?.id,
     sessionKey: lessonStep
       ? null
-      : `preset:${presetParam ?? ''}|root:${rootParam ?? ''}|scale:${scaleParam ?? ''}|sequence:${sequenceParam ?? ''}|loops:${loopsParam ?? ''}|genre:${genreContext ?? ''}`,
+      : buildResumeHref({
+          preset: presetParam,
+          root: rootParam,
+          scale: scaleParam,
+          sequence: sequenceParam,
+          loops: loopsParam
+        }),
     hasActivity: () => sessionStartedAt.current !== null || progressSteps > 0,
     buildSummary,
     sessionStartedAtRef: sessionStartedAt
@@ -422,32 +415,26 @@ export function ScaleSequencePanel(): JSX.Element {
   }
 
   return (
-    <div className="flex h-full flex-col gap-6 p-6">
-      <PageHeader
-        title="Scale Sequence Trainer"
-        description="Move beyond note coverage by playing scale tones in a strict order, then repeat the sequence for multiple loops."
-        backTo="/learn"
-        actions={
-          <button
-            onClick={() => {
-              stop()
-              finalizeSession()
-              resetSessionStart()
-              dispatch({ type: 'stop-practice' })
-              resetSessionState()
-            }}
-            className="inline-flex items-center gap-2 rounded-xl border border-zinc-800 px-3 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
-          >
-            <RotateCcw size={14} />
-            Reset Session
-          </button>
-        }
-      />
-
-      {lessonStep && (
-        <GuidedStepBanner title={lessonStep.title} description={lessonStep.description} />
-      )}
-
+    <LearnToolLayout
+      title="Scale Sequence Trainer"
+      description="Move beyond note coverage by playing scale tones in a strict order, then repeat the sequence for multiple loops."
+      lessonStep={lessonStep}
+      actions={
+        <button
+          onClick={() => {
+            stop()
+            finalizeSession()
+            resetSessionStart()
+            dispatch({ type: 'stop-practice' })
+            resetSessionState()
+          }}
+          className="inline-flex items-center gap-2 rounded-xl border border-zinc-800 px-3 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
+        >
+          <RotateCcw size={14} />
+          Reset Session
+        </button>
+      }
+    >
       <div className="grid gap-4 md:grid-cols-4">
         <LearnStatCard label="Scale" value={`${root} ${scale.name}`} />
         <LearnStatCard label="Sequence" value={selectedPreset?.name ?? sequenceType} />
@@ -647,6 +634,6 @@ export function ScaleSequencePanel(): JSX.Element {
           weakSpots={displayedSummary.weakSpots}
         />
       )}
-    </div>
+    </LearnToolLayout>
   )
 }

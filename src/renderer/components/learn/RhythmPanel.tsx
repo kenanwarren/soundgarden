@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
-import { useSearchParams } from 'react-router-dom'
 import { RotateCcw } from 'lucide-react'
 import { RHYTHM_PATTERNS } from '../../utils/rhythm-patterns'
 import {
@@ -12,22 +11,19 @@ import { useMetronomeStore } from '../../stores/metronome-store'
 import { useRhythmTrainer } from '../../hooks/useRhythmTrainer'
 import { useMetronome } from '../../hooks/useMetronome'
 import { useLearnSession } from '../../hooks/useLearnSession'
-import { PageHeader } from '../layout/PageHeader'
+import { useLearnToolRouteState } from '../../hooks/useLearnToolRouteState'
 import { BpmControl } from '../common/BpmControl'
 import { AudioRequiredState } from '../common/AudioRequiredState'
-import { useLessonStep } from '../../hooks/useLessonStep'
 import {
   buildRhythmStarterId,
-  buildRouteWithParams,
-  getGenreDefinition,
   getPatternIndexByName,
   getRhythmPatternByStarterId,
   isRhythmPatternRecommendedForGenre
 } from '../../utils/learn-data'
 import { LearnSessionSummary } from './LearnSessionSummary'
-import type { CompletionState, GenreId } from '../../utils/learn-types'
-import { GuidedStepBanner } from './GuidedStepBanner'
+import type { CompletionState } from '../../utils/learn-types'
 import { LearnStatCard } from './LearnStatCard'
+import { LearnToolLayout } from './LearnToolLayout'
 
 const GRADE_CONFIG: Record<HitGrade, { label: string; color: string }> = {
   perfect: { label: 'Perfect!', color: 'text-emerald-400' },
@@ -286,7 +282,6 @@ function SensitivityCard({
 }
 
 export function RhythmPanel(): JSX.Element {
-  const [searchParams] = useSearchParams()
   const {
     selectedPatternIndex,
     isRunning,
@@ -307,18 +302,13 @@ export function RhythmPanel(): JSX.Element {
   const { bpm, setBpm } = useMetronomeStore()
   const { tap } = useMetronome()
   const { start, stop, isConnected } = useRhythmTrainer()
-  const lessonStep = useLessonStep('rhythm-trainer')
+  const { searchParams, lessonStep, genreContext, genreLabel, buildResumeHref } =
+    useLearnToolRouteState('rhythm-trainer', '/learn/rhythm')
   const sessionStartedAt = useRef<number | null>(null)
   const appliedQueryKey = useRef<string | null>(null)
   const patternParam = searchParams.get('pattern')
   const bpmParam = searchParams.get('bpm')
   const sensitivityParam = searchParams.get('sensitivity')
-  const rawGenreContext = searchParams.get('genre')
-  const genreContext =
-    rawGenreContext && getGenreDefinition(rawGenreContext as GenreId)
-      ? (rawGenreContext as GenreId)
-      : null
-  const genreLabel = genreContext ? (getGenreDefinition(genreContext)?.title ?? null) : null
 
   const pattern = RHYTHM_PATTERNS[selectedPatternIndex]
   const timing = useMemo(() => getTimingInsights(results), [results])
@@ -388,14 +378,11 @@ export function RhythmPanel(): JSX.Element {
       title: `${pattern.name} rhythm session`,
       description: `Logged ${hitCount} hits and ${missCount} misses while tracking timing drift.`,
       route: '/learn/rhythm',
-      resumeHref: lessonStep
-        ? buildRouteWithParams('/learn/rhythm', { lesson: lessonStep.id })
-        : buildRouteWithParams('/learn/rhythm', {
-            pattern: buildRhythmStarterId(pattern.name),
-            bpm,
-            sensitivity,
-            genre: genreContext
-          }),
+      resumeHref: buildResumeHref({
+        pattern: buildRhythmStarterId(pattern.name),
+        bpm,
+        sensitivity
+      }),
       contextLabel: pattern.name,
       score: accuracy,
       bestStreak,
@@ -414,7 +401,11 @@ export function RhythmPanel(): JSX.Element {
     lessonStepId: lessonStep?.id,
     sessionKey: lessonStep
       ? null
-      : `pattern:${patternParam ?? ''}|bpm:${bpmParam ?? ''}|sensitivity:${sensitivityParam ?? ''}|genre:${genreContext ?? ''}`,
+      : buildResumeHref({
+          pattern: patternParam,
+          bpm: bpmParam,
+          sensitivity: sensitivityParam
+        }),
     hasActivity: () => sessionStartedAt.current !== null || results.length > 0,
     buildSummary,
     sessionStartedAtRef: sessionStartedAt
@@ -443,31 +434,25 @@ export function RhythmPanel(): JSX.Element {
   }
 
   return (
-    <div className="flex h-full flex-col gap-6 p-6">
-      <PageHeader
-        title="Rhythm Trainer"
-        description="Use the same tempo model as the metronome, choose a pattern, and track how early or late each attack lands."
-        backTo="/learn"
-        actions={
-          <button
-            onClick={() => {
-              finalizeSession()
-              if (isRunning) stop()
-              reset()
-              resetSessionStart()
-            }}
-            className="inline-flex items-center gap-2 rounded-xl border border-zinc-800 px-3 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
-          >
-            <RotateCcw size={14} />
-            Reset Session
-          </button>
-        }
-      />
-
-      {lessonStep && (
-        <GuidedStepBanner title={lessonStep.title} description={lessonStep.description} />
-      )}
-
+    <LearnToolLayout
+      title="Rhythm Trainer"
+      description="Use the same tempo model as the metronome, choose a pattern, and track how early or late each attack lands."
+      lessonStep={lessonStep}
+      actions={
+        <button
+          onClick={() => {
+            finalizeSession()
+            if (isRunning) stop()
+            reset()
+            resetSessionStart()
+          }}
+          className="inline-flex items-center gap-2 rounded-xl border border-zinc-800 px-3 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
+        >
+          <RotateCcw size={14} />
+          Reset Session
+        </button>
+      }
+    >
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <LearnStatCard label="Pattern" value={pattern.name} />
         <LearnStatCard
@@ -662,6 +647,6 @@ export function RhythmPanel(): JSX.Element {
           weakSpots={displayedSummary.weakSpots}
         />
       )}
-    </div>
+    </LearnToolLayout>
   )
 }

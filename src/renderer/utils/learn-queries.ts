@@ -16,6 +16,7 @@ import type {
   LearnStarterDrill,
   LearnSkillId,
   LessonStep,
+  LearnToolDefinition,
   PracticePath,
   SessionSummary
 } from './learn-types'
@@ -24,19 +25,68 @@ import type { ChordChangePreset } from './presets/chord-changes'
 import type { ScaleSequencePreset } from './presets/scale-sequences'
 import type { EarTrainingPreset } from './presets/ear-training'
 
-export const MODULE_ROUTES: Record<LearnModuleId, string> = {
-  setup: '/',
-  'scale-explorer': '/learn/scales',
-  'chord-library': '/learn/chords',
-  'rhythm-trainer': '/learn/rhythm',
-  'ear-training': '/learn/ear-training',
-  'chord-changes': '/learn/chord-changes',
-  'scale-sequences': '/learn/scale-sequences',
-  'song-viewer': '/learn/songs'
+export const LEARN_TOOL_DEFINITIONS: Record<LearnModuleId, LearnToolDefinition> = {
+  setup: {
+    module: 'setup',
+    route: '/',
+    title: 'Setup',
+    description: 'Prepare audio routing, permission, and monitoring before you practice.'
+  },
+  'scale-explorer': {
+    module: 'scale-explorer',
+    route: '/learn/scales',
+    title: 'Scale Explorer',
+    description: 'Look up scale maps and switch into live note coverage when needed.'
+  },
+  'chord-library': {
+    module: 'chord-library',
+    route: '/learn/chords',
+    title: 'Chord Library',
+    description: 'Look up voicings, fingerings, and clean chord matches.'
+  },
+  'rhythm-trainer': {
+    module: 'rhythm-trainer',
+    route: '/learn/rhythm',
+    title: 'Rhythm Patterns',
+    description: 'Browse pattern shapes first, then measure timing and tendency.'
+  },
+  'ear-training': {
+    module: 'ear-training',
+    route: '/learn/ear-training',
+    title: 'Ear Training',
+    description: 'Train note and interval recognition with replayable prompts.'
+  },
+  'chord-changes': {
+    module: 'chord-changes',
+    route: '/learn/chord-changes',
+    title: 'Chord Changes Trainer',
+    description: 'Switch target chords against the clock and count clean changes.'
+  },
+  'scale-sequences': {
+    module: 'scale-sequences',
+    route: '/learn/scale-sequences',
+    title: 'Scale Sequence Trainer',
+    description: 'Play scales in order with ascending, descending, and thirds patterns.'
+  },
+  'song-viewer': {
+    module: 'song-viewer',
+    route: '/learn/songs',
+    title: 'Song Viewer',
+    description: 'Browse public domain songs with chord charts and lyrics.'
+  }
 }
+
+export const MODULE_ROUTES: Record<LearnModuleId, string> = Object.fromEntries(
+  Object.values(LEARN_TOOL_DEFINITIONS).map((definition) => [definition.module, definition.route])
+) as Record<LearnModuleId, string>
 
 export const LEARN_HUB_VIEWS: LearnHubView[] = ['overview', 'explore', 'tools']
 export const LEARN_BROWSE_MODES: LearnBrowseMode[] = ['all', 'genre', 'skill']
+export const LEARN_HUB_ROUTES: Record<LearnHubView, string> = {
+  overview: '/learn',
+  explore: '/learn/explore',
+  tools: '/learn/tools'
+}
 
 export const LEARN_FEATURES: Array<{
   to: string
@@ -45,46 +95,46 @@ export const LEARN_FEATURES: Array<{
   description: string
 }> = [
   {
-    to: '/learn/scales',
-    module: 'scale-explorer',
-    title: 'Scale Explorer',
-    description: 'Look up scale maps and switch into live note coverage when needed.'
+    to: LEARN_TOOL_DEFINITIONS['scale-explorer'].route,
+    module: LEARN_TOOL_DEFINITIONS['scale-explorer'].module,
+    title: LEARN_TOOL_DEFINITIONS['scale-explorer'].title,
+    description: LEARN_TOOL_DEFINITIONS['scale-explorer'].description
   },
   {
-    to: '/learn/chords',
-    module: 'chord-library',
-    title: 'Chord Library',
-    description: 'Look up voicings, fingerings, and clean chord matches.'
+    to: LEARN_TOOL_DEFINITIONS['chord-library'].route,
+    module: LEARN_TOOL_DEFINITIONS['chord-library'].module,
+    title: LEARN_TOOL_DEFINITIONS['chord-library'].title,
+    description: LEARN_TOOL_DEFINITIONS['chord-library'].description
   },
   {
-    to: '/learn/rhythm',
-    module: 'rhythm-trainer',
-    title: 'Rhythm Patterns',
-    description: 'Browse pattern shapes first, then measure timing and tendency.'
+    to: LEARN_TOOL_DEFINITIONS['rhythm-trainer'].route,
+    module: LEARN_TOOL_DEFINITIONS['rhythm-trainer'].module,
+    title: LEARN_TOOL_DEFINITIONS['rhythm-trainer'].title,
+    description: LEARN_TOOL_DEFINITIONS['rhythm-trainer'].description
   },
   {
-    to: '/learn/ear-training',
-    module: 'ear-training',
-    title: 'Ear Training',
-    description: 'Train note and interval recognition with replayable prompts.'
+    to: LEARN_TOOL_DEFINITIONS['ear-training'].route,
+    module: LEARN_TOOL_DEFINITIONS['ear-training'].module,
+    title: LEARN_TOOL_DEFINITIONS['ear-training'].title,
+    description: LEARN_TOOL_DEFINITIONS['ear-training'].description
   },
   {
-    to: '/learn/chord-changes',
-    module: 'chord-changes',
-    title: 'Chord Changes Trainer',
-    description: 'Switch target chords against the clock and count clean changes.'
+    to: LEARN_TOOL_DEFINITIONS['chord-changes'].route,
+    module: LEARN_TOOL_DEFINITIONS['chord-changes'].module,
+    title: LEARN_TOOL_DEFINITIONS['chord-changes'].title,
+    description: LEARN_TOOL_DEFINITIONS['chord-changes'].description
   },
   {
-    to: '/learn/scale-sequences',
-    module: 'scale-sequences',
-    title: 'Scale Sequence Trainer',
-    description: 'Play scales in order with ascending, descending, and thirds patterns.'
+    to: LEARN_TOOL_DEFINITIONS['scale-sequences'].route,
+    module: LEARN_TOOL_DEFINITIONS['scale-sequences'].module,
+    title: LEARN_TOOL_DEFINITIONS['scale-sequences'].title,
+    description: LEARN_TOOL_DEFINITIONS['scale-sequences'].description
   },
   {
-    to: '/learn/songs',
-    module: 'song-viewer',
-    title: 'Song Viewer',
-    description: 'Browse public domain songs with chord charts and lyrics.'
+    to: LEARN_TOOL_DEFINITIONS['song-viewer'].route,
+    module: LEARN_TOOL_DEFINITIONS['song-viewer'].module,
+    title: LEARN_TOOL_DEFINITIONS['song-viewer'].title,
+    description: LEARN_TOOL_DEFINITIONS['song-viewer'].description
   }
 ]
 
@@ -107,6 +157,68 @@ export const LEARN_SKILLS: Array<{
   }
 ]
 
+function getGenreDefinitionMap(): Map<GenreId, GenreDefinition> {
+  return new Map(GENRE_DEFINITIONS.map((genre) => [genre.id, genre]))
+}
+
+function getPracticePathsByGenreMap(): Map<GenreId, PracticePath[]> {
+  return new Map(
+    GENRE_DEFINITIONS.map((genre) => [
+      genre.id,
+      PRACTICE_PATHS.filter((path) => path.genre === genre.id)
+    ])
+  )
+}
+
+function getPracticePathsBySkillMap(): Map<LearnSkillId, PracticePath[]> {
+  return new Map(
+    LEARN_SKILLS.map((skill) => [
+      skill.id,
+      PRACTICE_PATHS.filter((path) => path.focusSkills.includes(skill.id))
+    ])
+  )
+}
+
+function getLessonStepMap(): Map<string, LessonStep> {
+  const lessonStepsById = new Map<string, LessonStep>()
+
+  for (const path of PRACTICE_PATHS) {
+    for (const step of path.steps) {
+      lessonStepsById.set(step.id, step)
+    }
+  }
+
+  return lessonStepsById
+}
+
+function getChordChangePresetMap(): Map<string, ChordChangePreset> {
+  return new Map(CHORD_CHANGE_PRESETS.map((preset) => [preset.id, preset]))
+}
+
+function getScaleSequencePresetMap(): Map<string, ScaleSequencePreset> {
+  return new Map(SCALE_SEQUENCE_PRESETS.map((preset) => [preset.id, preset]))
+}
+
+function getEarTrainingPresetMap(): Map<string, EarTrainingPreset> {
+  return new Map(EAR_TRAINING_PRESETS.map((preset) => [preset.id, preset]))
+}
+
+function getRhythmPatternNameMap() {
+  return new Map(RHYTHM_PATTERNS.map((pattern) => [pattern.name, pattern]))
+}
+
+function getRhythmPatternStarterIdMap() {
+  return new Map(RHYTHM_PATTERNS.map((pattern) => [buildRhythmStarterId(pattern.name), pattern]))
+}
+
+function getScaleIndexMap(): Map<string, number> {
+  return new Map(SCALES.map((scale, index) => [scale.name, index]))
+}
+
+function getChordIndexMap(): Map<string, number> {
+  return new Map(CHORD_VOICINGS.map((voicing, index) => [voicing.name, index]))
+}
+
 export function buildRouteWithParams(
   path: string,
   params: Record<string, string | number | null | undefined>
@@ -125,13 +237,13 @@ export function buildRouteWithParams(
 export function buildLearnHubHref(
   options: {
     view?: LearnHubView
-    browse?: LearnBrowseMode
+    browse?: LearnBrowseMode | null
     genre?: GenreId | null
     skill?: LearnSkillId | null
   } = {}
 ): string {
-  return buildRouteWithParams('/learn', {
-    view: options.view ?? 'overview',
+  const view = options.view ?? 'overview'
+  return buildRouteWithParams(LEARN_HUB_ROUTES[view], {
     browse: options.browse ?? null,
     genre: options.genre ?? null,
     skill: options.skill ?? null
@@ -139,7 +251,7 @@ export function buildLearnHubHref(
 }
 
 export function buildLessonHref(step: LessonStep): string {
-  return `${step.route}?lesson=${step.id}`
+  return buildRouteWithParams(step.route, { lesson: step.id })
 }
 
 export function buildRhythmStarterId(patternName: string): string {
@@ -154,15 +266,15 @@ export function getVisibleGenres(): GenreDefinition[] {
 }
 
 export function getGenreDefinition(genreId: GenreId): GenreDefinition | undefined {
-  return GENRE_DEFINITIONS.find((genre) => genre.id === genreId)
+  return getGenreDefinitionMap().get(genreId)
 }
 
 export function getPathsForGenre(genreId: GenreId): PracticePath[] {
-  return PRACTICE_PATHS.filter((path) => path.genre === genreId)
+  return getPracticePathsByGenreMap().get(genreId) ?? []
 }
 
 export function getPathsForSkill(skillId: LearnSkillId): PracticePath[] {
-  return PRACTICE_PATHS.filter((path) => path.focusSkills.includes(skillId))
+  return getPracticePathsBySkillMap().get(skillId) ?? []
 }
 
 export function getStarterPath(genreId: GenreId): PracticePath | undefined {
@@ -173,35 +285,26 @@ export function getStarterPath(genreId: GenreId): PracticePath | undefined {
 
 export function getLessonStep(stepId: string | null): LessonStep | null {
   if (!stepId) return null
-
-  for (const path of PRACTICE_PATHS) {
-    const match = path.steps.find((step) => step.id === stepId)
-    if (match) return match
-  }
-
-  return null
+  return getLessonStepMap().get(stepId) ?? null
 }
 
 export function getChordChangePreset(presetId: string | null): ChordChangePreset | null {
   if (!presetId) return null
-  return CHORD_CHANGE_PRESETS.find((preset) => preset.id === presetId) ?? null
+  return getChordChangePresetMap().get(presetId) ?? null
 }
 
 export function getScaleSequencePreset(presetId: string | null): ScaleSequencePreset | null {
   if (!presetId) return null
-  return SCALE_SEQUENCE_PRESETS.find((preset) => preset.id === presetId) ?? null
+  return getScaleSequencePresetMap().get(presetId) ?? null
 }
 
 export function getEarTrainingPreset(presetId: string | null): EarTrainingPreset | null {
   if (!presetId) return null
-  return EAR_TRAINING_PRESETS.find((preset) => preset.id === presetId) ?? null
+  return getEarTrainingPresetMap().get(presetId) ?? null
 }
 
 export function getScaleIndexByName(scaleName: string): number {
-  return Math.max(
-    0,
-    SCALES.findIndex((scale) => scale.name === scaleName)
-  )
+  return getScaleIndexMap().get(scaleName) ?? 0
 }
 
 export function getPatternIndexByName(patternName: string): number {
@@ -212,11 +315,11 @@ export function getPatternIndexByName(patternName: string): number {
 }
 
 export function getRhythmPatternByStarterId(starterId: string) {
-  return RHYTHM_PATTERNS.find((pattern) => buildRhythmStarterId(pattern.name) === starterId) ?? null
+  return getRhythmPatternStarterIdMap().get(starterId) ?? null
 }
 
 export function getChordIndexByName(chordName: string): number | null {
-  const index = CHORD_VOICINGS.findIndex((voicing) => voicing.name === chordName)
+  const index = getChordIndexMap().get(chordName) ?? -1
   return index === -1 ? null : index
 }
 
@@ -392,7 +495,7 @@ export function isRhythmPatternRecommendedForGenre(
   genreId: GenreId | null
 ): boolean {
   if (!genreId) return false
-  const pattern = RHYTHM_PATTERNS.find((item) => item.name === patternName)
+  const pattern = getRhythmPatternNameMap().get(patternName)
   return pattern?.genreTags?.includes(genreId) ?? false
 }
 

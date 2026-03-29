@@ -1,23 +1,19 @@
 import { useEffect, useRef } from 'react'
-import { useSearchParams } from 'react-router-dom'
 import { Ear, Play, RotateCcw } from 'lucide-react'
 import { useEarTrainingStore } from '../../stores/ear-training-store'
 import { useEarTraining } from '../../hooks/useEarTraining'
 import { useLearnSession } from '../../hooks/useLearnSession'
-import { PageHeader } from '../layout/PageHeader'
+import { useLearnToolRouteState } from '../../hooks/useLearnToolRouteState'
 import { AudioRequiredState } from '../common/AudioRequiredState'
-import { useLessonStep } from '../../hooks/useLessonStep'
 import { LearnSessionSummary } from './LearnSessionSummary'
 import {
   EAR_TRAINING_PRESETS,
-  buildRouteWithParams,
   getEarTrainingPreset,
-  getGenreDefinition,
   isEarTrainingPresetRecommendedForGenre
 } from '../../utils/learn-data'
-import type { CompletionState, GenreId } from '../../utils/learn-types'
-import { GuidedStepBanner } from './GuidedStepBanner'
+import type { CompletionState } from '../../utils/learn-types'
 import { LearnStatCard } from './LearnStatCard'
+import { LearnToolLayout } from './LearnToolLayout'
 
 const MODES = [
   {
@@ -33,7 +29,6 @@ const MODES = [
 ]
 
 export function EarTrainingPanel(): JSX.Element {
-  const [searchParams] = useSearchParams()
   const {
     mode,
     challengePresetId,
@@ -50,18 +45,13 @@ export function EarTrainingPanel(): JSX.Element {
     reset
   } = useEarTrainingStore()
   const { newRound, playChallenge, listen, stopListening, isConnected } = useEarTraining()
-  const lessonStep = useLessonStep('ear-training')
+  const { searchParams, lessonStep, genreContext, genreLabel, buildResumeHref } =
+    useLearnToolRouteState('ear-training', '/learn/ear-training')
   const sessionStartedAt = useRef<number | null>(null)
   const appliedLessonId = useRef<string | null>(null)
   const appliedQueryKey = useRef<string | null>(null)
   const presetParam = searchParams.get('preset')
   const modeParam = searchParams.get('mode')
-  const rawGenreContext = searchParams.get('genre')
-  const genreContext =
-    rawGenreContext && getGenreDefinition(rawGenreContext as GenreId)
-      ? (rawGenreContext as GenreId)
-      : null
-  const genreLabel = genreContext ? (getGenreDefinition(genreContext)?.title ?? null) : null
   const selectedPreset = getEarTrainingPreset(challengePresetId)
 
   const accuracy = total > 0 ? Math.round((score / total) * 100) : null
@@ -79,13 +69,7 @@ export function EarTrainingPanel(): JSX.Element {
       title: `${mode === 'note' ? 'Note' : 'Interval'} ear session`,
       description: `Answered ${score} correctly out of ${total} prompts.`,
       route: '/learn/ear-training',
-      resumeHref: lessonStep
-        ? buildRouteWithParams('/learn/ear-training', { lesson: lessonStep.id })
-        : buildRouteWithParams('/learn/ear-training', {
-            preset: challengePresetId,
-            mode,
-            genre: genreContext
-          }),
+      resumeHref: buildResumeHref({ preset: challengePresetId, mode }),
       contextLabel:
         selectedPreset?.name ?? (mode === 'note' ? 'Note ear training' : 'Interval ear training'),
       score: accuracy,
@@ -103,9 +87,7 @@ export function EarTrainingPanel(): JSX.Element {
   const { savedSummary, finalizeSession, startSession, resetSessionStart } = useLearnSession({
     module: 'ear-training',
     lessonStepId: lessonStep?.id,
-    sessionKey: lessonStep
-      ? null
-      : `preset:${presetParam ?? ''}|mode:${modeParam ?? ''}|genre:${genreContext ?? ''}`,
+    sessionKey: lessonStep ? null : buildResumeHref({ preset: presetParam, mode: modeParam }),
     hasActivity: () => sessionStartedAt.current !== null || total > 0,
     buildSummary,
     sessionStartedAtRef: sessionStartedAt
@@ -170,29 +152,23 @@ export function EarTrainingPanel(): JSX.Element {
   }
 
   return (
-    <div className="flex h-full flex-col gap-6 p-6">
-      <PageHeader
-        title="Ear Training"
-        description="Replay the prompt as often as you need, then switch into listening mode and let Soundgarden judge the response."
-        backTo="/learn"
-        actions={
-          <button
-            onClick={() => {
-              finalizeSession()
-              reset()
-            }}
-            className="inline-flex items-center gap-2 rounded-xl border border-zinc-800 px-3 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
-          >
-            <RotateCcw size={14} />
-            Reset Score
-          </button>
-        }
-      />
-
-      {lessonStep && (
-        <GuidedStepBanner title={lessonStep.title} description={lessonStep.description} />
-      )}
-
+    <LearnToolLayout
+      title="Ear Training"
+      description="Replay the prompt as often as you need, then switch into listening mode and let Soundgarden judge the response."
+      lessonStep={lessonStep}
+      actions={
+        <button
+          onClick={() => {
+            finalizeSession()
+            reset()
+          }}
+          className="inline-flex items-center gap-2 rounded-xl border border-zinc-800 px-3 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
+        >
+          <RotateCcw size={14} />
+          Reset Score
+        </button>
+      }
+    >
       <div className="grid gap-4 md:grid-cols-4">
         <LearnStatCard label="Correct" value={String(score)} />
         <LearnStatCard label="Total" value={String(total)} />
@@ -386,6 +362,6 @@ export function EarTrainingPanel(): JSX.Element {
           weakSpots={displayedSummary.weakSpots}
         />
       )}
-    </div>
+    </LearnToolLayout>
   )
 }

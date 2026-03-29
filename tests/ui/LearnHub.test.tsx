@@ -3,11 +3,11 @@
 import React from 'react'
 import '@testing-library/jest-dom/vitest'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { cleanup, fireEvent, screen } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { LearnHub } from '../../src/renderer/components/learn/LearnHub'
 import { useSystemStatus } from '../../src/renderer/hooks/useSystemStatus'
 import { useLearnProgressStore } from '../../src/renderer/stores/learn-progress-store'
-import { renderWithRouter } from './render-with-router'
 
 vi.mock('../../src/renderer/hooks/useSystemStatus', () => ({
   useSystemStatus: vi.fn()
@@ -45,6 +45,24 @@ const disconnectedStatus = {
 
 const mockUseSystemStatus = vi.mocked(useSystemStatus)
 
+function renderLearnHub(initialEntry = '/learn') {
+  const routeEntries = [
+    { path: '/learn', view: 'overview' as const },
+    { path: '/learn/explore', view: 'explore' as const },
+    { path: '/learn/tools', view: 'tools' as const }
+  ]
+
+  return (
+    <MemoryRouter initialEntries={[initialEntry]}>
+      <Routes>
+        {routeEntries.map((entry) => (
+          <Route key={entry.path} path={entry.path} element={<LearnHub view={entry.view} />} />
+        ))}
+      </Routes>
+    </MemoryRouter>
+  )
+}
+
 describe('LearnHub', () => {
   beforeEach(() => {
     localStorage.clear()
@@ -57,7 +75,7 @@ describe('LearnHub', () => {
     vi.clearAllMocks()
   })
 
-  it('keeps overview short, then exposes path filtering and tools behind dedicated views', () => {
+  it('keeps overview short, then exposes path filtering and tools behind dedicated routes', () => {
     useLearnProgressStore.setState({
       progress: {
         'scale-explorer': {
@@ -73,6 +91,7 @@ describe('LearnHub', () => {
             title: 'A blues scale session',
             description: 'Covered the A blues box.',
             route: '/learn/scales',
+            resumeHref: '/learn/scales',
             score: 82,
             bestStreak: 5,
             completionState: 'in-progress',
@@ -87,14 +106,13 @@ describe('LearnHub', () => {
         }
       }
     })
-
-    renderWithRouter(<LearnHub />)
+    render(renderLearnHub('/learn'))
 
     expect(screen.getByText('Resume where you left off')).toBeInTheDocument()
     expect(screen.queryByText('All Learning Paths')).not.toBeInTheDocument()
-    expect(screen.queryByText('Quick lookup still lives here.')).not.toBeInTheDocument()
+    expect(screen.queryByText('Open a direct learning tool')).not.toBeInTheDocument()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Explore' }))
+    fireEvent.click(screen.getByRole('link', { name: 'Explore' }))
     fireEvent.click(screen.getByRole('button', { name: 'By skill' }))
     fireEvent.click(screen.getByRole('button', { name: 'Fingerstyle' }))
 
@@ -104,13 +122,8 @@ describe('LearnHub', () => {
         'Use alternating bass and arpeggio patterns to build steady fingerstyle motion.'
       )
     ).toBeInTheDocument()
-    expect(
-      screen.queryByText(
-        'Build shuffle feel, dominant changes, blues-box motion, and ear-led response.'
-      )
-    ).not.toBeInTheDocument()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Tools' }))
+    fireEvent.click(screen.getByRole('link', { name: 'Tools' }))
     expect(screen.getByText('Open a direct learning tool')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /Chord Library/i })).toBeInTheDocument()
   })
@@ -118,7 +131,7 @@ describe('LearnHub', () => {
   it('shows blocked guided guidance on overview and keeps secondary navigation available offline', () => {
     mockUseSystemStatus.mockReturnValue(disconnectedStatus)
 
-    renderWithRouter(<LearnHub />)
+    render(renderLearnHub('/learn'))
 
     expect(
       screen.getByText(/Guided audio steps will unlock once your input is connected/i)
@@ -128,11 +141,11 @@ describe('LearnHub', () => {
     expect(screen.getByRole('button', { name: 'Browse tools' })).toBeInTheDocument()
   })
 
-  it('restores learn subview and filters from the URL search params', () => {
-    renderWithRouter(<LearnHub />, '/learn?view=explore&browse=skill&skill=fingerstyle')
+  it('restores explore filters from the canonical route', () => {
+    render(renderLearnHub('/learn/explore?browse=skill&skill=fingerstyle'))
 
     expect(screen.getByText('Fingerstyle Paths')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Explore' })).toHaveClass('bg-emerald-600')
+    expect(screen.getByRole('link', { name: 'Explore' })).toHaveClass('bg-emerald-600')
     expect(screen.getByRole('button', { name: 'By skill' })).toHaveClass('bg-emerald-600')
     expect(screen.getByRole('button', { name: 'Fingerstyle' })).toHaveClass('bg-emerald-600')
   })
